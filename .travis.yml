@@ -1,0 +1,18 @@
+language: python
+python:
+  - 3.7
+  - 3.6
+  - 3.5
+  - 3.4
+install: pip install -U tox-travis
+script: tox
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: dmuhs
+  password:
+    secure: UopVhupXlS9gqYx55ZyanvYbqAK67OEM1fxRvmTns3joqQR1gJvYUPpsAZ3NiaKUkv+265PTr0aLi6NfSxka2iDzlyRiWK7FEnq+fgUmSyBxuSK7w747evzhBYS4h/Yht77AO7nO8QEXFiuQ9/Q0yhrlk9TCI/sVfIbLpLWMmfaWJOHCZMtHY98V5+IyPsysU2GATU6LHFBtUNyQEtggqYpeFS/h9up9PRr65e92r/qOB6xHaXE+3x/3bWaZr3GwRQULzUDbF4rgUbZ13O//aaEvOUniT/J0QZtBitoI26rVDCZRczfEWKJ5BlzTqSRM+oysaCFH2ePmDxlPnZKh60mwvESowew/5upL0GgUmPr6WwPhx3qvaqq43OZtA95zksUoxUyMHjHW2BAMdxu5811C5F0NCH8GiO8aYtJgA62jMqO37ZxIlDkCw5Xb/bZRklrLFl0qeD7Jm0yV1gddnzwL2yR4K46A2J7/6EDissXCKqganWe9iUcIjjD4s76olmyFdjVzMY9X6ZYFZ+CQcXdeApOzHJgwntZajchUmCTFR1L+lU7ZaweB+ZG9zSrvw4LwgwqOsRKGwzD4EAZHz5+5jfKxz0rtCZnIA5Y395oEnXZfwxGiNwF/z5jcEE7GKAdepX7BJpyJEy3IE+reqnameSoHkj0MKcL0GW7RWKA=
+  on:
+    tags: true
+    repo: ConsenSys/pythx
+    python: 3.6
