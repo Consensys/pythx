@@ -1,2 +1,2 @@
-class RequestFactory():
+class RequestFactory:
     pass

@@ -1,14 +1,14 @@
-class AnalysisListResponse():
+class AnalysisListResponse:
     pass
 
 
-class AnalysisSubmissionResponse():
+class AnalysisSubmissionResponse:
     pass
 
 
-class AnalysisStatusResponse():
+class AnalysisStatusResponse:
     pass
 
 
-class DetectedIssuesResponse():
+class DetectedIssuesResponse:
     pass

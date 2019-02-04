@@ -1,2 +1,2 @@
-class ResponseParser():
+class ResponseParser:
     pass

@@ -1,2 +1,2 @@
-class Issue():
+class Issue:
     pass

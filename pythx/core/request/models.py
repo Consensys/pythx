@@ -1,14 +1,14 @@
-class AnalysisListRequest():
+class AnalysisListRequest:
     pass
 
 
-class AnalysisSubmissionRequest():
+class AnalysisSubmissionRequest:
     pass
 
 
-class AnalysisStatusRequest():
+class AnalysisStatusRequest:
     pass
 
 
-class DetectedIssuesRequest():
+class DetectedIssuesRequest:
     pass
