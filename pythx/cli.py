@@ -1,5 +1,6 @@
 """Console script for pythx."""
 import sys
+
 import click
 
 

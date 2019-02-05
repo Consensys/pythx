@@ -1,13 +1,7 @@
-#!/usr/bin/env python3
-
-"""Tests for `pythx` package."""
-
 import pytest
-
 from click.testing import CliRunner
 
-from pythx import pythx
-from pythx import cli
+from pythx import cli, pythx
 
 
 @pytest.fixture
