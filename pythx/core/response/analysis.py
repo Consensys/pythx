@@ -53,7 +53,6 @@ class Analysis:
         parsed = json.loads(json_data)
         if all(k in parsed for k in ANALYSIS_KEYS):
             parsed = {underscore(k): v for k, v in parsed.items()}
-            print(parsed)
             return cls(**parsed)
         raise ResponseDecodeError(
             "Not all required keys {} found in JSON data {}".format(
