@@ -10,7 +10,8 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = ["Click>=6.0", "python-dateutil==2.7.5"]
+with open("requirements.txt", "r") as f:
+    requirements = list(map(str.strip, f.read().split("\n")))[:-1]
 
 setup_requirements = ["pytest-runner"]
 
