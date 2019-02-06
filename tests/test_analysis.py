@@ -5,6 +5,7 @@ import pytest
 
 from pythx.core.exceptions import ResponseDecodeError
 from pythx.core.response.analysis import Analysis, AnalysisStatus
+from pythx.core.util import serialize_api_timestamp, deserialize_api_timestamp
 
 
 VALID_INPUT_JSON_TPL = """{{
@@ -51,12 +52,12 @@ def test_analysis_from_valid_json():
     assert analysis.submitted_by == SUBMITTED_BY
 
 
-def test_analysis_invalid_json():
+def test_analysis_from_invalid_json():
     with pytest.raises(ResponseDecodeError):
         Analysis.from_json("{}")
 
 
-def test_analysis_to_valid_json():
+def test_analysis_to_json():
     analysis = Analysis(
         uuid=UUID,
         api_version=API_VERSION,
@@ -75,6 +76,56 @@ def test_analysis_to_valid_json():
         "queue_time": QUEUE_TIME,
         "run_time": 0,
         "status": STATUS,
-        "submitted_at": "2019-01-10T01:29:38.410000+00:00",  # Python isotime
+        "submitted_at": SUBMITTED_AT,  # Python isotime
         "submitted_by": SUBMITTED_BY,
     }
+
+def test_analysis_to_dict():
+    analysis = Analysis(
+        uuid=UUID,
+        api_version=API_VERSION,
+        maru_version=MARU_VERSION,
+        mythril_version=MYTHRIL_VERSION,
+        queue_time=QUEUE_TIME,
+        status=STATUS,
+        submitted_at=SUBMITTED_AT,
+        submitted_by=SUBMITTED_BY,
+    )
+    assert analysis.to_dict() == {
+        "uuid": UUID,
+        "api_version": API_VERSION,
+        "maru_version": MARU_VERSION,
+        "mythril_version": MYTHRIL_VERSION,
+        "queue_time": QUEUE_TIME,
+        "run_time": 0,
+        "status": STATUS,
+        "submitted_at": SUBMITTED_AT,  # Python isotime
+        "submitted_by": SUBMITTED_BY,
+    }
+
+def test_analysis_from_valid_dict():
+    input_dict = json.loads(VALID_INPUT_JSON_TPL.format(
+        uuid=UUID,
+        api_version=API_VERSION,
+        maru_version=MARU_VERSION,
+        mythril_version=MYTHRIL_VERSION,
+        queue_time=QUEUE_TIME,
+        status=STATUS,
+        submitted_at=SUBMITTED_AT,
+        submitted_by=SUBMITTED_BY,
+    ))
+    analysis = Analysis.from_dict(input_dict)
+    assert analysis.uuid == UUID
+    assert analysis.api_version == API_VERSION
+    assert analysis.maru_version == MARU_VERSION
+    assert analysis.mythril_version == MYTHRIL_VERSION
+    assert analysis.queue_time == QUEUE_TIME
+    assert analysis.run_time == 0  # default value
+    assert analysis.status == AnalysisStatus.QUEUED
+    assert analysis.submitted_at == deserialize_api_timestamp(SUBMITTED_AT)
+    assert analysis.submitted_by == SUBMITTED_BY
+
+
+def test_analysis_from_invalid_dict():
+    with pytest.raises(ResponseDecodeError):
+        Analysis.from_dict({})

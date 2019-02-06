@@ -5,6 +5,8 @@ import dateutil.parser
 from inflection import underscore
 
 from pythx.core.exceptions import ResponseDecodeError
+from pythx.core.util import deserialize_api_timestamp, serialize_api_timestamp
+
 
 ANALYSIS_KEYS = (
     "uuid",
@@ -45,7 +47,7 @@ class Analysis:
         self.queue_time = queue_time
         self.run_time = run_time
         self.status = AnalysisStatus[status.upper()]
-        self.submitted_at = dateutil.parser.parse(submitted_at)
+        self.submitted_at = deserialize_api_timestamp(submitted_at)
         self.submitted_by = submitted_by
 
     @classmethod
@@ -74,6 +76,6 @@ class Analysis:
             "queue_time": self.queue_time,
             "run_time": self.run_time,
             "status": self.status,
-            "submitted_at": self.submitted_at.isoformat(),
+            "submitted_at": serialize_api_timestamp(self.submitted_at),
             "submitted_by": self.submitted_by,
         }
