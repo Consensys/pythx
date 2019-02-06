@@ -120,7 +120,10 @@ class Issue:
             {
                 "swcID": self.swc_id,
                 "swcTitle": self.swc_title,
-                "description": {"head": self.description_short, "tail": self.description_long},
+                "description": {
+                    "head": self.description_short,
+                    "tail": self.description_long,
+                },
                 "severity": self.severity,
                 "locations": [loc.to_dict() for loc in self.locations],
                 "extra": self.extra_data,
