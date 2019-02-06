@@ -51,26 +51,29 @@ class Analysis:
     @classmethod
     def from_json(cls, json_data: str):
         parsed = json.loads(json_data)
-        if all(k in parsed for k in ANALYSIS_KEYS):
-            parsed = {underscore(k): v for k, v in parsed.items()}
-            return cls(**parsed)
+        return cls.from_dict(parsed)
+
+    @classmethod
+    def from_dict(cls, d):
+        if all(k in d for k in ANALYSIS_KEYS):
+            d = {underscore(k): v for k, v in d.items()}
+            return cls(**d)
         raise ResponseDecodeError(
-            "Not all required keys {} found in JSON data {}".format(
-                ANALYSIS_KEYS, json_data
-            )
+            "Not all required keys {} found in data {}".format(ANALYSIS_KEYS, d)
         )
 
     def to_json(self):
-        return json.dumps(
-            {
-                "uuid": self.uuid,
-                "api_version": self.api_version,
-                "mythril_version": self.mythril_version,
-                "maru_version": self.maru_version,
-                "queue_time": self.queue_time,
-                "run_time": self.run_time,
-                "status": self.status,
-                "submitted_at": self.submitted_at.isoformat(),
-                "submitted_by": self.submitted_by,
-            }
-        )
+        return json.dumps(self.to_dict())
+
+    def to_dict(self):
+        return {
+            "uuid": self.uuid,
+            "api_version": self.api_version,
+            "mythril_version": self.mythril_version,
+            "maru_version": self.maru_version,
+            "queue_time": self.queue_time,
+            "run_time": self.run_time,
+            "status": self.status,
+            "submitted_at": self.submitted_at.isoformat(),
+            "submitted_by": self.submitted_by,
+        }

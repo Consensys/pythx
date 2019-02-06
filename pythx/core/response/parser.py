@@ -1,2 +1,3 @@
 class ResponseParser:
-    pass
+    def __init__(self, router):
+        self.router

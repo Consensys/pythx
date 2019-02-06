@@ -91,41 +91,49 @@ class Issue:
         self.swc_title = swc_title
         self.description_short = description_short
         self.description_long = description_long
-        self.severity = Severity[severity.upper()]
+        self.severity = severity
         self.locations = locations
         self.extra_data = extra
 
     @classmethod
     def from_json(cls, json_data: str):
         parsed = json.loads(json_data)
-        parsed = {underscore(k): v for k, v in parsed.items()}
-        parsed["description_short"] = parsed["description"]["head"]
-        parsed["description_long"] = parsed["description"]["tail"]
-        del parsed["description"]
-        locs = []
-        for loc in parsed["locations"]:
-            locs.append(
-                SourceLocation(
-                    source_map=loc["sourceMap"],
-                    source_type=loc["sourceType"],
-                    source_format=loc["sourceFormat"],
-                    source_list=loc["sourceList"],
-                )
+        return cls.from_dict(parsed)
+
+    @classmethod
+    def from_dict(cls, d):
+        # TODO: validate
+        locs = [
+            SourceLocation(
+                source_map=loc["sourceMap"],
+                source_type=loc["sourceType"],
+                source_format=loc["sourceFormat"],
+                source_list=loc["sourceList"],
             )
-        parsed["locations"] = locs
-        return cls(**parsed)
+            for loc in d["locations"]
+        ]
+        return cls(
+            swc_id=d["swcID"],
+            swc_title=d["swcTitle"],
+            description_short=d["description"]["head"],
+            description_long=d["description"]["tail"],
+            severity=Severity[d["severity"].upper()],
+            locations=locs,
+            extra=d["extra"],
+        )
 
     def to_json(self):
-        return json.dumps(
-            {
-                "swcID": self.swc_id,
-                "swcTitle": self.swc_title,
-                "description": {
-                    "head": self.description_short,
-                    "tail": self.description_long,
-                },
-                "severity": self.severity,
-                "locations": [loc.to_dict() for loc in self.locations],
-                "extra": self.extra_data,
-            }
-        )
+        return json.dumps(self.to_dict())
+
+    def to_dict(self):
+        return {
+            "swcID": self.swc_id,
+            "swcTitle": self.swc_title,
+            "description": {
+                "head": self.description_short,
+                "tail": self.description_long,
+            },
+            "severity": self.severity,
+            "locations": [loc.to_dict() for loc in self.locations],
+            "extra": self.extra_data,
+        }
