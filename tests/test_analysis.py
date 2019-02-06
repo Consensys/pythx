@@ -80,6 +80,7 @@ def test_analysis_to_json():
         "submitted_by": SUBMITTED_BY,
     }
 
+
 def test_analysis_to_dict():
     analysis = Analysis(
         uuid=UUID,
@@ -103,17 +104,20 @@ def test_analysis_to_dict():
         "submitted_by": SUBMITTED_BY,
     }
 
+
 def test_analysis_from_valid_dict():
-    input_dict = json.loads(VALID_INPUT_JSON_TPL.format(
-        uuid=UUID,
-        api_version=API_VERSION,
-        maru_version=MARU_VERSION,
-        mythril_version=MYTHRIL_VERSION,
-        queue_time=QUEUE_TIME,
-        status=STATUS,
-        submitted_at=SUBMITTED_AT,
-        submitted_by=SUBMITTED_BY,
-    ))
+    input_dict = json.loads(
+        VALID_INPUT_JSON_TPL.format(
+            uuid=UUID,
+            api_version=API_VERSION,
+            maru_version=MARU_VERSION,
+            mythril_version=MYTHRIL_VERSION,
+            queue_time=QUEUE_TIME,
+            status=STATUS,
+            submitted_at=SUBMITTED_AT,
+            submitted_by=SUBMITTED_BY,
+        )
+    )
     analysis = Analysis.from_dict(input_dict)
     assert analysis.uuid == UUID
     assert analysis.api_version == API_VERSION

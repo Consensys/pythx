@@ -125,5 +125,5 @@ class DetectedIssuesResponse:
             "sourceType": self.source_type,
             "sourceFormat": self.source_format,
             "sourceList": self.source_list,
-            "meta": self.meta_data
+            "meta": self.meta_data,
         }
