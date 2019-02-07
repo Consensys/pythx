@@ -5,14 +5,7 @@ from pythx.core.response.analysis import Analysis
 from pythx.core.response.issue import Issue, SourceType, SourceFormat
 
 
-DETECTED_ISSUES_KEYS = (
-    "uuid",
-    "issues",
-    "sourceType",
-    "sourceFormat",
-    "sourceList",
-    "meta",
-)
+DETECTED_ISSUES_KEYS = ("issues", "sourceType", "sourceFormat", "sourceList", "meta")
 
 
 class AnalysisListResponse:
@@ -78,14 +71,12 @@ class AnalysisStatusResponse(AnalysisSubmissionResponse):
 class DetectedIssuesResponse:
     def __init__(
         self,
-        uuid: str,
         issues: List[Issue],
         source_type: SourceType,
         source_format: SourceFormat,
         source_list: List[str],
         meta_data: Dict[str, Any],
     ):
-        self.uuid = uuid
         self.issues = issues
         self.source_type = source_type
         self.source_format = source_format
@@ -102,30 +93,35 @@ class DetectedIssuesResponse:
 
     @classmethod
     def from_dict(cls, d):
-        if not all(k in d for k in DETECTED_ISSUES_KEYS):
+        if (
+            type(d) != list
+            or len(d) != 1
+            or all(k not in d[0] for k in DETECTED_ISSUES_KEYS)
+        ):
             raise ResponseDecodeError(
                 "Not all required keys {} found in data {}".format(
                     DETECTED_ISSUES_KEYS, d
                 )
             )
+        d = d[0]
         return cls(
-            uuid=d["uuid"],
             issues=[Issue.from_dict(i) for i in d["issues"]],
-            source_type=SourceType[d["sourceType"].upper()],
-            source_format=SourceFormat[d["sourceFormat"].upper()],
+            source_type=SourceType(d["sourceType"]),
+            source_format=SourceFormat(d["sourceFormat"]),
             source_list=d["sourceList"],
             meta_data=d["meta"],
         )
 
     def to_json(self):
-        json.dumps(self.to_dict())
+        return json.dumps(self.to_dict())
 
     def to_dict(self):
-        return {
-            "uuid": self.uuid,
-            "issues": [i.to_dict() for i in self.issues],
-            "sourceType": self.source_type,
-            "sourceFormat": self.source_format,
-            "sourceList": self.source_list,
-            "meta": self.meta_data,
-        }
+        return [
+            {
+                "issues": [i.to_dict() for i in self.issues],
+                "sourceType": self.source_type,
+                "sourceFormat": self.source_format,
+                "sourceList": self.source_list,
+                "meta": self.meta_data,
+            }
+        ]

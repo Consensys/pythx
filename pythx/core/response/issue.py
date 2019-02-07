@@ -50,7 +50,7 @@ class SourceLocation:
             )
         else:
             # to resolve into enum value
-            source_type = source_type.replace("-", "_").upper()
+            source_type = SourceType(source_type)
         source_format = d.get("sourceFormat")
         if source_format is None:
             raise ResponseDecodeError(
@@ -58,7 +58,7 @@ class SourceLocation:
             )
         else:
             # to resolve into enum value
-            source_format = source_format.replace("-", "_").upper()
+            source_format = SourceFormat(source_format)
         source_list = d.get("sourceList")
         return cls(
             source_map=source_map,
