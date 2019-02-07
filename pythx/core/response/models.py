@@ -1,9 +1,9 @@
-from typing import List, Dict, Any
 import json
+from typing import Any, Dict, List
+
 from pythx.core.exceptions import ResponseDecodeError
 from pythx.core.response.analysis import Analysis
-from pythx.core.response.issue import Issue, SourceType, SourceFormat
-
+from pythx.core.response.issue import Issue, SourceFormat, SourceType
 
 DETECTED_ISSUES_KEYS = ("issues", "sourceType", "sourceFormat", "sourceList", "meta")
 

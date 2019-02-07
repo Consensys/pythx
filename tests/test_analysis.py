@@ -5,8 +5,7 @@ import pytest
 
 from pythx.core.exceptions import ResponseDecodeError
 from pythx.core.response.analysis import Analysis, AnalysisStatus
-from pythx.core.util import serialize_api_timestamp, deserialize_api_timestamp
-
+from pythx.core.util import deserialize_api_timestamp, serialize_api_timestamp
 
 VALID_INPUT_JSON_TPL = """{{
     "apiVersion": "{api_version}",

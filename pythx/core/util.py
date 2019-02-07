@@ -1,5 +1,6 @@
-import dateutil.parser
 from datetime import datetime
+
+import dateutil.parser
 
 
 def deserialize_api_timestamp(timestamp_str: str):

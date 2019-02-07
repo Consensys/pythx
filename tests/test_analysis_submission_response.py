@@ -1,10 +1,11 @@
 import json
-from pythx.core.response.models import AnalysisSubmissionResponse
-from pythx.core.response.analysis import Analysis
-from pythx.core.util import serialize_api_timestamp
-from pythx.core.exceptions import ResponseDecodeError
+
 import pytest
 
+from pythx.core.exceptions import ResponseDecodeError
+from pythx.core.response.analysis import Analysis
+from pythx.core.response.models import AnalysisSubmissionResponse
+from pythx.core.util import serialize_api_timestamp
 
 UUID_1 = "0680a1e2-b908-4c9a-a15b-636ef9b61486"
 API_VERSION_1 = "v1.3.0"

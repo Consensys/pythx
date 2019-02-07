@@ -1,7 +1,9 @@
-from enum import Enum
-from typing import List, Dict, Any, Tuple
 import json
+from enum import Enum
+from typing import Any, Dict, List, Tuple
+
 from inflection import underscore
+
 from pythx.core.exceptions import ResponseDecodeError
 
 

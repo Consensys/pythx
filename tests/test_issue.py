@@ -1,3 +1,5 @@
+import json
+
 from pythx.core.response.issue import (
     Issue,
     Severity,
@@ -5,8 +7,6 @@ from pythx.core.response.issue import (
     SourceLocation,
     SourceType,
 )
-import json
-
 
 SWC_ID = "SWC-103"
 SWC_TITLE = "Floating Pragma"

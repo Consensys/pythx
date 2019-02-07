@@ -1,10 +1,11 @@
 import json
-from pythx.core.response.models import AnalysisListResponse
-from pythx.core.response.analysis import Analysis
-from pythx.core.util import serialize_api_timestamp
-from pythx.core.exceptions import ResponseDecodeError
+
 import pytest
 
+from pythx.core.exceptions import ResponseDecodeError
+from pythx.core.response.analysis import Analysis
+from pythx.core.response.models import AnalysisListResponse
+from pythx.core.util import serialize_api_timestamp
 
 API_VERSION_1 = "v1.3.0"
 API_VERSION_2 = "v1.2.0"
