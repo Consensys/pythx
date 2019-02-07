@@ -49,7 +49,8 @@ VALID_LIST = [
     },
 ]
 
-VALID_LIST_RESPONSE = AnalysisListResponse(analyses=[
+VALID_LIST_RESPONSE = AnalysisListResponse(
+    analyses=[
         Analysis(
             uuid=UUID_1,
             api_version=API_VERSION_1,
@@ -59,7 +60,7 @@ VALID_LIST_RESPONSE = AnalysisListResponse(analyses=[
             run_time=RUN_TIME_1,
             status=STATUS_1,
             submitted_at=SUBMITTED_AT_1,
-            submitted_by=SUBMITTED_BY_1
+            submitted_by=SUBMITTED_BY_1,
         ),
         Analysis(
             uuid=UUID_2,
@@ -70,9 +71,10 @@ VALID_LIST_RESPONSE = AnalysisListResponse(analyses=[
             run_time=RUN_TIME_2,
             status=STATUS_2,
             submitted_at=SUBMITTED_AT_2,
-            submitted_by=SUBMITTED_BY_2
-        )
-    ])
+            submitted_by=SUBMITTED_BY_2,
+        ),
+    ]
+)
 
 
 def assert_analysis_data(expected, analysis: Analysis):

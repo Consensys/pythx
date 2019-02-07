@@ -33,9 +33,7 @@ class AnalysisListResponse:
     @classmethod
     def from_dict(cls, d: List[Dict[str, Any]]):
         if type(d) != list:
-            raise ResponseDecodeError(
-                "Expected JSON list but got {}".format(d)
-            )
+            raise ResponseDecodeError("Expected JSON list but got {}".format(d))
         analyses = []
         for analysis in d:
             analyses.append(Analysis.from_dict(analysis))
