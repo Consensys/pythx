@@ -70,12 +70,12 @@ class Analysis:
     def to_dict(self):
         return {
             "uuid": self.uuid,
-            "api_version": self.api_version,
-            "mythril_version": self.mythril_version,
-            "maru_version": self.maru_version,
-            "queue_time": self.queue_time,
-            "run_time": self.run_time,
-            "status": self.status,
-            "submitted_at": serialize_api_timestamp(self.submitted_at),
-            "submitted_by": self.submitted_by,
+            "apiVersion": self.api_version,
+            "mythrilVersion": self.mythril_version,
+            "maruVersion": self.maru_version,
+            "queueTime": self.queue_time,
+            "runTime": self.run_time,
+            "status": self.status.title(),
+            "submittedAt": serialize_api_timestamp(self.submitted_at),
+            "submittedBy": self.submitted_by,
         }

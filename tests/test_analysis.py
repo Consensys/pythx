@@ -70,14 +70,14 @@ def test_analysis_to_json():
     )
     assert json.loads(analysis.to_json()) == {
         "uuid": UUID,
-        "api_version": API_VERSION,
-        "maru_version": MARU_VERSION,
-        "mythril_version": MYTHRIL_VERSION,
-        "queue_time": QUEUE_TIME,
-        "run_time": 0,
+        "apiVersion": API_VERSION,
+        "maruVersion": MARU_VERSION,
+        "mythrilVersion": MYTHRIL_VERSION,
+        "queueTime": QUEUE_TIME,
+        "runTime": 0,
         "status": STATUS,
-        "submitted_at": SUBMITTED_AT,  # Python isotime
-        "submitted_by": SUBMITTED_BY,
+        "submittedAt": SUBMITTED_AT,  # Python isotime
+        "submittedBy": SUBMITTED_BY,
     }
 
 
@@ -94,14 +94,14 @@ def test_analysis_to_dict():
     )
     assert analysis.to_dict() == {
         "uuid": UUID,
-        "api_version": API_VERSION,
-        "maru_version": MARU_VERSION,
-        "mythril_version": MYTHRIL_VERSION,
-        "queue_time": QUEUE_TIME,
-        "run_time": 0,
+        "apiVersion": API_VERSION,
+        "maruVersion": MARU_VERSION,
+        "mythrilVersion": MYTHRIL_VERSION,
+        "queueTime": QUEUE_TIME,
+        "runTime": 0,
         "status": STATUS,
-        "submitted_at": SUBMITTED_AT,  # Python isotime
-        "submitted_by": SUBMITTED_BY,
+        "submittedAt": SUBMITTED_AT,  # Python isotime
+        "submittedBy": SUBMITTED_BY,
     }
 
 
