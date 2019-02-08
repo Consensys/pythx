@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 import dateutil.parser
 from pythx.core.exceptions import RequestValidationError, RequestDecodeError
+from pythx.core.util import dict_delete_none_fields
 
 
 ANALYSIS_LIST_KEYS = ("offset", "dateFrom", "dateTo")
@@ -120,7 +121,7 @@ class AnalysisSubmissionRequest:
         return json.dumps(self.to_dict())
 
     def to_dict(self):
-        return {
+        base_dict = {
             "contractName": self.contract_name,
             "bytecode": self.bytecode,
             "sourceMap": self.source_map,
@@ -131,6 +132,8 @@ class AnalysisSubmissionRequest:
             "version": self.solc_version,
             "analysisMode": self.analysis_mode,
         }
+
+        return dict_delete_none_fields(base_dict)
 
 
 class AnalysisStatusRequest:
