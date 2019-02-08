@@ -10,15 +10,9 @@ ETH_ADDRESS = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d"
 PASSWORD = "supersecure"
 USER_ID = "31337"
 
-LOGIN = {
-    "ethAddress": ETH_ADDRESS,
-    "password": PASSWORD,
-    "userId": USER_ID
-}
+LOGIN = {"ethAddress": ETH_ADDRESS, "password": PASSWORD, "userId": USER_ID}
 LOGIN_REQUEST = AuthLoginRequest(
-    eth_address=ETH_ADDRESS,
-    password=PASSWORD,
-    user_id=USER_ID
+    eth_address=ETH_ADDRESS, password=PASSWORD, user_id=USER_ID
 )
 
 
