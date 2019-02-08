@@ -160,5 +160,5 @@ class AnalysisStatusRequest:
         return {"uuid": self.uuid}
 
 
-class DetectedIssuesRequest:
+class DetectedIssuesRequest(AnalysisStatusRequest):
     pass
