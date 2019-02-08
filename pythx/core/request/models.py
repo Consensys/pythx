@@ -9,6 +9,7 @@ from pythx.core.util import dict_delete_none_fields
 
 ANALYSIS_LIST_KEYS = ("offset", "dateFrom", "dateTo")
 ANALYSIS_SUBMISSION_KEYS = ("bytecode", "sources")
+AUTH_LOGIN_KEYS = ("ethAddress", "password", "userId")
 
 
 class AnalysisListRequest:
@@ -162,3 +163,61 @@ class AnalysisStatusRequest:
 
 class DetectedIssuesRequest(AnalysisStatusRequest):
     pass
+
+
+class AuthLoginRequest:
+    def __init__(self, eth_address: str, password: str, user_id: str):
+        self.eth_address = eth_address
+        self.password = password
+        self.user_id = user_id
+
+    def validate(self):
+        # TODO: Validate password format
+        pass
+
+    @classmethod
+    def from_json(cls, json_str: str):
+        parsed = json.loads(json_str)
+        return cls.from_dict(parsed)
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, str]):
+        if not all(k in d for k in AUTH_LOGIN_KEYS):
+            raise RequestDecodeError(
+                "Not all required keys {} found in data {}".format(AUTH_LOGIN_KEYS, d)
+            )
+        return cls(
+            eth_address=d["ethAddress"], password=d["password"], user_id=d["userId"]
+        )
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+    def to_dict(self):
+        return {
+            "ethAddress": self.eth_address,
+            "password": self.password,
+            "userId": self.user_id,
+        }
+
+
+class AuthLogoutRequest:
+    def __init__(self, global_: bool):
+        self.global_ = global_
+
+    @classmethod
+    def from_json(cls, json_str: str):
+        parsed = json.loads(json_str)
+        return cls.from_dict(parsed)
+
+    @classmethod
+    def from_dict(cls, d: Dict):
+        if "global" not in d:
+            raise RequestDecodeError("Required key 'global' not in data {}".format(d))
+        return cls(global_=d["global"])
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+    def to_dict(self):
+        return {"global": self.global_}
