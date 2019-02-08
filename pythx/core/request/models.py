@@ -1,10 +1,11 @@
-from typing import Dict, Any, List
 import json
 from datetime import datetime
-import dateutil.parser
-from pythx.core.exceptions import RequestValidationError, RequestDecodeError
-from pythx.core.util import dict_delete_none_fields
+from typing import Any, Dict, List
 
+import dateutil.parser
+
+from pythx.core.exceptions import RequestDecodeError, RequestValidationError
+from pythx.core.util import dict_delete_none_fields
 
 ANALYSIS_LIST_KEYS = ("offset", "dateFrom", "dateTo")
 ANALYSIS_SUBMISSION_KEYS = ("bytecode", "sources")
@@ -137,7 +138,26 @@ class AnalysisSubmissionRequest:
 
 
 class AnalysisStatusRequest:
-    pass
+    def __init__(self, uuid: str):
+        self.uuid = uuid
+
+    @classmethod
+    def from_json(cls, json_str: str):
+        parsed = json.loads(json_str)
+        return cls.from_dict(parsed)
+
+    @classmethod
+    def from_dict(cls, d):
+        uuid = d.get("uuid")
+        if uuid is None:
+            raise RequestDecodeError("Missing uuid field in data {}".format(d))
+        return cls(uuid=uuid)
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+    def to_dict(self):
+        return {"uuid": self.uuid}
 
 
 class DetectedIssuesRequest:
