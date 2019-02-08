@@ -57,25 +57,25 @@ class AnalysisListRequest:
 class AnalysisSubmissionRequest:
     def __init__(
         self,
-        contract_name=None,
-        bytecode=None,
-        source_map=None,
-        deployed_bytecode=None,
-        deployed_source_map=None,
-        sources=None,
-        source_list=None,
-        solc_version=None,
-        analysis_mode="quick",
+        contract_name: str = None,
+        bytecode: str = None,
+        source_map: str = None,
+        deployed_bytecode: str = None,
+        deployed_source_map: str = None,
+        sources: Dict[str, Dict[str, str]] = None,
+        source_list: List[str] = None,
+        solc_version: str = None,
+        analysis_mode: str = "quick",
     ):
-        self.contract_name: str = contract_name
-        self.bytecode: str = bytecode
-        self.source_map: str = source_map
-        self.deployed_bytecode: str = deployed_bytecode
-        self.deployed_source_map: str = deployed_source_map
-        self.sources: Dict[str, Dict[str, str]] = sources
-        self.source_list: List[str] = source_list
-        self.solc_version: str = solc_version
-        self.analysis_mode: str = analysis_mode
+        self.contract_name = contract_name
+        self.bytecode = bytecode
+        self.source_map = source_map
+        self.deployed_bytecode = deployed_bytecode
+        self.deployed_source_map = deployed_source_map
+        self.sources = sources
+        self.source_list = source_list
+        self.solc_version = solc_version
+        self.analysis_mode = analysis_mode
 
     def validate(self):
         valid = True

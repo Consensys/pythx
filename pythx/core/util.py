@@ -20,5 +20,4 @@ def dict_delete_none_fields(d: Dict):
             del d[k]
         elif isinstance(v, dict):
             dict_delete_none_fields(v)
-
     return d
