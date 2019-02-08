@@ -4,3 +4,11 @@ class PythxBaseException(Exception):
 
 class ResponseDecodeError(PythxBaseException):
     pass
+
+
+class RequestDecodeError(PythxBaseException):
+    pass
+
+
+class RequestValidationError(PythxBaseException):
+    pass
