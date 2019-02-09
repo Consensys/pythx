@@ -6,7 +6,7 @@ import pytest
 
 ACCESS_TOKEN = "my_fancy_access_token"
 REFRESH_TOKEN = "my_fancy_refresh_token"
-AUTH_LOGIN = {"accessToken": ACCESS_TOKEN, "refreshToken": REFRESH_TOKEN}
+AUTH_LOGIN = {"access": ACCESS_TOKEN, "refresh": REFRESH_TOKEN}
 AUTH_LOGIN_RESPONSE = AuthLoginResponse(
     access_token=ACCESS_TOKEN, refresh_token=REFRESH_TOKEN
 )

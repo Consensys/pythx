@@ -6,7 +6,7 @@ from pythx.core.response.analysis import Analysis
 from pythx.core.response.issue import Issue, SourceFormat, SourceType
 
 DETECTED_ISSUES_KEYS = ("issues", "sourceType", "sourceFormat", "sourceList", "meta")
-AUTH_LOGIN_KEYS = ("accessToken", "refreshToken")
+AUTH_LOGIN_KEYS = ("access", "refresh")
 
 
 class AnalysisListResponse:
@@ -144,13 +144,13 @@ class AuthLoginResponse:
             raise ResponseDecodeError(
                 "Not all required keys {} found in data {}".format(AUTH_LOGIN_KEYS, d)
             )
-        return cls(access_token=d["accessToken"], refresh_token=d["refreshToken"])
+        return cls(access_token=d["access"], refresh_token=d["refresh"])
 
     def to_json(self):
         return json.dumps(self.to_dict())
 
     def to_dict(self):
-        return {"accessToken": self.access_token, "refreshToken": self.refresh_token}
+        return {"access": self.access_token, "refresh": self.refresh_token}
 
 
 class AuthLogoutResponse:
