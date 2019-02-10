@@ -45,6 +45,9 @@ class AnalysisListRequest:
 
         return req
 
+    def payload(self):
+        return self.to_dict()
+
     def to_json(self):
         return json.dumps(self.to_dict())
 
@@ -120,6 +123,9 @@ class AnalysisSubmissionRequest:
             analysis_mode=d.get("analysisMode"),
         )
 
+    def payload(self):
+        return {"data": self.to_dict()}
+
     def to_json(self):
         return json.dumps(self.to_dict())
 
@@ -154,6 +160,9 @@ class AnalysisStatusRequest:
         if uuid is None:
             raise RequestDecodeError("Missing uuid field in data {}".format(d))
         return cls(uuid=uuid)
+
+    def payload(self):
+        return {}
 
     def to_json(self):
         return json.dumps(self.to_dict())
@@ -191,6 +200,9 @@ class AuthLoginRequest:
             eth_address=d["ethAddress"], password=d["password"], user_id=d["userId"]
         )
 
+    def payload(self):
+        return self.to_dict()
+
     def to_json(self):
         return json.dumps(self.to_dict())
 
@@ -220,6 +232,9 @@ class AuthRefreshRequest:
             )
         return cls(access_token=d["access"], refresh_token=d["refresh"])
 
+    def payload(self):
+        return self.to_dict()
+
     def to_json(self):
         return json.dumps(self.to_dict())
 
@@ -241,6 +256,9 @@ class AuthLogoutRequest:
         if "global" not in d:
             raise RequestDecodeError("Required key 'global' not in data {}".format(d))
         return cls(global_=d["global"])
+
+    def payload(self):
+        return {}
 
     def to_json(self):
         return json.dumps(self.to_dict())
