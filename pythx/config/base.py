@@ -34,3 +34,8 @@ class PythXConfig(dict):
                 "version": ("GET", "/version"),
             },
         }
+
+    def validate(self):
+        for key, value in self["endpoints"].items():
+            if key != "base" and type(value) not in (dict, tuple):
+                raise TypeError("Config pair ({},{})) is not of type dict or tuple")
