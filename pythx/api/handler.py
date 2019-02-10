@@ -33,6 +33,11 @@ class APIHandler:
             d = d[key]
         return urllib.parse.urljoin(base, d)
 
+    @staticmethod
+    def parse_response(resp: str, model):
+        return model.from_json(resp)
+
+
     def assemble_analysis_list_request(
         self, req: reqmodels.AnalysisListRequest
     ) -> Dict:
@@ -46,13 +51,6 @@ class APIHandler:
             "url": url,
         }
         return self.execute_request_middlewares(base_request)
-
-    def parse_analysis_list_response(
-        self, resp: str
-    ) -> respmodels.AnalysisListResponse:
-        # model from JSON
-        # execute middlewares process_response()
-        pass
 
     def assemble_analysis_submission_request(
         self, req: reqmodels.AnalysisSubmissionRequest
@@ -68,13 +66,6 @@ class APIHandler:
         }
         return self.execute_request_middlewares(base_request)
 
-    def parse_analysis_submission_response(
-        self, resp: str
-    ) -> respmodels.AnalysisSubmissionResponse:
-        # model from JSON
-        # execute middlewares process_response()
-        pass
-
     def assemble_analysis_status_request(
         self, req: reqmodels.AnalysisStatusRequest
     ) -> Dict:
@@ -88,13 +79,6 @@ class APIHandler:
             "url": url.format(req.uuid),
         }
         return self.execute_request_middlewares(base_request)
-
-    def parse_analysis_status_response(
-        self, resp: str
-    ) -> respmodels.AnalysisStatusResponse:
-        # model from JSON
-        # execute middlewares process_response()
-        pass
 
     def assemble_analysis_issues_request(
         self, req: reqmodels.DetectedIssuesRequest
@@ -110,13 +94,6 @@ class APIHandler:
         }
         return self.execute_request_middlewares(base_request)
 
-    def parse_analysis_issues_response(
-        self, resp: str
-    ) -> respmodels.DetectedIssuesResponse:
-        # model from JSON
-        # execute middlewares process_response()
-        pass
-
     def assemble_auth_login_request(self, req: reqmodels.AuthLoginRequest) -> Dict:
         # model to dict
         # execute middlewares process_request()
@@ -128,11 +105,6 @@ class APIHandler:
             "url": url,
         }
         return self.execute_request_middlewares(base_request)
-
-    def parse_auth_login_response(self, resp: str) -> respmodels.AuthLoginResponse:
-        # model from JSON
-        # execute middlewares process_response()
-        pass
 
     def assemble_auth_logout_request(self, req: reqmodels.AuthLogoutRequest) -> Dict:
         # model to dict
@@ -146,11 +118,6 @@ class APIHandler:
         }
         return self.execute_request_middlewares(base_request)
 
-    def parse_auth_logout_response(self, resp: str) -> respmodels.AuthLogoutResponse:
-        # model from JSON
-        # execute middlewares process_response()
-        pass
-
     def assemble_auth_refresh_request(self, req: reqmodels.AuthRefreshRequest) -> Dict:
         # model to dict
         # execute middlewares process_request()
@@ -162,8 +129,3 @@ class APIHandler:
             "url": url,
         }
         return self.execute_request_middlewares(base_request)
-
-    def parse_auth_refresh_response(self, resp: str) -> respmodels.AuthRefreshResponse:
-        # model from JSON
-        # execute middlewares process_response()
-        pass
