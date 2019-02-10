@@ -6,4 +6,5 @@ __version__ = "0.1.0"
 
 
 from pythx.config.base import PythXConfig
+
 config = PythXConfig()
