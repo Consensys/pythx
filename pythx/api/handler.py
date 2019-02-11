@@ -1,5 +1,5 @@
-from typing import Dict, List
 import urllib.parse
+from typing import Dict, List
 
 from pythx import config
 from pythx.core.request import models as reqmodels

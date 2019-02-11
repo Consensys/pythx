@@ -13,8 +13,11 @@ def test_base_class():
     assert isinstance(config, dict)
 
 
-def test_endpoints():
-    assert config.get("endpoints") is not None
+def test_endpoints_keys():
+    endpoints = config.get("endpoints")
+    assert endpoints is not None
+    assert endpoints.get("staging") is not None
+    assert endpoints.get("production") is not None
 
 
 def test_add_remove_key():
