@@ -22,10 +22,3 @@ def test_add_remove_key():
     assert config.get(TEST_KEY) == TEST_VALUE
     del config[TEST_KEY]
     assert config.get(TEST_KEY) is None
-
-
-def test_validate():
-    config.validate()
-    config["endpoints"]["foo"] = "bar"  # not dict or tuple
-    with pytest.raises(TypeError):
-        config.validate()

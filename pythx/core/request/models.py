@@ -15,9 +15,15 @@ AUTH_REFRESH_KEYS = ("access", "refresh")
 
 class AnalysisListRequest:
     def __init__(self, offset: int, date_from: datetime, date_to: datetime):
+        self.endpoint = "/analyses"
+        self.method = "GET"
+
         self.offset = offset
         self.date_from = date_from
         self.date_to = date_to
+
+    def payload(self):
+        return self.to_dict()
 
     def validate(self):
         return (self.date_from <= self.date_to) and self.offset >= 0
@@ -45,9 +51,6 @@ class AnalysisListRequest:
 
         return req
 
-    def payload(self):
-        return self.to_dict()
-
     def to_json(self):
         return json.dumps(self.to_dict())
 
@@ -72,6 +75,9 @@ class AnalysisSubmissionRequest:
         solc_version: str = None,
         analysis_mode: str = "quick",
     ):
+        self.endpoint = "/analyses"
+        self.method = "POST"
+
         self.contract_name = contract_name
         self.bytecode = bytecode
         self.source_map = source_map
@@ -81,6 +87,9 @@ class AnalysisSubmissionRequest:
         self.source_list = source_list
         self.solc_version = solc_version
         self.analysis_mode = analysis_mode
+
+    def payload(self):
+        return {"data": self.to_dict()}
 
     def validate(self):
         valid = True
@@ -123,9 +132,6 @@ class AnalysisSubmissionRequest:
             analysis_mode=d.get("analysisMode"),
         )
 
-    def payload(self):
-        return {"data": self.to_dict()}
-
     def to_json(self):
         return json.dumps(self.to_dict())
 
@@ -147,7 +153,13 @@ class AnalysisSubmissionRequest:
 
 class AnalysisStatusRequest:
     def __init__(self, uuid: str):
+        self.endpoint = "/analyses/{}".format(uuid)
+        self.method = "GET"
+
         self.uuid = uuid
+
+    def payload(self):
+        return {}
 
     @classmethod
     def from_json(cls, json_str: str):
@@ -161,9 +173,6 @@ class AnalysisStatusRequest:
             raise RequestDecodeError("Missing uuid field in data {}".format(d))
         return cls(uuid=uuid)
 
-    def payload(self):
-        return {}
-
     def to_json(self):
         return json.dumps(self.to_dict())
 
@@ -172,18 +181,23 @@ class AnalysisStatusRequest:
 
 
 class DetectedIssuesRequest(AnalysisStatusRequest):
-    pass
+    def __init__(self, uuid: str):
+        super().__init__(uuid)
+        self.endpoint = "/analyses/{}/issues".format(uuid)
+        self.method = "GET"
 
 
 class AuthLoginRequest:
     def __init__(self, eth_address: str, password: str, user_id: str):
+        self.endpoint = "/auth/login"
+        self.method = "POST"
+
         self.eth_address = eth_address
         self.password = password
         self.user_id = user_id
 
-    def validate(self):
-        # TODO: Validate password format
-        pass
+    def payload(self):
+        return self.to_dict()
 
     @classmethod
     def from_json(cls, json_str: str):
@@ -200,9 +214,6 @@ class AuthLoginRequest:
             eth_address=d["ethAddress"], password=d["password"], user_id=d["userId"]
         )
 
-    def payload(self):
-        return self.to_dict()
-
     def to_json(self):
         return json.dumps(self.to_dict())
 
@@ -216,8 +227,14 @@ class AuthLoginRequest:
 
 class AuthRefreshRequest:
     def __init__(self, access_token: str, refresh_token: str):
+        self.endpoint = "/auth/refresh"
+        self.method = "POST"
+
         self.access_token = access_token
         self.refresh_token = refresh_token
+
+    def payload(self):
+        return self.to_dict()
 
     @classmethod
     def from_json(cls, json_str: str):
@@ -232,9 +249,6 @@ class AuthRefreshRequest:
             )
         return cls(access_token=d["access"], refresh_token=d["refresh"])
 
-    def payload(self):
-        return self.to_dict()
-
     def to_json(self):
         return json.dumps(self.to_dict())
 
@@ -244,7 +258,12 @@ class AuthRefreshRequest:
 
 class AuthLogoutRequest:
     def __init__(self, global_: bool):
+        self.endpoint = "/auth/logout"
+        self.method = "POST"
         self.global_ = global_
+
+    def payload(self):
+        return {}
 
     @classmethod
     def from_json(cls, json_str: str):
@@ -256,9 +275,6 @@ class AuthLogoutRequest:
         if "global" not in d:
             raise RequestDecodeError("Required key 'global' not in data {}".format(d))
         return cls(global_=d["global"])
-
-    def payload(self):
-        return {}
 
     def to_json(self):
         return json.dumps(self.to_dict())

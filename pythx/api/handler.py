@@ -12,7 +12,6 @@ class APIHandler:
         middlewares = middlewares if middlewares is not None else []
         self.middlewares = middlewares
         self.mode = "staging" if staging else "production"
-        self.endpoint_conf = config["endpoints"][self.mode]
 
     @staticmethod
     def send_request(request_data: Dict):
@@ -26,104 +25,14 @@ class APIHandler:
             req = mw.process_request(req)
         return req
 
-    def get_full_endpoint_url(self, keys: List[str]) -> str:
-        d = self.endpoint_conf
-        base = d["base"]
-        for key in keys:
-            d = d[key]
-        return urllib.parse.urljoin(base, d)
-
     @staticmethod
     def parse_response(resp: str, model):
         return model.from_json(resp)
 
-
-    def assemble_analysis_list_request(
-        self, req: reqmodels.AnalysisListRequest
-    ) -> Dict:
-        # model to dict
-        # execute middlewares process_request()
-        url = self.get_full_endpoint_url(["analysis", "list"])
+    def assemble_request(self, req):
+        url = urllib.parse.urljoin(config["endpoints"][self.mode], req.endpoint)
         base_request = {
-            "method": "get",
-            "payload": req.payload(),
-            "headers": {},
-            "url": url,
-        }
-        return self.execute_request_middlewares(base_request)
-
-    def assemble_analysis_submission_request(
-        self, req: reqmodels.AnalysisSubmissionRequest
-    ) -> Dict:
-        # model to dict
-        # execute middlewares process_request()
-        url = self.get_full_endpoint_url(["analysis", "submission"])
-        base_request = {
-            "method": "post",
-            "payload": req.payload(),
-            "headers": {},
-            "url": url,
-        }
-        return self.execute_request_middlewares(base_request)
-
-    def assemble_analysis_status_request(
-        self, req: reqmodels.AnalysisStatusRequest
-    ) -> Dict:
-        # model to dict
-        # execute middlewares process_request()
-        url = self.get_full_endpoint_url(["analysis", "status"])
-        base_request = {
-            "method": "get",
-            "payload": req.payload(),
-            "headers": {},
-            "url": url.format(req.uuid),
-        }
-        return self.execute_request_middlewares(base_request)
-
-    def assemble_analysis_issues_request(
-        self, req: reqmodels.DetectedIssuesRequest
-    ) -> Dict:
-        # model to dict
-        # execute middlewares process_request()
-        url = self.get_full_endpoint_url(["analysis", "issues"])
-        base_request = {
-            "method": "get",
-            "payload": req.payload(),
-            "headers": {},
-            "url": url.format(req.uuid),
-        }
-        return self.execute_request_middlewares(base_request)
-
-    def assemble_auth_login_request(self, req: reqmodels.AuthLoginRequest) -> Dict:
-        # model to dict
-        # execute middlewares process_request()
-        url = self.get_full_endpoint_url(["auth", "login"])
-        base_request = {
-            "method": "post",
-            "payload": req.payload(),
-            "headers": {},
-            "url": url,
-        }
-        return self.execute_request_middlewares(base_request)
-
-    def assemble_auth_logout_request(self, req: reqmodels.AuthLogoutRequest) -> Dict:
-        # model to dict
-        # execute middlewares process_request()
-        url = self.get_full_endpoint_url(["auth", "logout"])
-        base_request = {
-            "method": "post",
-            "payload": req.payload(),
-            "headers": {},
-            "url": url,
-        }
-        return self.execute_request_middlewares(base_request)
-
-    def assemble_auth_refresh_request(self, req: reqmodels.AuthRefreshRequest) -> Dict:
-        # model to dict
-        # execute middlewares process_request()
-        url = self.get_full_endpoint_url(["analysis", "status"])
-        base_request = {
-            "method": "post",
+            "method": req.method,
             "payload": req.payload(),
             "headers": {},
             "url": url,
