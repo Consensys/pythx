@@ -15,12 +15,19 @@ AUTH_REFRESH_KEYS = ("access", "refresh")
 
 class AnalysisListRequest:
     def __init__(self, offset: int, date_from: datetime, date_to: datetime):
-        self.endpoint = "/analyses"
-        self.method = "GET"
-
         self.offset = offset
         self.date_from = date_from
         self.date_to = date_to
+
+    @property
+    @staticmethod
+    def endpoint():
+        return "/analyses"
+
+    @property
+    @staticmethod
+    def method():
+        return "GET"
 
     def payload(self):
         return self.to_dict()
@@ -75,9 +82,6 @@ class AnalysisSubmissionRequest:
         solc_version: str = None,
         analysis_mode: str = "quick",
     ):
-        self.endpoint = "/analyses"
-        self.method = "POST"
-
         self.contract_name = contract_name
         self.bytecode = bytecode
         self.source_map = source_map
@@ -87,6 +91,16 @@ class AnalysisSubmissionRequest:
         self.source_list = source_list
         self.solc_version = solc_version
         self.analysis_mode = analysis_mode
+
+    @property
+    @staticmethod
+    def endpoint():
+        return "/analyses"
+
+    @property
+    @staticmethod
+    def method():
+        return "POST"
 
     def payload(self):
         return {"data": self.to_dict()}
@@ -153,10 +167,16 @@ class AnalysisSubmissionRequest:
 
 class AnalysisStatusRequest:
     def __init__(self, uuid: str):
-        self.endpoint = "/analyses/{}".format(uuid)
-        self.method = "GET"
-
         self.uuid = uuid
+
+    @property
+    @staticmethod
+    def method():
+        return "GET"
+
+    @property
+    def endpoint(self):
+        return "/analyses/{}".format(self.uuid)
 
     def payload(self):
         return {}
@@ -183,18 +203,32 @@ class AnalysisStatusRequest:
 class DetectedIssuesRequest(AnalysisStatusRequest):
     def __init__(self, uuid: str):
         super().__init__(uuid)
-        self.endpoint = "/analyses/{}/issues".format(uuid)
-        self.method = "GET"
+
+    @property
+    def endpoint(self):
+        return "/analyses/{}/issues".format(self.uuid)
+
+    @property
+    @staticmethod
+    def method():
+        return "GET"
 
 
 class AuthLoginRequest:
     def __init__(self, eth_address: str, password: str, user_id: str):
-        self.endpoint = "/auth/login"
-        self.method = "POST"
-
         self.eth_address = eth_address
         self.password = password
         self.user_id = user_id
+
+    @property
+    @staticmethod
+    def endpoint():
+        return "/auth/login"
+
+    @property
+    @staticmethod
+    def method():
+        return "POST"
 
     def payload(self):
         return self.to_dict()
@@ -227,11 +261,18 @@ class AuthLoginRequest:
 
 class AuthRefreshRequest:
     def __init__(self, access_token: str, refresh_token: str):
-        self.endpoint = "/auth/refresh"
-        self.method = "POST"
-
         self.access_token = access_token
         self.refresh_token = refresh_token
+
+    @property
+    @staticmethod
+    def endpoint():
+        return "/auth/refresh"
+
+    @property
+    @staticmethod
+    def method():
+        return "POST"
 
     def payload(self):
         return self.to_dict()
@@ -258,9 +299,17 @@ class AuthRefreshRequest:
 
 class AuthLogoutRequest:
     def __init__(self, global_: bool):
-        self.endpoint = "/auth/logout"
-        self.method = "POST"
         self.global_ = global_
+
+    @property
+    @staticmethod
+    def endpoint():
+        return "/auth/logout"
+
+    @property
+    @staticmethod
+    def method():
+        return "POST"
 
     def payload(self):
         return {}
