@@ -1,30 +1,45 @@
+from datetime import datetime
+from typing import Dict, List
+
+from pythx import config
 from pythx.api.handler import APIHandler
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
 
-from datetime import datetime
-from typing import Dict, List
-
 
 class Client:
-    def __init__(
-        self,
-        eth_address: str,
-        password: str,
-        handler: APIHandler = None,
-        access_token: str = None,
-        refresh_token: str = None,
-    ):
+    def __init__(self, eth_address: str, password: str, handler: APIHandler = None):
         self.eth_address = eth_address
         self.password = password
         self.handler = handler or APIHandler()
-        self.access_token = access_token
-        self.refresh_token = refresh_token
 
-    def _assemble_send_parse(self, req_obj, resp_model):
+        self.access_token = None
+        self.refresh_token = None
+        self.last_auth_ts = None
+
+        self.login()
+
+    def _assemble_send_parse(self, req_obj, resp_model, authentication=True):
+        if authentication:
+            self._assert_authenticated()
         req_dict = self.handler.assemble_request(req_obj)
         resp = self.handler.send_request(req_dict)
         return self.handler.parse_response(resp, resp_model)
+
+    def _assert_authenticated(self):
+        now = datetime.now()
+        access_expiration = self.last_auth_ts + config["timeouts"]["access"]
+        refresh_expiration = self.last_auth_ts + config["timeouts"]["refresh"]
+
+        if now < access_expiration:
+            # auth token still valid - continue
+            return
+        elif access_expiration < now < refresh_expiration:
+            # access token expired, but refresh token hasn't - use it to get new access token
+            self.refresh()
+        else:
+            # refresh token has also expired - let's login again
+            self.login()
 
     def login(self):
         req = reqmodels.AuthLoginRequest(
@@ -33,6 +48,7 @@ class Client:
         resp_model = self._assemble_send_parse(req, respmodels.AuthLoginResponse)
         self.access_token = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
+        self.last_auth_ts = datetime.now()
         return resp_model
 
     def logout(self):
