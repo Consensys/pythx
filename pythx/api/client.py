@@ -2,10 +2,17 @@ from pythx.api.handler import APIHandler
 
 
 class Client:
-    def __init__(self, eth_address: str, password: str, handler: APIHandler = None, access_token: str = None, refresh_token: str = None):
+    def __init__(
+        self,
+        eth_address: str,
+        password: str,
+        handler: APIHandler = None,
+        access_token: str = None,
+        refresh_token: str = None,
+    ):
         self.eth_address = eth_address
         self.password = password
-        self.handler = handler
+        self.handler = handler or APIHandler()
         self.access_token = access_token
         self.refresh_token = refresh_token
 

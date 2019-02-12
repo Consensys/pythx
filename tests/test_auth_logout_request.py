@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from pythx.core.exceptions import RequestDecodeError
-from pythx.core.request.models import AuthLogoutRequest
+from pythx.models.exceptions import RequestDecodeError
+from pythx.models.request import AuthLogoutRequest
 
 GLOBAL = True
 

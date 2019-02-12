@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from pythx.core.exceptions import ResponseDecodeError
-from pythx.core.response.models import AuthLoginResponse
+from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.response import AuthLoginResponse
 
 ACCESS_TOKEN = "my_fancy_access_token"
 REFRESH_TOKEN = "my_fancy_refresh_token"

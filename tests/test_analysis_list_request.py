@@ -3,8 +3,8 @@ import json
 import dateutil.parser
 import pytest
 
-from pythx.core.exceptions import RequestDecodeError
-from pythx.core.request.models import AnalysisListRequest
+from pythx.models.exceptions import RequestDecodeError
+from pythx.models.request import AnalysisListRequest
 
 OFFSET = 0
 DATE_FROM = "2019-02-07T00:40:49.058158"

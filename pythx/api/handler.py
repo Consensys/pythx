@@ -1,11 +1,12 @@
-import requests
 import urllib.parse
 from typing import Dict, List
 
+import requests
+
 from pythx import config
-from pythx.core.request import models as reqmodels
-from pythx.core.response import models as respmodels
 from pythx.middleware.base import BaseMiddleware
+from pythx.models import request as reqmodels
+from pythx.models import response as respmodels
 
 
 class APIHandler:

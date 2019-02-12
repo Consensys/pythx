@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from pythx.core.exceptions import RequestDecodeError
-from pythx.core.request.models import AnalysisStatusRequest
+from pythx.models.exceptions import RequestDecodeError
+from pythx.models.request import AnalysisStatusRequest
 
 UUID = "70c06039-b5d9-4556-85cb-67633bef5b99"
 STATUS = {"uuid": UUID}

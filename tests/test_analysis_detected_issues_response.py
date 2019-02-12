@@ -2,15 +2,15 @@ import json
 
 import pytest
 
-from pythx.core.exceptions import ResponseDecodeError
-from pythx.core.response.issue import (
+from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.response import (
+    DetectedIssuesResponse,
     Issue,
     Severity,
     SourceFormat,
     SourceLocation,
     SourceType,
 )
-from pythx.core.response.models import DetectedIssuesResponse
 
 SWC_ID = "SWC-103"
 SWC_TITLE = "Floating Pragma"

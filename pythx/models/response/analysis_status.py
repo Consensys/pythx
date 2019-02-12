@@ -1,5 +1,4 @@
-from pythx.models.response.analysis_submission import \
-    AnalysisSubmissionResponse
+from pythx.models.response.analysis_submission import AnalysisSubmissionResponse
 
 
 class AnalysisStatusResponse(AnalysisSubmissionResponse):

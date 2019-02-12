@@ -1,4 +1,4 @@
-from pythx.core.request import models as reqmodels
+from pythx.models import request as reqmodels
 
 
 class PythXConfig(dict):

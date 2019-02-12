@@ -1,6 +1,6 @@
 import json
 
-from pythx.core.response.issue import (
+from pythx.models.response import (
     Issue,
     Severity,
     SourceFormat,
