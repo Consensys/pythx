@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Tuple
 
 from inflection import underscore
 
-from pythx.core.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseDecodeError
 
 
 class Severity(str, Enum):

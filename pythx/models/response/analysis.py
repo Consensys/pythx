@@ -4,8 +4,9 @@ from enum import Enum
 import dateutil.parser
 from inflection import underscore
 
-from pythx.core.exceptions import ResponseDecodeError
-from pythx.core.util import deserialize_api_timestamp, serialize_api_timestamp
+from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.util import (deserialize_api_timestamp,
+                               serialize_api_timestamp)
 
 ANALYSIS_KEYS = (
     "uuid",
