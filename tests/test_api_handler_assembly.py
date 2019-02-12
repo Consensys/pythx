@@ -21,6 +21,7 @@ TEST_AUTH_REFRESH = reqmodels.AuthRefreshRequest(access_token="", refresh_token=
 STAGING_HANDLER = APIHandler(staging=True)
 PROD_HANDLER = APIHandler()
 
+
 def assert_request_dict_keys(d):
     assert d.get("method") is not None
     assert d.get("payload") is not None
@@ -39,6 +40,7 @@ def assert_request_dict_content(d, request_obj):
     "request_obj",
     [
         TEST_ANALYSIS_LIST,
+        TEST_DETECTED_ISSUES,
         TEST_ANALYSIS_STATUS,
         TEST_ANALYSIS_SUBMISSION,
         TEST_AUTH_LOGIN,
