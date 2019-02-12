@@ -1,3 +1,4 @@
+import requests
 import urllib.parse
 from typing import Dict, List
 
@@ -15,10 +16,10 @@ class APIHandler:
 
     @staticmethod
     def send_request(request_data: Dict):
-        # get headers
-        # get url
-        # requests.get/post
-        pass
+        method = request_data["method"].upper()
+        headers = request_data["headers"]
+        url = request_data["url"]
+        return requests.request(method=method, url=url, headers=headers)
 
     def execute_request_middlewares(self, req):
         for mw in self.middlewares:
