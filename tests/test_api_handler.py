@@ -1,9 +1,37 @@
-from pythx.api.handler import APIHandler
-from pythx.core.response import models as respmodels
 import json
-import pytest
-import dateutil.parser
+from datetime import datetime
 
+import dateutil.parser
+import pytest
+
+from pythx import config
+from pythx.api.handler import APIHandler
+from pythx.core.request import models as reqmodels
+from pythx.core.response import models as respmodels
+from pythx.middleware.base import BaseMiddleware
+
+
+class TestMiddleware(BaseMiddleware):
+    def process_request(self, req):
+        req["test"] = "test"
+        return req
+
+    def process_response(self, resp):
+        resp.test = "test"
+        return resp
+
+
+TEST_ANALYSIS_LIST = reqmodels.AnalysisListRequest(
+    offset=0, date_from=datetime.now(), date_to=datetime.now()
+)
+TEST_ANALYSIS_SUBMISSION = reqmodels.AnalysisSubmissionRequest(bytecode="0x")
+TEST_ANALYSIS_STATUS = reqmodels.AnalysisStatusRequest(uuid="test")
+TEST_DETECTED_ISSUES = reqmodels.DetectedIssuesRequest(uuid="test")
+TEST_AUTH_LOGIN = reqmodels.AuthLoginRequest(
+    eth_address="0x0", password="lelwat", user_id="test"
+)
+TEST_AUTH_LOGOUT = reqmodels.AuthLogoutRequest()
+TEST_AUTH_REFRESH = reqmodels.AuthRefreshRequest(access_token="", refresh_token="")
 
 TEST_LIST_RESPONSE = [
     {
@@ -82,6 +110,57 @@ TEST_LOGIN_RESPONSE = {"access": "string", "refresh": "string"}
 TEST_REFRESH_RESPONSE = {"access": "string", "refresh": "string"}
 TEST_LOGOUT_RESPONSE = {}
 
+STAGING_HANDLER = APIHandler(middlewares=[TestMiddleware()], staging=True)
+PROD_HANDLER = APIHandler(middlewares=[TestMiddleware()])
+
+
+def assert_request_dict_keys(d):
+    assert d.get("method") is not None
+    assert d.get("payload") is not None
+    assert d.get("headers") is not None
+    assert d.get("url") is not None
+
+
+def assert_request_dict_content(d, request_obj):
+    assert d["method"] == request_obj.method
+    assert d["payload"] == request_obj.payload()
+    assert d["headers"] == {}
+    assert request_obj.endpoint in d["url"]
+    # check middleware request processing
+    assert d["test"] == "test"
+
+
+def assert_response_middleware_hook(model):
+    assert model.test == "test"
+
+
+@pytest.mark.parametrize(
+    "request_obj",
+    [
+        TEST_ANALYSIS_LIST,
+        TEST_DETECTED_ISSUES,
+        TEST_ANALYSIS_STATUS,
+        TEST_ANALYSIS_SUBMISSION,
+        TEST_AUTH_LOGIN,
+        TEST_AUTH_LOGOUT,
+        TEST_AUTH_REFRESH,
+    ],
+)
+def test_request_dicts(request_obj):
+    req_dict = PROD_HANDLER.assemble_request(request_obj)
+    assert_request_dict_keys(req_dict)
+    assert_request_dict_content(req_dict, request_obj)
+    assert req_dict["url"].startswith(config["endpoints"]["production"])
+
+    req_dict = STAGING_HANDLER.assemble_request(request_obj)
+    assert_request_dict_keys(req_dict)
+    assert_request_dict_content(req_dict, request_obj)
+    assert req_dict["url"].startswith(config["endpoints"]["staging"])
+
+
+def test_middleware_default_empty():
+    assert APIHandler().middlewares == []
+
 
 def assert_analysis(analysis, data):
     assert analysis.api_version == data["apiVersion"]
@@ -96,28 +175,28 @@ def assert_analysis(analysis, data):
 
 
 def test_parse_analysis_list_response():
-    handler = APIHandler()
-    model = handler.parse_response(
+    model = PROD_HANDLER.parse_response(
         json.dumps(TEST_LIST_RESPONSE), respmodels.AnalysisListResponse
     )
+    assert_response_middleware_hook(model)
     for i, analysis in enumerate(model.analyses):
         response_obj = TEST_LIST_RESPONSE[i]
         assert_analysis(analysis, response_obj)
 
 
 def test_parse_analysis_status_response():
-    handler = APIHandler()
-    model = handler.parse_response(
+    model = PROD_HANDLER.parse_response(
         json.dumps(TEST_STATUS_RESPONSE), respmodels.AnalysisStatusResponse
     )
+    assert_response_middleware_hook(model)
     assert_analysis(model.analysis, TEST_STATUS_RESPONSE)
 
 
 def test_parse_analysis_submission_response():
-    handler = APIHandler()
-    model = handler.parse_response(
+    model = PROD_HANDLER.parse_response(
         json.dumps(TEST_SUBMISSION_RESPONSE), respmodels.AnalysisSubmissionResponse
     )
+    assert_response_middleware_hook(model)
     assert model.analysis.api_version == TEST_SUBMISSION_RESPONSE["apiVersion"]
     assert model.analysis.maru_version == TEST_SUBMISSION_RESPONSE["maruVersion"]
     assert model.analysis.mythril_version == TEST_SUBMISSION_RESPONSE["mythrilVersion"]
@@ -131,10 +210,10 @@ def test_parse_analysis_submission_response():
 
 
 def test_parse_detected_issues_response():
-    handler = APIHandler()
-    model = handler.parse_response(
+    model = PROD_HANDLER.parse_response(
         json.dumps(TEST_ISSUES_RESPONSE), respmodels.DetectedIssuesResponse
     )
+    assert_response_middleware_hook(model)
     assert model.issues[0].to_dict() == TEST_ISSUES_RESPONSE[0]["issues"][0]
     assert model.source_type == TEST_ISSUES_RESPONSE[0]["sourceType"]
     assert model.source_format == TEST_ISSUES_RESPONSE[0]["sourceFormat"]
@@ -143,27 +222,27 @@ def test_parse_detected_issues_response():
 
 
 def test_parse_login_response():
-    handler = APIHandler()
-    model = handler.parse_response(
+    model = PROD_HANDLER.parse_response(
         json.dumps(TEST_LOGIN_RESPONSE), respmodels.AuthLoginResponse
     )
+    assert_response_middleware_hook(model)
     assert model.access_token == TEST_LOGIN_RESPONSE["access"]
     assert model.refresh_token == TEST_LOGIN_RESPONSE["refresh"]
 
 
 def test_parse_refresh_response():
-    handler = APIHandler()
-    model = handler.parse_response(
+    model = PROD_HANDLER.parse_response(
         json.dumps(TEST_LOGIN_RESPONSE), respmodels.AuthRefreshResponse
     )
+    assert_response_middleware_hook(model)
     assert model.access_token == TEST_LOGIN_RESPONSE["access"]
     assert model.refresh_token == TEST_LOGIN_RESPONSE["refresh"]
 
 
 def test_parse_logout_response():
-    handler = APIHandler()
-    model = handler.parse_response(
+    model = PROD_HANDLER.parse_response(
         (json.dumps(TEST_LOGOUT_RESPONSE)), respmodels.AuthLogoutResponse
     )
+    assert_response_middleware_hook(model)
     assert model.to_dict() == {}
     assert model.to_json() == "{}"

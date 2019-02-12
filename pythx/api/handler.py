@@ -25,9 +25,14 @@ class APIHandler:
             req = mw.process_request(req)
         return req
 
-    @staticmethod
-    def parse_response(resp: str, model):
-        return model.from_json(resp)
+    def execute_response_middlewares(self, resp):
+        for mw in self.middlewares:
+            resp = mw.process_response(resp)
+        return resp
+
+    def parse_response(self, resp: str, model):
+        m = model.from_json(resp)
+        return self.execute_response_middlewares(m)
 
     def assemble_request(self, req):
         url = urllib.parse.urljoin(config["endpoints"][self.mode], req.endpoint)

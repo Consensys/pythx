@@ -1,8 +1,7 @@
-from pythx import config
-from pythx.config.base import PythXConfig
-
 import pytest
 
+from pythx import config
+from pythx.config.base import PythXConfig
 
 TEST_KEY = "test_key"
 TEST_VALUE = ("test_method", "test_value")

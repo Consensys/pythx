@@ -1,8 +1,9 @@
-from pythx.core.request.models import AuthRefreshRequest
-from pythx.core.exceptions import RequestDecodeError
 import json
+
 import pytest
 
+from pythx.core.exceptions import RequestDecodeError
+from pythx.core.request.models import AuthRefreshRequest
 
 ACCESS_TOKEN = "my_fancy_access_token"
 REFRESH_TOKEN = "my_fancy_refresh_token"

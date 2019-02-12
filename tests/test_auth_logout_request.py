@@ -5,7 +5,6 @@ import pytest
 from pythx.core.exceptions import RequestDecodeError
 from pythx.core.request.models import AuthLogoutRequest
 
-
 GLOBAL = True
 
 LOGOUT = {"global": GLOBAL}
