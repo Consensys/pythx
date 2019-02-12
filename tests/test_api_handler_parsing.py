@@ -115,39 +115,55 @@ def test_parse_analysis_status_response():
 
 def test_parse_analysis_submission_response():
     handler = APIHandler()
-    model = handler.parse_response(json.dumps(TEST_SUBMISSION_RESPONSE), respmodels.AnalysisSubmissionResponse)
+    model = handler.parse_response(
+        json.dumps(TEST_SUBMISSION_RESPONSE), respmodels.AnalysisSubmissionResponse
+    )
     assert model.analysis.api_version == TEST_SUBMISSION_RESPONSE["apiVersion"]
     assert model.analysis.maru_version == TEST_SUBMISSION_RESPONSE["maruVersion"]
     assert model.analysis.mythril_version == TEST_SUBMISSION_RESPONSE["mythrilVersion"]
     assert model.analysis.queue_time == TEST_SUBMISSION_RESPONSE["queueTime"]
     assert model.analysis.status.title() == TEST_SUBMISSION_RESPONSE["status"]
-    assert model.analysis.submitted_at == dateutil.parser.parse(TEST_SUBMISSION_RESPONSE["submittedAt"])
+    assert model.analysis.submitted_at == dateutil.parser.parse(
+        TEST_SUBMISSION_RESPONSE["submittedAt"]
+    )
     assert model.analysis.submitted_by == TEST_SUBMISSION_RESPONSE["submittedBy"]
     assert model.analysis.uuid == TEST_SUBMISSION_RESPONSE["uuid"]
 
+
 def test_parse_detected_issues_response():
     handler = APIHandler()
-    model = handler.parse_response(json.dumps(TEST_ISSUES_RESPONSE), respmodels.DetectedIssuesResponse)
+    model = handler.parse_response(
+        json.dumps(TEST_ISSUES_RESPONSE), respmodels.DetectedIssuesResponse
+    )
     assert model.issues[0].to_dict() == TEST_ISSUES_RESPONSE[0]["issues"][0]
     assert model.source_type == TEST_ISSUES_RESPONSE[0]["sourceType"]
     assert model.source_format == TEST_ISSUES_RESPONSE[0]["sourceFormat"]
     assert model.source_list == TEST_ISSUES_RESPONSE[0]["sourceList"]
     assert model.meta_data == TEST_ISSUES_RESPONSE[0]["meta"]
 
+
 def test_parse_login_response():
     handler = APIHandler()
-    model = handler.parse_response(json.dumps(TEST_LOGIN_RESPONSE), respmodels.AuthLoginResponse)
+    model = handler.parse_response(
+        json.dumps(TEST_LOGIN_RESPONSE), respmodels.AuthLoginResponse
+    )
     assert model.access_token == TEST_LOGIN_RESPONSE["access"]
     assert model.refresh_token == TEST_LOGIN_RESPONSE["refresh"]
+
 
 def test_parse_refresh_response():
     handler = APIHandler()
-    model = handler.parse_response(json.dumps(TEST_LOGIN_RESPONSE), respmodels.AuthRefreshResponse)
+    model = handler.parse_response(
+        json.dumps(TEST_LOGIN_RESPONSE), respmodels.AuthRefreshResponse
+    )
     assert model.access_token == TEST_LOGIN_RESPONSE["access"]
     assert model.refresh_token == TEST_LOGIN_RESPONSE["refresh"]
 
+
 def test_parse_logout_response():
     handler = APIHandler()
-    model = handler.parse_response((json.dumps(TEST_LOGOUT_RESPONSE)), respmodels.AuthLogoutResponse)
+    model = handler.parse_response(
+        (json.dumps(TEST_LOGOUT_RESPONSE)), respmodels.AuthLogoutResponse
+    )
     assert model.to_dict() == {}
     assert model.to_json() == "{}"

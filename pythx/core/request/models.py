@@ -20,13 +20,11 @@ class AnalysisListRequest:
         self.date_to = date_to
 
     @property
-    @staticmethod
-    def endpoint():
+    def endpoint(self):
         return "/analyses"
 
     @property
-    @staticmethod
-    def method():
+    def method(self):
         return "GET"
 
     def payload(self):
@@ -93,13 +91,11 @@ class AnalysisSubmissionRequest:
         self.analysis_mode = analysis_mode
 
     @property
-    @staticmethod
-    def endpoint():
+    def endpoint(self):
         return "/analyses"
 
     @property
-    @staticmethod
-    def method():
+    def method(self):
         return "POST"
 
     def payload(self):
@@ -170,8 +166,7 @@ class AnalysisStatusRequest:
         self.uuid = uuid
 
     @property
-    @staticmethod
-    def method():
+    def method(self):
         return "GET"
 
     @property
@@ -209,8 +204,7 @@ class DetectedIssuesRequest(AnalysisStatusRequest):
         return "/analyses/{}/issues".format(self.uuid)
 
     @property
-    @staticmethod
-    def method():
+    def method(self):
         return "GET"
 
 
@@ -221,13 +215,11 @@ class AuthLoginRequest:
         self.user_id = user_id
 
     @property
-    @staticmethod
-    def endpoint():
+    def endpoint(self):
         return "/auth/login"
 
     @property
-    @staticmethod
-    def method():
+    def method(self):
         return "POST"
 
     def payload(self):
@@ -265,13 +257,11 @@ class AuthRefreshRequest:
         self.refresh_token = refresh_token
 
     @property
-    @staticmethod
-    def endpoint():
+    def endpoint(self):
         return "/auth/refresh"
 
     @property
-    @staticmethod
-    def method():
+    def method(self):
         return "POST"
 
     def payload(self):
@@ -298,17 +288,15 @@ class AuthRefreshRequest:
 
 
 class AuthLogoutRequest:
-    def __init__(self, global_: bool):
+    def __init__(self, global_: bool = False):
         self.global_ = global_
 
     @property
-    @staticmethod
-    def endpoint():
+    def endpoint(self):
         return "/auth/logout"
 
     @property
-    @staticmethod
-    def method():
+    def method(self):
         return "POST"
 
     def payload(self):
