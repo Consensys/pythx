@@ -21,7 +21,7 @@ class AnalysisListRequest:
 
     @property
     def endpoint(self):
-        return "/analyses"
+        return "v1/analyses"
 
     @property
     def method(self):
@@ -92,7 +92,7 @@ class AnalysisSubmissionRequest:
 
     @property
     def endpoint(self):
-        return "/analyses"
+        return "v1/analyses"
 
     @property
     def method(self):
@@ -171,7 +171,7 @@ class AnalysisStatusRequest:
 
     @property
     def endpoint(self):
-        return "/analyses/{}".format(self.uuid)
+        return "v1/analyses/{}".format(self.uuid)
 
     def payload(self):
         return {}
@@ -216,7 +216,7 @@ class AuthLoginRequest:
 
     @property
     def endpoint(self):
-        return "/auth/login"
+        return "v1/auth/login"
 
     @property
     def method(self):
@@ -258,7 +258,7 @@ class AuthRefreshRequest:
 
     @property
     def endpoint(self):
-        return "/auth/refresh"
+        return "v1/auth/refresh"
 
     @property
     def method(self):
@@ -293,7 +293,7 @@ class AuthLogoutRequest:
 
     @property
     def endpoint(self):
-        return "/auth/logout"
+        return "v1/auth/logout"
 
     @property
     def method(self):
