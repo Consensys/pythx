@@ -1,14 +1,18 @@
-class PythxBaseException(Exception):
+class PythXBaseException(Exception):
     pass
 
 
-class ResponseDecodeError(PythxBaseException):
+class ResponseDecodeError(PythXBaseException):
     pass
 
 
-class RequestDecodeError(PythxBaseException):
+class RequestDecodeError(PythXBaseException):
     pass
 
 
-class RequestValidationError(PythxBaseException):
+class RequestValidationError(PythXBaseException):
+    pass
+
+
+class PythXAPIError(PythXBaseException):
     pass

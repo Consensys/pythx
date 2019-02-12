@@ -20,10 +20,12 @@ class Client:
         self.login()
 
     def _assemble_send_parse(self, req_obj, resp_model, authentication=True):
+        auth_header = {}
         if authentication:
             self._assert_authenticated()
+            auth_header = {"Authorization": "Bearer {}".format(self.access_token)}
         req_dict = self.handler.assemble_request(req_obj)
-        resp = self.handler.send_request(req_dict)
+        resp = self.handler.send_request(req_dict, auth_header=auth_header)
         return self.handler.parse_response(resp, resp_model)
 
     def _assert_authenticated(self):
@@ -111,7 +113,9 @@ class Client:
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
     def openapi(self):
-        pass
+        # TODO: ¯\_(ツ)_/¯
+        raise NotImplementedError()
 
     def version(self):
-        pass
+        # TODO: ¯\_(ツ)_/¯
+        raise NotImplementedError()
