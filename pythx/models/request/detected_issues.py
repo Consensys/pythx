@@ -15,7 +15,7 @@ class DetectedIssuesRequest(AnalysisStatusRequest):
 
     @property
     def endpoint(self):
-        return "/analyses/{}/issues".format(self.uuid)
+        return "v1/version"
 
     @property
     def method(self):
