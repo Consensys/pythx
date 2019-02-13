@@ -17,7 +17,9 @@ class Client:
         self.refresh_token = None
         self.last_auth_ts = None
 
-    def _assemble_send_parse(self, req_obj, resp_model, assert_authentication=True, auth_header=True):
+    def _assemble_send_parse(
+        self, req_obj, resp_model, assert_authentication=True, auth_header=True
+    ):
         auth_header = {}
         if assert_authentication:
             self._assert_authenticated()
@@ -33,8 +35,12 @@ class Client:
             self.login()
             return
         now = datetime.now()
-        access_expiration = self.last_auth_ts + timedelta(seconds=config["timeouts"]["access"])
-        refresh_expiration = self.last_auth_ts + timedelta(seconds=config["timeouts"]["refresh"])
+        access_expiration = self.last_auth_ts + timedelta(
+            seconds=config["timeouts"]["access"]
+        )
+        refresh_expiration = self.last_auth_ts + timedelta(
+            seconds=config["timeouts"]["refresh"]
+        )
 
         if now < access_expiration:
             # auth token still valid - continue
@@ -50,7 +56,9 @@ class Client:
         req = reqmodels.AuthLoginRequest(
             eth_address=self.eth_address, password=self.password, user_id=""
         )
-        resp_model = self._assemble_send_parse(req, respmodels.AuthLoginResponse, assert_authentication=False)
+        resp_model = self._assemble_send_parse(
+            req, respmodels.AuthLoginResponse, assert_authentication=False
+        )
         self.access_token = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
         self.last_auth_ts = datetime.now()
@@ -64,7 +72,11 @@ class Client:
         req = reqmodels.AuthRefreshRequest(
             access_token=self.access_token, refresh_token=self.refresh_token
         )
-        resp_model = self._assemble_send_parse(req, respmodels.AuthRefreshResponse, assert_authentication=assert_authentication)
+        resp_model = self._assemble_send_parse(
+            req,
+            respmodels.AuthRefreshResponse,
+            assert_authentication=assert_authentication,
+        )
         self.access_token = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
         return resp_model
@@ -117,8 +129,12 @@ class Client:
 
     def openapi(self, mode="yaml"):
         req = reqmodels.OASRequest(mode=mode)
-        return self._assemble_send_parse(req, respmodels.OASResponse, assert_authentication=False)
+        return self._assemble_send_parse(
+            req, respmodels.OASResponse, assert_authentication=False
+        )
 
     def version(self):
         req = reqmodels.VersionRequest()
-        return self._assemble_send_parse(req, respmodels.VersionResponse, assert_authentication=False)
+        return self._assemble_send_parse(
+            req, respmodels.VersionResponse, assert_authentication=False
+        )
