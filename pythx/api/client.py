@@ -112,10 +112,10 @@ class Client:
         req = reqmodels.DetectedIssuesRequest(uuid)
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
-    def openapi(self):
-        # TODO: ¯\_(ツ)_/¯
-        raise NotImplementedError()
+    def openapi(self, mode="yaml"):
+        req = reqmodels.OASRequest(mode=mode)
+        return self._assemble_send_parse(req, respmodels.OASResponse)
 
     def version(self):
-        # TODO: ¯\_(ツ)_/¯
-        raise NotImplementedError()
+        req = reqmodels.VersionRequest()
+        return self._assemble_send_parse(req, respmodels.VersionResponse)

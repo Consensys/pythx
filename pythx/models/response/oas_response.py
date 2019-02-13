@@ -8,10 +8,7 @@ from pythx.models.response.issue import Issue, SourceFormat, SourceType
 
 
 class OASResponse(BaseResponse):
-    def __init__(
-        self,
-        data: str
-    ):
+    def __init__(self, data: str):
         self.data = data
 
     def validate(self):
@@ -20,9 +17,7 @@ class OASResponse(BaseResponse):
     @classmethod
     def from_dict(cls, d: Dict):
         if not "data" in d:
-            raise ResponseDecodeError(
-                "Expected 'data' field but got dict {}".format(d)
-            )
+            raise ResponseDecodeError("Expected 'data' field but got dict {}".format(d))
         return cls(data=d["data"])
 
     def to_dict(self):

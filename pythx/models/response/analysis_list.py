@@ -3,8 +3,8 @@ from typing import Any, Dict, List
 
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.analysis import Analysis
-from pythx.models.response.issue import Issue, SourceFormat, SourceType
 from pythx.models.response.base import BaseResponse
+from pythx.models.response.issue import Issue, SourceFormat, SourceType
 
 
 class AnalysisListResponse(BaseResponse):
