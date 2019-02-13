@@ -1,18 +1,24 @@
 language: python
-python:
-  - "3.8-dev"
-  - "3.7"
-  - "3.6"
-  - "3.5"
-  - "3.4"
 dist: xenial
 sudo: true
 install:
-- pip install -U tox-travis
-- pip install coverage coveralls pytest-cov
+- pip install coverage pytest-cov coveralls
+- pip install -r requirements.txt
 after_success:
 - coveralls
-script: tox
+matrix:
+  include:
+    - name: "3.4"
+      python: 3.4
+    - name: "3.5"
+      python: 3.5
+    - name: "3.6"
+      python: 3.6
+    - name: "3.7"
+      python: 3.7
+    - name: "3.8-dev"
+      python: 3.8-dev
+script: pytest --cov=pythx tests/
 deploy:
   provider: pypi
   distributions: sdist bdist_wheel
