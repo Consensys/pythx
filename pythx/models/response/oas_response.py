@@ -9,6 +9,8 @@ from pythx.models.response.issue import Issue, SourceFormat, SourceType
 
 class OASResponse(BaseResponse):
     def __init__(self, data: str):
+        if not type(data) == str:
+            data = str(data)
         self.data = data
 
     def validate(self):
