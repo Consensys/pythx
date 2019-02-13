@@ -20,5 +20,11 @@ class OASResponse(BaseResponse):
             raise ResponseDecodeError("Expected 'data' field but got dict {}".format(d))
         return cls(data=d["data"])
 
+    @classmethod
+    def from_json(cls, json_str: str):
+        # overwrite from base response because the API doesn't actually deliver
+        # JSON but raw YAML/HTML
+        return cls.from_dict(({"data": json_str}))
+
     def to_dict(self):
         return {"data": self.data}
