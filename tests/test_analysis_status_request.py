@@ -10,9 +10,17 @@ STATUS = {"uuid": UUID}
 STATUS_REQUEST = AnalysisStatusRequest(uuid=UUID)
 
 
+def assert_status_request(req: AnalysisStatusRequest):
+    assert req.uuid == UUID
+    assert req.method == "GET"
+    assert req.headers == {}
+    assert req.parameters == {}
+    assert req.payload == {}
+
+
 def test_analysis_status_request_from_valid_json():
     req = AnalysisStatusRequest.from_json(json.dumps(STATUS))
-    assert req.uuid == UUID
+    assert_status_request(req)
 
 
 def test_analysis_status_request_from_invalid_json():
@@ -22,7 +30,7 @@ def test_analysis_status_request_from_invalid_json():
 
 def test_analysis_status_request_from_valid_dict():
     req = AnalysisStatusRequest.from_dict(STATUS)
-    assert req.uuid == UUID
+    assert_status_request(req)
 
 
 def test_analysis_status_request_from_invalid_dict():

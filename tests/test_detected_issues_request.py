@@ -13,6 +13,10 @@ STATUS_REQUEST = AnalysisStatusRequest(uuid=UUID)
 def test_analysis_status_request_from_valid_json():
     req = AnalysisStatusRequest.from_json(json.dumps(STATUS))
     assert req.uuid == UUID
+    assert req.method == "GET"
+    assert req.headers == {}
+    assert req.parameters == {}
+    assert req.payload == {}
 
 
 def test_analysis_status_request_from_invalid_json():

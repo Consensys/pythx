@@ -13,9 +13,13 @@ AUTH_REFRESH_REQUEST = AuthRefreshRequest(
 )
 
 
-def assert_auth_refresh_request(resp: AuthRefreshRequest):
-    assert resp.access_token == ACCESS_TOKEN
-    assert resp.refresh_token == REFRESH_TOKEN
+def assert_auth_refresh_request(req: AuthRefreshRequest):
+    assert req.access_token == ACCESS_TOKEN
+    assert req.refresh_token == REFRESH_TOKEN
+    assert req.method == "POST"
+    assert req.headers == {}
+    assert req.parameters == {}
+    assert req.payload == AUTH_REFRESH
 
 
 def test_auth_refresh_request_from_valid_json():

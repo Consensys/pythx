@@ -54,6 +54,10 @@ def assert_submission_request(req: AnalysisSubmissionRequest):
     assert req.sources == SOURCES
     assert req.solc_version == SOLC_VERSION
     assert req.analysis_mode == ANALYSIS_MODE
+    assert req.method == "POST"
+    assert req.headers == {}
+    assert req.parameters == {}
+    assert req.payload == {"data": VALID_SUBMISSION}
 
 
 def test_analysis_submission_request_from_valid_json():

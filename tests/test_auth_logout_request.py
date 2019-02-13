@@ -11,9 +11,17 @@ LOGOUT = {"global": GLOBAL}
 LOGOUT_REQUEST = AuthLogoutRequest(global_=GLOBAL)
 
 
+def assert_logout_request(req):
+    assert req.global_ == GLOBAL
+    assert req.method == "POST"
+    assert req.headers == {}
+    assert req.parameters == {}
+    assert req.payload == {}
+
+
 def test_auth_logout_request_from_valid_json():
     req = AuthLogoutRequest.from_json(json.dumps(LOGOUT))
-    assert req.global_ == GLOBAL
+    assert_logout_request(req)
 
 
 def test_auth_logout_request_from_invalid_json():
@@ -23,7 +31,7 @@ def test_auth_logout_request_from_invalid_json():
 
 def test_auth_logout_request_from_valid_dict():
     req = AuthLogoutRequest.from_dict(LOGOUT)
-    assert req.global_ == GLOBAL
+    assert_logout_request(req)
 
 
 def test_auth_logout_request_from_invalid_dict():

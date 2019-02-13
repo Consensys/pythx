@@ -21,6 +21,10 @@ def assert_analysis_list_request(req):
     assert req.offset == OFFSET
     assert req.date_from.isoformat() == DATE_FROM
     assert req.date_to.isoformat() == DATE_TO
+    assert req.payload == {}
+    assert req.method == "GET"
+    assert req.parameters == VALID_LIST
+    assert req.headers == {}
 
 
 def test_analysis_list_request_from_valid_json():

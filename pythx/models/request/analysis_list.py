@@ -35,7 +35,7 @@ class AnalysisListRequest(BaseRequest):
 
     @property
     def payload(self):
-        return self.to_dict()
+        return {}
 
     def validate(self):
         return (self.date_from <= self.date_to) and self.offset >= 0

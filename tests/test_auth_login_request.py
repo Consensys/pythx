@@ -19,6 +19,10 @@ def assert_login_request(req: AuthLoginRequest):
     assert req.eth_address == ETH_ADDRESS
     assert req.password == PASSWORD
     assert req.user_id == USER_ID
+    assert req.method == "POST"
+    assert req.headers == {}
+    assert req.parameters == {}
+    assert req.payload == LOGIN
 
 
 def test_auth_login_request_from_valid_json():
