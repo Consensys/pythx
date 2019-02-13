@@ -41,11 +41,6 @@ class AnalysisListRequest(BaseRequest):
         return (self.date_from <= self.date_to) and self.offset >= 0
 
     @classmethod
-    def from_json(cls, json_str: str):
-        parsed = json.loads(json_str)
-        return cls.from_dict(parsed)
-
-    @classmethod
     def from_dict(cls, d: Dict[str, Any]):
         if not all(k in d for k in ANALYSIS_LIST_KEYS):
             raise RequestDecodeError(
@@ -62,9 +57,6 @@ class AnalysisListRequest(BaseRequest):
             raise RequestValidationError("Request validation failed for {}".format(req))
 
         return req
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
 
     def to_dict(self):
         return {

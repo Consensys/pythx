@@ -18,11 +18,6 @@ class AnalysisListResponse(BaseResponse):
         # TODO: Add validation method to Analysis and call recursively
 
     @classmethod
-    def from_json(cls, json_str: str):
-        analysis_list = json.loads(json_str)
-        return cls.from_dict(analysis_list)
-
-    @classmethod
     def from_dict(cls, d: List[Dict[str, Any]]):
         if type(d) != list:
             raise ResponseDecodeError("Expected JSON list but got {}".format(d))
@@ -30,9 +25,6 @@ class AnalysisListResponse(BaseResponse):
         for analysis in d:
             analyses.append(Analysis.from_dict(analysis))
         return cls(analyses=analyses)  # TODO: Add total
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
 
     def to_dict(self):
         return [a.to_dict() for a in self.analyses]

@@ -54,11 +54,6 @@ class Analysis(BaseResponse):
         pass
 
     @classmethod
-    def from_json(cls, json_data: str):
-        parsed = json.loads(json_data)
-        return cls.from_dict(parsed)
-
-    @classmethod
     def from_dict(cls, d):
         if all(k in d for k in ANALYSIS_KEYS):
             d = {underscore(k): v for k, v in d.items()}
@@ -66,9 +61,6 @@ class Analysis(BaseResponse):
         raise ResponseDecodeError(
             "Not all required keys {} found in data {}".format(ANALYSIS_KEYS, d)
         )
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
 
     def to_dict(self):
         return {

@@ -28,11 +28,6 @@ class DetectedIssuesResponse(BaseResponse):
         pass
 
     @classmethod
-    def from_json(cls, json_str: str):
-        parsed = json.loads(json_str)
-        return cls.from_dict(parsed)
-
-    @classmethod
     def from_dict(cls, d):
         if (
             type(d) != list
@@ -52,9 +47,6 @@ class DetectedIssuesResponse(BaseResponse):
             source_list=d["sourceList"],
             meta_data=d["meta"],
         )
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
 
     def to_dict(self):
         return [

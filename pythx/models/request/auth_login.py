@@ -41,11 +41,6 @@ class AuthLoginRequest(BaseRequest):
         pass
 
     @classmethod
-    def from_json(cls, json_str: str):
-        parsed = json.loads(json_str)
-        return cls.from_dict(parsed)
-
-    @classmethod
     def from_dict(cls, d: Dict[str, str]):
         if not all(k in d for k in AUTH_LOGIN_KEYS):
             raise RequestDecodeError(
@@ -54,9 +49,6 @@ class AuthLoginRequest(BaseRequest):
         return cls(
             eth_address=d["ethAddress"], password=d["password"], user_id=d["userId"]
         )
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
 
     def to_dict(self):
         return {

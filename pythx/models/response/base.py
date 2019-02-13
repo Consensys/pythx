@@ -1,19 +1,19 @@
 import abc
+import json
 
 
 class BaseResponse(abc.ABC):
+    @classmethod
+    def from_json(cls, json_str: str):
+        parsed = json.loads(json_str)
+        return cls.from_dict(parsed)
 
     @abc.abstractclassmethod
-    def from_json(cls):
+    def from_dict(cls, d: dict):
         pass
 
-    @abc.abstractclassmethod
-    def from_dict(cls):
-        pass
-
-    @abc.abstractmethod
     def to_json(self):
-        pass
+        return json.dumps(self.to_dict())
 
     @abc.abstractmethod
     def to_dict(self):

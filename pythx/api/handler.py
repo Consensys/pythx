@@ -26,9 +26,15 @@ class APIHandler:
         url = request_data["url"]
         payload = headers["payload"]
         params = headers["params"]
-        response = requests.request(method=method, url=url, headers=headers, payload=payload, params=params)
+        response = requests.request(
+            method=method, url=url, headers=headers, payload=payload, params=params
+        )
         if response.status_code != 200:
-            raise PythXAPIError("Got unexpected status code {}: {}".format(response.status_code, response.content))
+            raise PythXAPIError(
+                "Got unexpected status code {}: {}".format(
+                    response.status_code, response.content
+                )
+            )
         return response.content
 
     def execute_request_middlewares(self, req):

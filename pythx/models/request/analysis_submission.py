@@ -69,11 +69,6 @@ class AnalysisSubmissionRequest(BaseRequest):
             raise RequestValidationError(msg)
 
     @classmethod
-    def from_json(cls, json_str: str):
-        parsed = json.loads(json_str)
-        return cls.from_dict(parsed)
-
-    @classmethod
     def from_dict(cls, d: Dict):
         if type(d) is not dict or not any(k in d for k in ANALYSIS_SUBMISSION_KEYS):
             raise RequestDecodeError(
@@ -94,9 +89,6 @@ class AnalysisSubmissionRequest(BaseRequest):
             solc_version=d.get("version"),
             analysis_mode=d.get("analysisMode"),
         )
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
 
     def to_dict(self):
         base_dict = {
