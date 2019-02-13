@@ -3,10 +3,14 @@ from typing import Any, Dict, List
 
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.analysis import Analysis
+from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
 
 
-class AuthLogoutResponse:
+class AuthLogoutResponse(BaseResponse):
+    def validate(self):
+        pass
+
     @classmethod
     def from_json(cls, json_str: str):
         parsed = json.loads(json_str)

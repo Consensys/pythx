@@ -5,12 +5,13 @@ from typing import Any, Dict, List
 import dateutil.parser
 
 from pythx.models.exceptions import RequestDecodeError, RequestValidationError
+from pythx.models.request.base import BaseRequest
 from pythx.models.util import dict_delete_none_fields
 
 AUTH_REFRESH_KEYS = ("access", "refresh")
 
 
-class AuthRefreshRequest:
+class AuthRefreshRequest(BaseRequest):
     def __init__(self, access_token: str, refresh_token: str):
         self.access_token = access_token
         self.refresh_token = refresh_token
@@ -34,6 +35,9 @@ class AuthRefreshRequest:
     @property
     def payload(self):
         return self.to_dict()
+
+    def validate(self):
+        pass
 
     @classmethod
     def from_json(cls, json_str: str):

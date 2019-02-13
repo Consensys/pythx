@@ -4,9 +4,10 @@ from typing import Any, Dict, List
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.analysis import Analysis
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
+from pythx.models.response.base import BaseResponse
 
 
-class AnalysisListResponse:
+class AnalysisListResponse(BaseResponse):
     def __init__(self, analyses: List[Analysis], total: int = 0) -> None:
         self.analyses = analyses
         self.total = total  # TODO: Add total once format clear

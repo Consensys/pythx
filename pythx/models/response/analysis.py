@@ -5,6 +5,7 @@ import dateutil.parser
 from inflection import underscore
 
 from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.response.base import BaseResponse
 from pythx.models.util import deserialize_api_timestamp, serialize_api_timestamp
 
 ANALYSIS_KEYS = (
@@ -26,7 +27,7 @@ class AnalysisStatus(str, Enum):
     FINISHED = "Finished"
 
 
-class Analysis:
+class Analysis(BaseResponse):
     def __init__(
         self,
         uuid: str,
@@ -48,6 +49,9 @@ class Analysis:
         self.status = AnalysisStatus[status.upper()]
         self.submitted_at = deserialize_api_timestamp(submitted_at)
         self.submitted_by = submitted_by
+
+    def validate(self):
+        pass
 
     @classmethod
     def from_json(cls, json_data: str):

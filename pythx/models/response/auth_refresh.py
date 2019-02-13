@@ -3,15 +3,19 @@ from typing import Any, Dict, List
 
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.analysis import Analysis
+from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
 
 AUTH_LOGIN_KEYS = ("access", "refresh")
 
 
-class AuthRefreshResponse:
+class AuthRefreshResponse(BaseResponse):
     def __init__(self, access_token: str, refresh_token: str):
         self.access_token = access_token
         self.refresh_token = refresh_token
+
+    def validate(self):
+        pass
 
     @classmethod
     def from_json(cls, json_str: str):

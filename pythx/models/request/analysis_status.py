@@ -5,10 +5,11 @@ from typing import Any, Dict, List
 import dateutil.parser
 
 from pythx.models.exceptions import RequestDecodeError, RequestValidationError
+from pythx.models.request.base import BaseRequest
 from pythx.models.util import dict_delete_none_fields
 
 
-class AnalysisStatusRequest:
+class AnalysisStatusRequest(BaseRequest):
     def __init__(self, uuid: str):
         self.uuid = uuid
 
@@ -31,6 +32,9 @@ class AnalysisStatusRequest:
     @property
     def payload(self):
         return {}
+
+    def validate(self):
+        pass
 
     @classmethod
     def from_json(cls, json_str: str):

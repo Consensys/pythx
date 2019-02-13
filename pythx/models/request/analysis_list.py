@@ -5,12 +5,13 @@ from typing import Any, Dict, List
 import dateutil.parser
 
 from pythx.models.exceptions import RequestDecodeError, RequestValidationError
+from pythx.models.request.base import BaseRequest
 from pythx.models.util import dict_delete_none_fields
 
 ANALYSIS_LIST_KEYS = ("offset", "dateFrom", "dateTo")
 
 
-class AnalysisListRequest:
+class AnalysisListRequest(BaseRequest):
     def __init__(self, offset: int, date_from: datetime, date_to: datetime):
         self.offset = offset
         self.date_from = date_from

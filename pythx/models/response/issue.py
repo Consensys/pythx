@@ -42,6 +42,9 @@ class SourceLocation:
         self.source_format = source_format
         self.source_list = source_list
 
+    def validate(self):
+        pass
+
     @classmethod
     def from_dict(cls, d):
         source_map = d.get("sourceMap")
