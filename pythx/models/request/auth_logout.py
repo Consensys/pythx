@@ -25,6 +25,10 @@ class AuthLogoutRequest:
         return {}
 
     @property
+    def headers(self):
+        return {}
+
+    @property
     def payload(self):
         return {}
 

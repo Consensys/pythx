@@ -46,6 +46,10 @@ class AnalysisSubmissionRequest:
         return {}
 
     @property
+    def headers(self):
+        return {}
+
+    @property
     def payload(self):
         return {"data": self.to_dict()}
 

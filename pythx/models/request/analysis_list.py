@@ -25,6 +25,10 @@ class AnalysisListRequest:
         return "GET"
 
     @property
+    def headers(self):
+        return {}
+
+    @property
     def parameters(self):
         return self.to_dict()
 

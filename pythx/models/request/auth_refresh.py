@@ -28,6 +28,10 @@ class AuthRefreshRequest:
         return {}
 
     @property
+    def headers(self):
+        return {}
+
+    @property
     def payload(self):
         return self.to_dict()
 

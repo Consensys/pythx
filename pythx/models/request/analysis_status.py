@@ -21,6 +21,10 @@ class AnalysisStatusRequest:
         return "v1/analyses/{}".format(self.uuid)
 
     @property
+    def headers(self):
+        return {}
+
+    @property
     def parameters(self):
         return {}
 

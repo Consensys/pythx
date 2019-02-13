@@ -51,7 +51,7 @@ class APIHandler:
             "method": req.method,
             "payload": req.payload,
             "params": req.parameters,
-            "headers": {},
+            "headers": req.headers,
             "url": url,
         }
         return self.execute_request_middlewares(base_request)
