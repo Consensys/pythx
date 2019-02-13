@@ -119,12 +119,14 @@ def assert_request_dict_keys(d):
     assert d.get("payload") is not None
     assert d.get("headers") is not None
     assert d.get("url") is not None
+    assert d.get("params") is not None
 
 
 def assert_request_dict_content(d, request_obj):
     assert d["method"] == request_obj.method
-    assert d["payload"] == request_obj.payload()
+    assert d["payload"] == request_obj.payload
     assert d["headers"] == {}
+    assert d["params"] == request_obj.parameters
     assert request_obj.endpoint in d["url"]
     # check middleware request processing
     assert d["test"] == "test"

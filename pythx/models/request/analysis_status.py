@@ -20,6 +20,11 @@ class AnalysisStatusRequest:
     def endpoint(self):
         return "v1/analyses/{}".format(self.uuid)
 
+    @property
+    def parameters(self):
+        return {}
+
+    @property
     def payload(self):
         return {}
 

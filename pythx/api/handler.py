@@ -24,7 +24,9 @@ class APIHandler:
         headers = request_data["headers"]
         headers.update(auth_header)
         url = request_data["url"]
-        response = requests.request(method=method, url=url, headers=headers)
+        payload = headers["payload"]
+        params = headers["params"]
+        response = requests.request(method=method, url=url, headers=headers, payload=payload, params=params)
         if response.status_code != 200:
             raise PythXAPIError("Got unexpected status code {}: {}".format(response.status_code, response.content))
         return response.content
@@ -47,7 +49,8 @@ class APIHandler:
         url = urllib.parse.urljoin(config["endpoints"][self.mode], req.endpoint)
         base_request = {
             "method": req.method,
-            "payload": req.payload(),
+            "payload": req.payload,
+            "params": req.parameters,
             "headers": {},
             "url": url,
         }

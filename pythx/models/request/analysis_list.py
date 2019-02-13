@@ -24,6 +24,11 @@ class AnalysisListRequest:
     def method(self):
         return "GET"
 
+    @property
+    def parameters(self):
+        return self.to_dict()
+
+    @property
     def payload(self):
         return self.to_dict()
 

@@ -20,3 +20,7 @@ class DetectedIssuesRequest(AnalysisStatusRequest):
     @property
     def method(self):
         return "GET"
+
+    @property
+    def parameters(self):
+        return {}

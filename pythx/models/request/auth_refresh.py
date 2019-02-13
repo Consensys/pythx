@@ -23,6 +23,11 @@ class AuthRefreshRequest:
     def method(self):
         return "POST"
 
+    @property
+    def parameters(self):
+        return {}
+
+    @property
     def payload(self):
         return self.to_dict()
 

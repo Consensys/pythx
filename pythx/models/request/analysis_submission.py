@@ -41,6 +41,11 @@ class AnalysisSubmissionRequest:
     def method(self):
         return "POST"
 
+    @property
+    def parameters(self):
+        return {}
+
+    @property
     def payload(self):
         return {"data": self.to_dict()}
 
