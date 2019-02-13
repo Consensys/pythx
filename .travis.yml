@@ -9,7 +9,7 @@ dist: xenial
 sudo: true
 install:
 - pip install -U tox-travis
-- pip install coverage coveralls
+- pip install coverage coveralls pytest-cov
 after_success:
 - coveralls
 script: tox
