@@ -24,10 +24,10 @@ class APIHandler:
         headers = request_data["headers"]
         headers.update(auth_header)
         url = request_data["url"]
-        payload = headers["payload"]
-        params = headers["params"]
+        payload = request_data["payload"]
+        params = request_data["params"]
         response = requests.request(
-            method=method, url=url, headers=headers, payload=payload, params=params
+            method=method, url=url, headers=headers, data=payload, params=params
         )
         if response.status_code != 200:
             raise PythXAPIError(
