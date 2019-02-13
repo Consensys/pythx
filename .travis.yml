@@ -8,8 +8,6 @@ after_success:
 - coveralls
 matrix:
   include:
-    - name: "3.4"
-      python: 3.4
     - name: "3.5"
       python: 3.5
     - name: "3.6"
