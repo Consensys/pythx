@@ -6,6 +6,10 @@ class ResponseDecodeError(PythXBaseException):
     pass
 
 
+class ResponseValidationError(PythXBaseException):
+    pass
+
+
 class RequestDecodeError(PythXBaseException):
     pass
 

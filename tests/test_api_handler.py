@@ -33,30 +33,33 @@ TEST_AUTH_LOGIN = reqmodels.AuthLoginRequest(
 TEST_AUTH_LOGOUT = reqmodels.AuthLogoutRequest()
 TEST_AUTH_REFRESH = reqmodels.AuthRefreshRequest(access_token="", refresh_token="")
 
-TEST_LIST_RESPONSE = [
-    {
-        "apiVersion": "v1.3.0",
-        "maruVersion": "v0.2.0",
-        "mythrilVersion": "0.19.11",
-        "queueTime": 1,
-        "runTime": 300,
-        "status": "Running",
-        "submittedAt": "2019-01-10T01:29:38.410Z",
-        "submittedBy": "000008544b0aa00010a91111",
-        "uuid": "0680a1e2-b908-4c9a-a15b-636ef9b61486",
-    },
-    {
-        "apiVersion": "v1.3.0",
-        "maruVersion": "v0.2.0",
-        "mythrilVersion": "0.19.11",
-        "queueTime": 0,
-        "runTime": 0,
-        "status": "Finished",
-        "submittedAt": "2019-01-10T01:28:56.551Z",
-        "submittedBy": "000008544b0aa00010a91111",
-        "uuid": "78e3e82b-869d-4df1-8acf-cb1161281b71",
-    },
-]
+TEST_LIST_RESPONSE = {
+    "analyses": [
+        {
+            "apiVersion": "v1.3.0",
+            "maruVersion": "v0.2.0",
+            "mythrilVersion": "0.19.11",
+            "queueTime": 1,
+            "runTime": 300,
+            "status": "Running",
+            "submittedAt": "2019-01-10T01:29:38.410Z",
+            "submittedBy": "000008544b0aa00010a91111",
+            "uuid": "0680a1e2-b908-4c9a-a15b-636ef9b61486",
+        },
+        {
+            "apiVersion": "v1.3.0",
+            "maruVersion": "v0.2.0",
+            "mythrilVersion": "0.19.11",
+            "queueTime": 0,
+            "runTime": 0,
+            "status": "Finished",
+            "submittedAt": "2019-01-10T01:28:56.551Z",
+            "submittedBy": "000008544b0aa00010a91111",
+            "uuid": "78e3e82b-869d-4df1-8acf-cb1161281b71",
+        },
+    ],
+    "total": 2,
+}
 TEST_STATUS_RESPONSE = {
     "apiVersion": "string",
     "mythrilVersion": "string",
@@ -182,7 +185,7 @@ def test_parse_analysis_list_response():
     )
     assert_response_middleware_hook(model)
     for i, analysis in enumerate(model.analyses):
-        response_obj = TEST_LIST_RESPONSE[i]
+        response_obj = TEST_LIST_RESPONSE["analyses"][i]
         assert_analysis(analysis, response_obj)
 
 
