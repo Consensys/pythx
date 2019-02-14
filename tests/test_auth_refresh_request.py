@@ -48,3 +48,7 @@ def test_auth_refresh_request_to_json():
 
 def test_auth_refresh_request_to_dict():
     assert AUTH_REFRESH_REQUEST.to_dict() == AUTH_REFRESH
+
+
+def test_validate():
+    AUTH_REFRESH_REQUEST.validate()

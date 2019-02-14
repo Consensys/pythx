@@ -44,3 +44,7 @@ def test_auth_refresh_response_to_json():
 
 def test_auth_refresh_response_to_dict():
     assert AUTH_REFRESH_RESPONSE.to_dict() == AUTH_REFRESH
+
+
+def test_validate():
+    AUTH_REFRESH_RESPONSE.validate()

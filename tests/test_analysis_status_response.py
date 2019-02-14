@@ -88,3 +88,7 @@ def test_analysis_list_to_dict():
 def test_analysis_list_to_json():
     json_str = VALID_SUBMISSION_RESPONSE.to_json()
     assert json.loads(json_str) == VALID_ANALYSIS_DICT
+
+
+def test_validate():
+    VALID_SUBMISSION_RESPONSE.validate()

@@ -27,9 +27,7 @@ TEST_ANALYSIS_LIST = reqmodels.AnalysisListRequest(
 TEST_ANALYSIS_SUBMISSION = reqmodels.AnalysisSubmissionRequest(bytecode="0x")
 TEST_ANALYSIS_STATUS = reqmodels.AnalysisStatusRequest(uuid="test")
 TEST_DETECTED_ISSUES = reqmodels.DetectedIssuesRequest(uuid="test")
-TEST_AUTH_LOGIN = reqmodels.AuthLoginRequest(
-    eth_address="0x0", password="lelwat"
-)
+TEST_AUTH_LOGIN = reqmodels.AuthLoginRequest(eth_address="0x0", password="lelwat")
 TEST_AUTH_LOGOUT = reqmodels.AuthLogoutRequest()
 TEST_AUTH_REFRESH = reqmodels.AuthRefreshRequest(access_token="", refresh_token="")
 

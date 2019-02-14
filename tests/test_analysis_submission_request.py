@@ -114,3 +114,7 @@ def test_analysis_submission_request_missing_field():
     req = AnalysisSubmissionRequest()
     with pytest.raises(RequestValidationError):
         req.validate()
+
+
+def test_validate():
+    VALID_SUBMISSION_REQUEST.validate()

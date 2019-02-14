@@ -44,3 +44,7 @@ def test_auth_login_response_to_json():
 
 def test_auth_login_response_to_dict():
     assert AUTH_LOGIN_RESPONSE.to_dict() == AUTH_LOGIN
+
+
+def test_validate():
+    AUTH_LOGIN_RESPONSE.validate()

@@ -44,3 +44,7 @@ def test_analysis_status_request_to_json():
 
 def test_analysis_status_request_to_dict():
     assert STATUS_REQUEST.to_dict() == STATUS
+
+
+def test_validate():
+    STATUS_REQUEST.validate()

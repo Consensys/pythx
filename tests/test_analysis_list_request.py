@@ -53,3 +53,7 @@ def test_analysis_list_request_to_json():
 
 def test_analysis_list_request_to_dict():
     assert VALID_LIST_REQUEST.to_dict() == VALID_LIST
+
+
+def test_validate():
+    VALID_LIST_REQUEST.validate()

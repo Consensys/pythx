@@ -115,3 +115,7 @@ def test_detected_issues_to_json():
 def test_detected_issues_to_dict():
     resp = VALID_ISSUES_RESPONSE.to_dict()
     assert VALID_ISSUES == resp
+
+
+def test_validate():
+    VALID_ISSUES_RESPONSE.validate()

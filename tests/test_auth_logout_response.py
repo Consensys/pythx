@@ -12,6 +12,7 @@ def test_auth_login_response_from_valid_json():
     resp = AuthLogoutResponse.from_json("{}")
     assert type(resp) == AuthLogoutResponse
 
+
 def test_auth_login_response_from_invalid_json():
     with pytest.raises(ResponseDecodeError):
         AuthLogoutResponse.from_json('{"foo": "bar"}')
@@ -20,6 +21,7 @@ def test_auth_login_response_from_invalid_json():
 def test_auth_login_response_from_valid_dict():
     resp = AuthLogoutResponse.from_dict({})
     assert type(resp) == AuthLogoutResponse
+
 
 def test_auth_login_response_from_invalid_dict():
     with pytest.raises(ResponseDecodeError):

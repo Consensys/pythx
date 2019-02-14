@@ -136,3 +136,7 @@ def test_analysis_list_to_dict():
 def test_analysis_list_to_json():
     json_str = VALID_LIST_RESPONSE.to_json()
     assert json.loads(json_str) == VALID_LIST
+
+
+def test_validate():
+    VALID_LIST_RESPONSE.validate()

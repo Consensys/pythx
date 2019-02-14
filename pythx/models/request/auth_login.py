@@ -45,12 +45,7 @@ class AuthLoginRequest(BaseRequest):
             raise RequestDecodeError(
                 "Not all required keys {} found in data {}".format(AUTH_LOGIN_KEYS, d)
             )
-        return cls(
-            eth_address=d["ethAddress"], password=d["password"]
-        )
+        return cls(eth_address=d["ethAddress"], password=d["password"])
 
     def to_dict(self):
-        return {
-            "ethAddress": self.eth_address,
-            "password": self.password,
-        }
+        return {"ethAddress": self.eth_address, "password": self.password}

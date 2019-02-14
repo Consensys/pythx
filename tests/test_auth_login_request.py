@@ -9,9 +9,7 @@ ETH_ADDRESS = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d"
 PASSWORD = "supersecure"
 
 LOGIN = {"ethAddress": ETH_ADDRESS, "password": PASSWORD}
-LOGIN_REQUEST = AuthLoginRequest(
-    eth_address=ETH_ADDRESS, password=PASSWORD
-)
+LOGIN_REQUEST = AuthLoginRequest(eth_address=ETH_ADDRESS, password=PASSWORD)
 
 
 def assert_login_request(req: AuthLoginRequest):
@@ -49,3 +47,7 @@ def test_auth_login_request_to_json():
 
 def test_auth_login_request_to_dict():
     assert LOGIN_REQUEST.to_dict() == LOGIN
+
+
+def test_validate():
+    LOGIN_REQUEST.validate()
