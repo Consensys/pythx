@@ -7,18 +7,16 @@ from pythx.models.request import AuthLoginRequest
 
 ETH_ADDRESS = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d"
 PASSWORD = "supersecure"
-USER_ID = "31337"
 
-LOGIN = {"ethAddress": ETH_ADDRESS, "password": PASSWORD, "userId": USER_ID}
+LOGIN = {"ethAddress": ETH_ADDRESS, "password": PASSWORD}
 LOGIN_REQUEST = AuthLoginRequest(
-    eth_address=ETH_ADDRESS, password=PASSWORD, user_id=USER_ID
+    eth_address=ETH_ADDRESS, password=PASSWORD
 )
 
 
 def assert_login_request(req: AuthLoginRequest):
     assert req.eth_address == ETH_ADDRESS
     assert req.password == PASSWORD
-    assert req.user_id == USER_ID
     assert req.method == "POST"
     assert req.headers == {}
     assert req.parameters == {}

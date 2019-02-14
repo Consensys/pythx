@@ -8,14 +8,13 @@ from pythx.models.exceptions import RequestDecodeError, RequestValidationError
 from pythx.models.request.base import BaseRequest
 from pythx.models.util import dict_delete_none_fields
 
-AUTH_LOGIN_KEYS = ("ethAddress", "password", "userId")
+AUTH_LOGIN_KEYS = ("ethAddress", "password")
 
 
 class AuthLoginRequest(BaseRequest):
-    def __init__(self, eth_address: str, password: str, user_id: str):
+    def __init__(self, eth_address: str, password: str):
         self.eth_address = eth_address
         self.password = password
-        self.user_id = user_id
 
     @property
     def endpoint(self):
@@ -47,12 +46,11 @@ class AuthLoginRequest(BaseRequest):
                 "Not all required keys {} found in data {}".format(AUTH_LOGIN_KEYS, d)
             )
         return cls(
-            eth_address=d["ethAddress"], password=d["password"], user_id=d["userId"]
+            eth_address=d["ethAddress"], password=d["password"]
         )
 
     def to_dict(self):
         return {
             "ethAddress": self.eth_address,
             "password": self.password,
-            "userId": self.user_id,
         }
