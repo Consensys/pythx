@@ -26,6 +26,16 @@ QUEUE_TIME = 0
 STATUS = "Queued"
 SUBMITTED_AT = "2019-01-10T01:29:38.410Z"
 SUBMITTED_BY = "000008544b0aa00010a91111"
+ANALYSIS = Analysis(
+    uuid=UUID,
+    api_version=API_VERSION,
+    maru_version=MARU_VERSION,
+    mythril_version=MYTHRIL_VERSION,
+    queue_time=QUEUE_TIME,
+    status=STATUS,
+    submitted_at=SUBMITTED_AT,
+    submitted_by=SUBMITTED_BY,
+)
 
 
 def test_analysis_from_valid_json():
@@ -132,3 +142,7 @@ def test_analysis_from_valid_dict():
 def test_analysis_from_invalid_dict():
     with pytest.raises(ResponseDecodeError):
         Analysis.from_dict({})
+
+
+def test_validate():
+    ANALYSIS.validate()

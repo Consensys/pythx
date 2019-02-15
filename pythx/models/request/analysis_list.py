@@ -53,8 +53,6 @@ class AnalysisListRequest(BaseRequest):
             date_from=dateutil.parser.parse(d["dateFrom"]),
             date_to=dateutil.parser.parse(d["dateTo"]),
         )
-        if not req.validate():
-            raise RequestValidationError("Request validation failed for {}".format(req))
 
         return req
 
