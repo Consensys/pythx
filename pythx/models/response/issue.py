@@ -7,6 +7,9 @@ from inflection import underscore
 from pythx.models.exceptions import ResponseDecodeError
 
 
+SOURCE_LOCATION_KEYS = ("sourceMap", "sourceType", "sourceFormat", "sourceList")
+
+
 class Severity(str, Enum):
     NONE = "None"
     LOW = "Low"
@@ -47,29 +50,16 @@ class SourceLocation:
 
     @classmethod
     def from_dict(cls, d):
-        source_map = d.get("sourceMap")
-        source_type = d.get("sourceType")
-        if source_type is None:
+        if not all(k in d for k in SOURCE_LOCATION_KEYS):
             raise ResponseDecodeError(
-                "sourceType field not found in location object: {}".format(d)
+                "Not all required keys {} found in data {}".format(SOURCE_LOCATION_KEYS, d)
             )
-        else:
-            # to resolve into enum value
-            source_type = SourceType(source_type)
-        source_format = d.get("sourceFormat")
-        if source_format is None:
-            raise ResponseDecodeError(
-                "sourceFormat field not found in location object: {}".format(d)
-            )
-        else:
-            # to resolve into enum value
-            source_format = SourceFormat(source_format)
-        source_list = d.get("sourceList")
+
         return cls(
-            source_map=source_map,
-            source_type=SourceType[source_type],
-            source_format=SourceFormat[source_format],
-            source_list=source_list,
+            source_map=d["sourceMap"],
+            source_type=SourceType(d["sourceType"]),
+            source_format=SourceFormat(d["sourceFormat"]),
+            source_list=d["sourceList"],
         )
 
     def to_dict(self):
