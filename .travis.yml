@@ -3,7 +3,7 @@ dist: xenial
 sudo: true
 install:
 - pip install coverage pytest-cov coveralls
-- pip install -r requirements.txt
+- pip install -r requirements_dev.txt
 after_success:
 - coveralls
 matrix:
