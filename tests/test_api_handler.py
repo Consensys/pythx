@@ -9,6 +9,7 @@ from pythx.api.handler import APIHandler
 from pythx.middleware.base import BaseMiddleware
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
+from pythx.models.exceptions import PythXAPIError
 
 
 class TestMiddleware(BaseMiddleware):
@@ -113,6 +114,8 @@ TEST_LOGOUT_RESPONSE = {}
 
 STAGING_HANDLER = APIHandler(middlewares=[TestMiddleware()], staging=True)
 PROD_HANDLER = APIHandler(middlewares=[TestMiddleware()])
+
+MOCK_API_URL = "mock://test.com/path"
 
 
 def assert_request_dict_keys(d):
@@ -249,3 +252,56 @@ def test_parse_logout_response():
     assert_response_middleware_hook(model)
     assert model.to_dict() == {}
     assert model.to_json() == "{}"
+
+
+def test_send_request_successful(requests_mock):
+    requests_mock.get('mock://test.com/path', text='resp')
+    resp = APIHandler.send_request({
+        "method": "GET",
+        "headers": {},
+        "url": MOCK_API_URL,
+        "payload": {},
+        "params": {}
+    }, auth_header={"Authorization": "Bearer foo"})
+    assert resp == "resp"
+    assert requests_mock.called == 1
+    h = requests_mock.request_history[0]
+    assert h.method == "GET"
+    assert h.url == MOCK_API_URL
+    assert h.headers["Authorization"] == "Bearer foo"
+
+
+def test_send_request_failure(requests_mock):
+    requests_mock.get('mock://test.com/path', text='resp', status_code=400)
+    with pytest.raises(PythXAPIError):
+        APIHandler.send_request({
+            "method": "GET",
+            "headers": {},
+            "url": MOCK_API_URL,
+            "payload": {},
+            "params": {}
+        }, auth_header={"Authorization": "Bearer foo"})
+
+    assert requests_mock.called == 1
+    h = requests_mock.request_history[0]
+    assert h.method == "GET"
+    assert h.url == MOCK_API_URL
+    assert h.headers["Authorization"] == "Bearer foo"
+
+
+def test_send_request_unauthenticated(requests_mock):
+    requests_mock.get('mock://test.com/path', text='resp', status_code=400)
+    with pytest.raises(PythXAPIError):
+        APIHandler.send_request({
+            "method": "GET",
+            "headers": {},
+            "url": MOCK_API_URL,
+            "payload": {},
+            "params": {}
+        })
+
+    assert requests_mock.called == 1
+    h = requests_mock.request_history[0]
+    assert h.method == "GET"
+    assert h.url == MOCK_API_URL
+    assert h.headers.get("Authorization") is None

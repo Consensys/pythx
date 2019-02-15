@@ -35,7 +35,7 @@ class APIHandler:
                     response.status_code, response.content
                 )
             )
-        return response.content
+        return response.text
 
     def execute_request_middlewares(self, req):
         for mw in self.middlewares:
