@@ -1,8 +1,9 @@
 import json
+from copy import copy
 
 import pytest
 
-from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseDecodeError, ResponseValidationError
 from pythx.models.response import AnalysisListResponse
 from pythx.models.response.analysis import Analysis
 from pythx.models.util import serialize_api_timestamp
@@ -138,5 +139,12 @@ def test_analysis_list_to_json():
     assert json.loads(json_str) == VALID_LIST
 
 
-def test_validate():
+def test_valid_validate():
     VALID_LIST_RESPONSE.validate()
+
+
+def test_invalid_total_validate():
+    resp = copy(VALID_LIST_RESPONSE)
+    resp.total = -1
+    with pytest.raises(ResponseValidationError):
+        resp.validate()

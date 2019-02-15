@@ -5,7 +5,6 @@ import pytest
 from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import VersionRequest
 
-
 VERSION_REQUEST = VersionRequest()
 
 

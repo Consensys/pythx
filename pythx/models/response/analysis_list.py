@@ -6,7 +6,6 @@ from pythx.models.response.analysis import Analysis
 from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
 
-
 ANALYSIS_LIST_KEYS = ["analyses", "total"]
 
 

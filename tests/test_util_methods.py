@@ -1,11 +1,13 @@
+from datetime import datetime
+
+import pytest
+from dateutil.tz import tzutc
+
 from pythx.models.util import (
     deserialize_api_timestamp,
-    serialize_api_timestamp,
     dict_delete_none_fields,
+    serialize_api_timestamp,
 )
-from datetime import datetime
-from dateutil.tz import tzutc
-import pytest
 
 
 @pytest.mark.parametrize(

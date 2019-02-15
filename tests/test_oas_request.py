@@ -5,7 +5,6 @@ import pytest
 from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import OASRequest
 
-
 OAS_REQUEST = OASRequest(mode="yaml")
 
 

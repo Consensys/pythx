@@ -5,7 +5,6 @@ import pytest
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response import VersionResponse
 
-
 API_VERSION = "1.0"
 MARU_VERSION = "1.1"
 MYTHRIL_VERSION = "1.2"

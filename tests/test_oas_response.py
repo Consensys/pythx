@@ -5,7 +5,6 @@ import pytest
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response import OASResponse
 
-
 CONTENT = "openapi spec stuff"
 OAS = {"data": CONTENT}
 OAS_RESPONSE = OASResponse(data=CONTENT)
