@@ -19,21 +19,19 @@ SOURCE_TYPE = "raw-bytecode"
 SOURCE_FORMAT = "evm-byzantium-bytecode"
 SOURCE_LIST = "/test/my-super-safe-contract.sol"
 SOURCE_LOCATION = {
-                "sourceMap": SOURCE_MAP,
-                "sourceType": SOURCE_TYPE,
-                "sourceFormat": SOURCE_FORMAT,
-                "sourceList": [SOURCE_LIST],
-            }
+    "sourceMap": SOURCE_MAP,
+    "sourceType": SOURCE_TYPE,
+    "sourceFormat": SOURCE_FORMAT,
+    "sourceList": [SOURCE_LIST],
+}
 VALID_ISSUE = {
-        "swcID": SWC_ID,
-        "swcTitle": SWC_TITLE,
-        "description": {"head": DESCRIPTION_HEAD, "tail": DESCRIPTION_TAIL},
-        "severity": SEVERITY,
-        "locations": [
-            SOURCE_LOCATION
-        ],
-        "extra": {},
-    }
+    "swcID": SWC_ID,
+    "swcTitle": SWC_TITLE,
+    "description": {"head": DESCRIPTION_HEAD, "tail": DESCRIPTION_TAIL},
+    "severity": SEVERITY,
+    "locations": [SOURCE_LOCATION],
+    "extra": {},
+}
 
 
 def assert_issue(issue: Issue):

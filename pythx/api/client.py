@@ -54,7 +54,7 @@ class Client:
 
     def login(self):
         req = reqmodels.AuthLoginRequest(
-            eth_address=self.eth_address, password=self.password, user_id=""
+            eth_address=self.eth_address, password=self.password
         )
         resp_model = self._assemble_send_parse(
             req, respmodels.AuthLoginResponse, assert_authentication=False
@@ -66,7 +66,11 @@ class Client:
 
     def logout(self):
         req = reqmodels.AuthLogoutRequest()
-        return self._assemble_send_parse(req, respmodels.AuthLogoutResponse)
+        resp_model = self._assemble_send_parse(req, respmodels.AuthLogoutResponse)
+        self.access_token = None
+        self.refresh_token = None
+        self.last_auth_ts = None
+        return resp_model
 
     def refresh(self, assert_authentication=True):
         req = reqmodels.AuthRefreshRequest(
@@ -79,6 +83,7 @@ class Client:
         )
         self.access_token = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
+        self.last_auth_ts = datetime.now()
         return resp_model
 
     def analysis_list(self, date_from: datetime, date_to: datetime):
@@ -110,6 +115,7 @@ class Client:
             solc_version=solc_version,
             analysis_mode=analysis_mode,
         )
+        req.validate()
         return self._assemble_send_parse(req, respmodels.AnalysisSubmissionResponse)
 
     def status(self, uuid: str):
@@ -119,8 +125,8 @@ class Client:
     def analysis_ready(self, uuid: str):
         resp = self.status(uuid)
         return (
-            resp.status == respmodels.AnalysisStatus.FINISHED
-            or resp.status == respmodels.AnalysisStatus.ERROR
+            resp.analysis.status == respmodels.AnalysisStatus.FINISHED
+            or resp.analysis.status == respmodels.AnalysisStatus.ERROR
         )
 
     def report(self, uuid: str):

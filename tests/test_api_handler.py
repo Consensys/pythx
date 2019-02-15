@@ -255,14 +255,17 @@ def test_parse_logout_response():
 
 
 def test_send_request_successful(requests_mock):
-    requests_mock.get('mock://test.com/path', text='resp')
-    resp = APIHandler.send_request({
-        "method": "GET",
-        "headers": {},
-        "url": MOCK_API_URL,
-        "payload": {},
-        "params": {}
-    }, auth_header={"Authorization": "Bearer foo"})
+    requests_mock.get("mock://test.com/path", text="resp")
+    resp = APIHandler.send_request(
+        {
+            "method": "GET",
+            "headers": {},
+            "url": MOCK_API_URL,
+            "payload": {},
+            "params": {},
+        },
+        auth_header={"Authorization": "Bearer foo"},
+    )
     assert resp == "resp"
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]
@@ -272,15 +275,18 @@ def test_send_request_successful(requests_mock):
 
 
 def test_send_request_failure(requests_mock):
-    requests_mock.get('mock://test.com/path', text='resp', status_code=400)
+    requests_mock.get("mock://test.com/path", text="resp", status_code=400)
     with pytest.raises(PythXAPIError):
-        APIHandler.send_request({
-            "method": "GET",
-            "headers": {},
-            "url": MOCK_API_URL,
-            "payload": {},
-            "params": {}
-        }, auth_header={"Authorization": "Bearer foo"})
+        APIHandler.send_request(
+            {
+                "method": "GET",
+                "headers": {},
+                "url": MOCK_API_URL,
+                "payload": {},
+                "params": {},
+            },
+            auth_header={"Authorization": "Bearer foo"},
+        )
 
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]
@@ -290,15 +296,17 @@ def test_send_request_failure(requests_mock):
 
 
 def test_send_request_unauthenticated(requests_mock):
-    requests_mock.get('mock://test.com/path', text='resp', status_code=400)
+    requests_mock.get("mock://test.com/path", text="resp", status_code=400)
     with pytest.raises(PythXAPIError):
-        APIHandler.send_request({
-            "method": "GET",
-            "headers": {},
-            "url": MOCK_API_URL,
-            "payload": {},
-            "params": {}
-        })
+        APIHandler.send_request(
+            {
+                "method": "GET",
+                "headers": {},
+                "url": MOCK_API_URL,
+                "payload": {},
+                "params": {},
+            }
+        )
 
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]

@@ -6,22 +6,16 @@ from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response import OASResponse
 
 CONTENT = "openapi spec stuff"
-OAS = {"data": CONTENT}
 OAS_RESPONSE = OASResponse(data=CONTENT)
 
 
 def test_oas_response_from_valid_json():
-    resp = OASResponse.from_json(json.dumps(OAS))
+    resp = OASResponse.from_json(CONTENT)
     assert resp.data == CONTENT
 
 
-def test_oas_response_from_invalid_json():
-    with pytest.raises(ResponseDecodeError):
-        OASResponse.from_json("{}")
-
-
 def test_oas_response_from_valid_dict():
-    resp = OASResponse.from_dict(OAS)
+    resp = OASResponse.from_dict({"data": CONTENT})
     assert resp.data == CONTENT
 
 
@@ -36,11 +30,11 @@ def test_oas_response_invalid_type():
 
 
 def test_oas_response_to_json():
-    assert OAS_RESPONSE.to_json() == json.dumps(OAS)
+    assert OAS_RESPONSE.to_json() == json.dumps({"data": CONTENT})
 
 
 def test_oas_response_to_dict():
-    assert OAS_RESPONSE.to_dict() == OAS
+    assert OAS_RESPONSE.to_dict() == {"data": CONTENT}
 
 
 def test_validate():

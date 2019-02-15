@@ -46,7 +46,7 @@ class Analysis(BaseResponse):
         self.maru_version = maru_version
         self.queue_time = queue_time
         self.run_time = run_time
-        self.status = AnalysisStatus[status.upper()]
+        self.status = AnalysisStatus(status.title())
         self.submitted_at = deserialize_api_timestamp(submitted_at)
         self.submitted_by = submitted_by
 

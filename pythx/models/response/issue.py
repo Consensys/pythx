@@ -52,7 +52,9 @@ class SourceLocation:
     def from_dict(cls, d):
         if not all(k in d for k in SOURCE_LOCATION_KEYS):
             raise ResponseDecodeError(
-                "Not all required keys {} found in data {}".format(SOURCE_LOCATION_KEYS, d)
+                "Not all required keys {} found in data {}".format(
+                    SOURCE_LOCATION_KEYS, d
+                )
             )
 
         return cls(
