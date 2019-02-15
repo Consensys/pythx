@@ -102,9 +102,14 @@ def test_detected_issues_from_dict():
     assert_detected_issues(resp)
 
 
-def test_detected_issues_from_invalid_dict():
+def test_detected_issues_from_invalid_list():
     with pytest.raises(ResponseDecodeError):
         DetectedIssuesResponse.from_dict([])
+
+
+def test_detected_issues_from_invalid_dict():
+    with pytest.raises(ResponseDecodeError):
+        DetectedIssuesResponse.from_dict({})
 
 
 def test_detected_issues_to_json():

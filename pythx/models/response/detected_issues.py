@@ -32,7 +32,7 @@ class DetectedIssuesResponse(BaseResponse):
         if (
             type(d) != list
             or len(d) != 1
-            or all(k not in d[0] for k in DETECTED_ISSUES_KEYS)
+            or not all(k in d[0] for k in DETECTED_ISSUES_KEYS)
         ):
             raise ResponseDecodeError(
                 "Not all required keys {} found in data {}".format(
