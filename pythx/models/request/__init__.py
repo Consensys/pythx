@@ -5,5 +5,5 @@ from pythx.models.request.auth_login import AuthLoginRequest
 from pythx.models.request.auth_logout import AuthLogoutRequest
 from pythx.models.request.auth_refresh import AuthRefreshRequest
 from pythx.models.request.detected_issues import DetectedIssuesRequest
-from pythx.models.request.oas_request import OASRequest
+from pythx.models.request.oas import OASRequest
 from pythx.models.request.version import VersionRequest
