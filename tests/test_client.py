@@ -1,10 +1,11 @@
 import json
 from copy import copy
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 
 import pythx.models.response as respmodels
+from pythx import config
 from pythx.api import APIHandler, Client
 from pythx.models.exceptions import PythXAPIError, RequestValidationError
 from pythx.models.response.analysis import AnalysisStatus
@@ -200,6 +201,32 @@ def test_auto_login():
     assert type(resp) == respmodels.AnalysisListResponse
     assert resp.total == len(API_LIST_RESPONSE["analyses"])
     assert resp.to_dict() == API_LIST_RESPONSE
+
+
+def test_expired_auth_and_refresh_token():
+    LAST_AUTH = datetime(1994, 7, 29)
+    client = get_client([API_LOGIN_RESPONSE, API_LIST_RESPONSE], logged_in=True)
+    client.last_auth_ts = LAST_AUTH  # exired auth and refresh ts
+    resp = client.analysis_list(
+        date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
+    )
+    assert type(resp) == respmodels.AnalysisListResponse
+    assert resp.total == len(API_LIST_RESPONSE["analyses"])
+    assert resp.to_dict() == API_LIST_RESPONSE
+    assert client.last_auth_ts > LAST_AUTH
+
+
+def test_expired_auth_token():
+    LAST_AUTH = datetime.now() - timedelta(seconds=config["timeouts"]["access"] + 2)
+    client = get_client([API_REFRESH_RESPONSE, API_LIST_RESPONSE], logged_in=True)
+    client.last_auth_ts = LAST_AUTH  # exired auth ts
+    resp = client.analysis_list(
+        date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
+    )
+    assert type(resp) == respmodels.AnalysisListResponse
+    assert resp.total == len(API_LIST_RESPONSE["analyses"])
+    assert resp.to_dict() == API_LIST_RESPONSE
+    assert client.last_auth_ts > LAST_AUTH
 
 
 def assert_analysis(analysis):

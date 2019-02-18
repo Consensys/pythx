@@ -33,6 +33,7 @@ class Client:
         if self.last_auth_ts is None:
             # We haven't authenticated yet
             self.login()
+            print("Logging in again")
             return
         now = datetime.now()
         access_expiration = self.last_auth_ts + timedelta(
@@ -41,10 +42,9 @@ class Client:
         refresh_expiration = self.last_auth_ts + timedelta(
             seconds=config["timeouts"]["refresh"]
         )
-
         if now < access_expiration:
             # auth token still valid - continue
-            return
+            pass
         elif access_expiration < now < refresh_expiration:
             # access token expired, but refresh token hasn't - use it to get new access token
             self.refresh(assert_authentication=False)
