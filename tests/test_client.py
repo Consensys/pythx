@@ -17,7 +17,7 @@ class MockAPIHandler(APIHandler):
         self.resp = resp
 
     def send_request(self, *args, **kwargs):
-        return json.dumps(self.resp)
+        return json.dumps(self.resp.pop(0))
 
 
 API_VERSION = "1.0"
@@ -139,7 +139,7 @@ def get_client(resp_data, logged_in=True):
 
 
 def test_login():
-    client = get_client(API_LOGIN_RESPONSE, logged_in=False)
+    client = get_client([API_LOGIN_RESPONSE], logged_in=False)
 
     assert client.access_token is None
     assert client.refresh_token is None
@@ -157,7 +157,7 @@ def test_login():
 
 
 def test_logout():
-    client = get_client(API_LOGOUT_RESPONSE)
+    client = get_client([API_LOGOUT_RESPONSE])
     resp = client.logout()
 
     assert type(resp) == respmodels.AuthLogoutResponse
@@ -167,7 +167,7 @@ def test_logout():
 
 
 def test_refresh():
-    client = get_client(API_REFRESH_RESPONSE)
+    client = get_client([API_REFRESH_RESPONSE])
     resp = client.refresh()
 
     assert type(resp) == respmodels.AuthRefreshResponse
@@ -182,11 +182,21 @@ def test_refresh():
 
 
 def test_analysis_list():
-    client = get_client(API_LIST_RESPONSE)
+    client = get_client([API_LIST_RESPONSE])
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
     )
 
+    assert type(resp) == respmodels.AnalysisListResponse
+    assert resp.total == len(API_LIST_RESPONSE["analyses"])
+    assert resp.to_dict() == API_LIST_RESPONSE
+
+
+def test_auto_login():
+    client = get_client([API_LOGIN_RESPONSE, API_LIST_RESPONSE], logged_in=False)
+    resp = client.analysis_list(
+        date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
+    )
     assert type(resp) == respmodels.AnalysisListResponse
     assert resp.total == len(API_LIST_RESPONSE["analyses"])
     assert resp.to_dict() == API_LIST_RESPONSE
@@ -205,7 +215,7 @@ def assert_analysis(analysis):
 
 
 def test_analyze_bytecode():
-    client = get_client(API_SUBMISSION_RESPONSE)
+    client = get_client([API_SUBMISSION_RESPONSE])
     resp = client.analyze(bytecode="0xf00")
 
     assert type(resp) == respmodels.AnalysisSubmissionResponse
@@ -213,7 +223,7 @@ def test_analyze_bytecode():
 
 
 def test_analyze_source_code():
-    client = get_client(API_SUBMISSION_RESPONSE)
+    client = get_client([API_SUBMISSION_RESPONSE])
     resp = client.analyze(sources={"foo.sol": "bar"})
 
     assert type(resp) == respmodels.AnalysisSubmissionResponse
@@ -221,26 +231,26 @@ def test_analyze_source_code():
 
 
 def test_analyze_source_and_bytecode():
-    client = get_client(API_SUBMISSION_RESPONSE)
+    client = get_client([API_SUBMISSION_RESPONSE])
     resp = client.analyze(sources={"foo.sol": "bar"}, bytecode="0xf00")
     assert type(resp) == respmodels.AnalysisSubmissionResponse
     assert_analysis(resp.analysis)
 
 
 def test_analyze_missing_data():
-    client = get_client(API_SUBMISSION_RESPONSE)
+    client = get_client([API_SUBMISSION_RESPONSE])
     with pytest.raises(RequestValidationError):
         client.analyze()
 
 
 def test_analyze_invalid_mode():
-    client = get_client(API_SUBMISSION_RESPONSE)
+    client = get_client([API_SUBMISSION_RESPONSE])
     with pytest.raises(RequestValidationError):
         client.analyze(bytecode="0xf00", analysis_mode="invalid")
 
 
 def test_status():
-    client = get_client(API_SUBMISSION_RESPONSE)
+    client = get_client([API_SUBMISSION_RESPONSE])
     resp = client.status(uuid=UUID_1)
 
     assert type(resp) == respmodels.AnalysisStatusResponse
@@ -248,7 +258,7 @@ def test_status():
 
 
 def test_running_analysis_not_ready():
-    client = get_client(API_SUBMISSION_RESPONSE)
+    client = get_client([API_SUBMISSION_RESPONSE])
     resp = client.analysis_ready(uuid=UUID_1)
     assert resp == False
 
@@ -256,7 +266,7 @@ def test_running_analysis_not_ready():
 def test_queued_analysis_not_ready():
     data = copy(API_SUBMISSION_RESPONSE)
     data["status"] = "Queued"
-    client = get_client(data)
+    client = get_client([data])
     resp = client.analysis_ready(uuid=UUID_1)
     assert resp == False
 
@@ -264,7 +274,7 @@ def test_queued_analysis_not_ready():
 def test_finished_analysis_ready():
     data = copy(API_SUBMISSION_RESPONSE)
     data["status"] = "Finished"
-    client = get_client(data)
+    client = get_client([data])
     resp = client.analysis_ready(uuid=UUID_1)
     assert resp == True
 
@@ -272,13 +282,13 @@ def test_finished_analysis_ready():
 def test_error_analysis_ready():
     data = copy(API_SUBMISSION_RESPONSE)
     data["status"] = "Error"
-    client = get_client(data)
+    client = get_client([data])
     resp = client.analysis_ready(uuid=UUID_1)
     assert resp == True
 
 
 def test_report():
-    client = get_client(VALID_ISSUES)
+    client = get_client([VALID_ISSUES])
     resp = client.report(uuid=UUID_1)
     assert type(resp) == respmodels.DetectedIssuesResponse
     assert resp.source_type == SOURCE_TYPE
@@ -302,7 +312,7 @@ def test_report():
 
 
 def test_openapi():
-    client = get_client(OPENAPI_RESPONSE)
+    client = get_client([OPENAPI_RESPONSE])
     resp = client.openapi()
     assert type(resp) == respmodels.OASResponse
     # we have to wrap this into quotes here because
@@ -311,7 +321,7 @@ def test_openapi():
 
 
 def test_version():
-    client = get_client(VERSION_RESPONSE)
+    client = get_client([VERSION_RESPONSE])
     resp = client.version()
     assert type(resp) == respmodels.VersionResponse
     assert resp.api_version == API_VERSION

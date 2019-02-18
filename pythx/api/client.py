@@ -18,13 +18,13 @@ class Client:
         self.last_auth_ts = None
 
     def _assemble_send_parse(
-        self, req_obj, resp_model, assert_authentication=True, auth_header=True
+        self, req_obj, resp_model, assert_authentication=True, auth_header=None
     ):
-        auth_header = {}
         if assert_authentication:
             self._assert_authenticated()
-        if auth_header:
-            auth_header = {"Authorization": "Bearer {}".format(self.access_token)}
+        auth_header = auth_header or {
+            "Authorization": "Bearer {}".format(self.access_token)
+        }
         req_dict = self.handler.assemble_request(req_obj)
         resp = self.handler.send_request(req_dict, auth_header=auth_header)
         return self.handler.parse_response(resp, resp_model)
