@@ -10,6 +10,7 @@ UUID_1 = "0680a1e2-b908-4c9a-a15b-636ef9b61486"
 API_VERSION_1 = "v1.3.0"
 MARU_VERSION_1 = "v0.2.0"
 MYTHRIL_VERSION_1 = "0.19.11"
+MAESTRO_VERSION_1 = "v1.1.4"
 QUEUE_TIME_1 = 1
 RUN_TIME_1 = 300
 STATUS_1 = "Running"
@@ -20,6 +21,7 @@ VALID_ANALYSIS_DICT = {
     "apiVersion": API_VERSION_1,
     "maruVersion": MARU_VERSION_1,
     "mythrilVersion": MYTHRIL_VERSION_1,
+    "maestroVersion": MAESTRO_VERSION_1,
     "queueTime": QUEUE_TIME_1,
     "runTime": RUN_TIME_1,
     "status": STATUS_1,
@@ -33,6 +35,7 @@ VALID_SUBMISSION_RESPONSE = AnalysisStatusResponse(
         api_version=API_VERSION_1,
         maru_version=MARU_VERSION_1,
         mythril_version=MYTHRIL_VERSION_1,
+        maestro_version=MAESTRO_VERSION_1,
         queue_time=QUEUE_TIME_1,
         run_time=RUN_TIME_1,
         status=STATUS_1,

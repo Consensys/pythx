@@ -8,13 +8,15 @@ from pythx.models.response import VersionResponse
 API_VERSION = "1.0"
 MARU_VERSION = "1.1"
 MYTHRIL_VERSION = "1.2"
-HARVEY_VERSION = "1.3"
+MAESTRO_VERSION = "1.3"
+HARVEY_VERSION = "1.4"
 HASHED_VERSION = "31337deadbeef"
 
 VERSION = {
     "api": API_VERSION,
     "maru": MARU_VERSION,
     "mythril": MYTHRIL_VERSION,
+    "maestro": MAESTRO_VERSION,
     "harvey": HARVEY_VERSION,
     "hash": HASHED_VERSION,
 }
@@ -23,6 +25,7 @@ VERSION_REQUEST = VersionResponse(
     api_version=API_VERSION,
     maru_version=MARU_VERSION,
     mythril_version=MYTHRIL_VERSION,
+    maestro_version=MAESTRO_VERSION,
     harvey_version=HARVEY_VERSION,
     hashed_version=HASHED_VERSION,
 )
@@ -32,6 +35,7 @@ def assert_version_response(resp: VersionResponse):
     assert resp.api_version == API_VERSION
     assert resp.maru_version == MARU_VERSION
     assert resp.mythril_version == MYTHRIL_VERSION
+    assert resp.maestro_version == MAESTRO_VERSION
     assert resp.harvey_version == HARVEY_VERSION
     assert resp.hashed_version == HASHED_VERSION
 

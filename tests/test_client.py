@@ -24,7 +24,8 @@ class MockAPIHandler(APIHandler):
 API_VERSION = "1.0"
 MARU_VERSION = "1.1"
 MYTHRIL_VERSION = "1.2"
-HARVEY_VERSION = "1.3"
+MAESTRO_VERSION = "1.3"
+HARVEY_VERSION = "1.4"
 HASHED_VERSION = "31337deadbeef"
 DEFAULT_ACCESS_TOKEN = "my_default_access_token"
 DEFAULT_REFRESH_TOKEN = "my_default_refresh_token"
@@ -39,6 +40,7 @@ VERSION_RESPONSE = {
     "api": API_VERSION,
     "maru": MARU_VERSION,
     "mythril": MYTHRIL_VERSION,
+    "maestro": MAESTRO_VERSION,
     "harvey": HARVEY_VERSION,
     "hash": HASHED_VERSION,
 }
@@ -56,6 +58,7 @@ API_SUBMISSION_RESPONSE = {
     "apiVersion": API_VERSION_1,
     "maruVersion": MARU_VERSION_1,
     "mythrilVersion": MYTHRIL_VERSION_1,
+    "maestroVersion": MAESTRO_VERSION,
     "queueTime": QUEUE_TIME_1,
     "runTime": RUN_TIME_1,
     "status": STATUS_1,
@@ -69,6 +72,7 @@ API_LIST_RESPONSE = {
             "apiVersion": API_VERSION_1,
             "maruVersion": MARU_VERSION_1,
             "mythrilVersion": MYTHRIL_VERSION_1,
+            "maestroVersion": MAESTRO_VERSION,
             "queueTime": QUEUE_TIME_1,
             "runTime": RUN_TIME_1,
             "status": STATUS_1,
@@ -80,6 +84,7 @@ API_LIST_RESPONSE = {
             "apiVersion": API_VERSION_1,
             "maruVersion": MARU_VERSION_1,
             "mythrilVersion": MYTHRIL_VERSION_1,
+            "maestroVersion": MAESTRO_VERSION,
             "queueTime": QUEUE_TIME_1,
             "runTime": RUN_TIME_1,
             "status": STATUS_1,

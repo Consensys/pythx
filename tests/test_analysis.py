@@ -11,6 +11,7 @@ VALID_INPUT_JSON_TPL = """{{
     "apiVersion": "{api_version}",
     "maruVersion": "{maru_version}",
     "mythrilVersion": "{mythril_version}",
+    "maestroVersion": "{maestro_version}",
     "queueTime": {queue_time},
     "status": "{status}",
     "submittedAt": "{submitted_at}",
@@ -22,6 +23,7 @@ UUID = "0680a1e2-b908-4c9a-a15b-636ef9b61486"
 API_VERSION = "v1.3.0"
 MARU_VERSION = "v0.2.0"
 MYTHRIL_VERSION = "0.19.11"
+MAESTRO_VERSION = "v1.1.4"
 QUEUE_TIME = 0
 STATUS = "Queued"
 SUBMITTED_AT = "2019-01-10T01:29:38.410Z"
@@ -31,6 +33,7 @@ ANALYSIS = Analysis(
     api_version=API_VERSION,
     maru_version=MARU_VERSION,
     mythril_version=MYTHRIL_VERSION,
+    maestro_version=MAESTRO_VERSION,
     queue_time=QUEUE_TIME,
     status=STATUS,
     submitted_at=SUBMITTED_AT,
@@ -44,6 +47,7 @@ def test_analysis_from_valid_json():
         api_version=API_VERSION,
         maru_version=MARU_VERSION,
         mythril_version=MYTHRIL_VERSION,
+        maestro_version=MAESTRO_VERSION,
         queue_time=QUEUE_TIME,
         status=STATUS,
         submitted_at=SUBMITTED_AT,
@@ -72,6 +76,7 @@ def test_analysis_to_json():
         api_version=API_VERSION,
         maru_version=MARU_VERSION,
         mythril_version=MYTHRIL_VERSION,
+        maestro_version=MAESTRO_VERSION,
         queue_time=QUEUE_TIME,
         status=STATUS,
         submitted_at=SUBMITTED_AT,
@@ -82,6 +87,7 @@ def test_analysis_to_json():
         "apiVersion": API_VERSION,
         "maruVersion": MARU_VERSION,
         "mythrilVersion": MYTHRIL_VERSION,
+        "maestroVersion": MAESTRO_VERSION,
         "queueTime": QUEUE_TIME,
         "runTime": 0,
         "status": STATUS,
@@ -96,6 +102,7 @@ def test_analysis_to_dict():
         api_version=API_VERSION,
         maru_version=MARU_VERSION,
         mythril_version=MYTHRIL_VERSION,
+        maestro_version=MAESTRO_VERSION,
         queue_time=QUEUE_TIME,
         status=STATUS,
         submitted_at=SUBMITTED_AT,
@@ -106,6 +113,7 @@ def test_analysis_to_dict():
         "apiVersion": API_VERSION,
         "maruVersion": MARU_VERSION,
         "mythrilVersion": MYTHRIL_VERSION,
+        "maestroVersion": MAESTRO_VERSION,
         "queueTime": QUEUE_TIME,
         "runTime": 0,
         "status": STATUS,
@@ -121,6 +129,7 @@ def test_analysis_from_valid_dict():
             api_version=API_VERSION,
             maru_version=MARU_VERSION,
             mythril_version=MYTHRIL_VERSION,
+            maestro_version=MAESTRO_VERSION,
             queue_time=QUEUE_TIME,
             status=STATUS,
             submitted_at=SUBMITTED_AT,
