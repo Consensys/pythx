@@ -1,13 +1,14 @@
 import json
-import pytest
-from datetime import datetime
 from copy import copy
+from datetime import datetime
 
-from pythx.api import Client, APIHandler
+import pytest
+
+import pythx.models.response as respmodels
+from pythx.api import APIHandler, Client
 from pythx.models.exceptions import PythXAPIError, RequestValidationError
 from pythx.models.response.analysis import AnalysisStatus
 from pythx.models.util import serialize_api_timestamp
-import pythx.models.response as respmodels
 
 
 class MockAPIHandler(APIHandler):

@@ -1,5 +1,7 @@
 import json
+
 import pytest
+
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response import (
     Issue,

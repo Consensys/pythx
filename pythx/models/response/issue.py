@@ -6,7 +6,6 @@ from inflection import underscore
 
 from pythx.models.exceptions import ResponseDecodeError
 
-
 SOURCE_LOCATION_KEYS = ("sourceMap", "sourceType", "sourceFormat", "sourceList")
 
 
