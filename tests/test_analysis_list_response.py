@@ -16,6 +16,8 @@ MYTHRIL_VERSION_1 = "0.19.11"
 MYTHRIL_VERSION_2 = "0.19.10"
 MAESTRO_VERSION_1 = "v1.1.4"
 MAESTRO_VERSION_2 = "v1.1.5"
+HARVEY_VERSION_1 = "0.0.8"
+HARVEY_VERSION_2 = "0.0.9"
 QUEUE_TIME_1 = 1
 QUEUE_TIME_2 = 2
 RUN_TIME_1 = 300
@@ -36,6 +38,7 @@ VALID_LIST = {
             "maruVersion": MARU_VERSION_1,
             "mythrilVersion": MYTHRIL_VERSION_1,
             "maestroVersion": MAESTRO_VERSION_1,
+            "harveyVersion": HARVEY_VERSION_1,
             "queueTime": QUEUE_TIME_1,
             "runTime": RUN_TIME_1,
             "status": STATUS_1,
@@ -48,6 +51,7 @@ VALID_LIST = {
             "maruVersion": MARU_VERSION_2,
             "mythrilVersion": MYTHRIL_VERSION_2,
             "maestroVersion": MAESTRO_VERSION_2,
+            "harveyVersion": HARVEY_VERSION_2,
             "queueTime": QUEUE_TIME_2,
             "runTime": RUN_TIME_2,
             "status": STATUS_2,
@@ -66,6 +70,7 @@ VALID_LIST_RESPONSE = AnalysisListResponse(
             maru_version=MARU_VERSION_1,
             mythril_version=MYTHRIL_VERSION_1,
             maestro_version=MAESTRO_VERSION_1,
+            harvey_version=HARVEY_VERSION_1,
             queue_time=QUEUE_TIME_1,
             run_time=RUN_TIME_1,
             status=STATUS_1,
@@ -78,6 +83,7 @@ VALID_LIST_RESPONSE = AnalysisListResponse(
             maru_version=MARU_VERSION_2,
             mythril_version=MYTHRIL_VERSION_2,
             maestro_version=MAESTRO_VERSION_2,
+            harvey_version=HARVEY_VERSION_2,
             queue_time=QUEUE_TIME_2,
             run_time=RUN_TIME_2,
             status=STATUS_2,
@@ -93,6 +99,8 @@ def assert_analysis_data(expected, analysis: Analysis):
     assert expected["apiVersion"] == analysis.api_version
     assert expected["maruVersion"] == analysis.maru_version
     assert expected["mythrilVersion"] == analysis.mythril_version
+    assert expected["maestroVersion"] == analysis.maestro_version
+    assert expected["harveyVersion"] == analysis.harvey_version
     assert expected["queueTime"] == analysis.queue_time
     assert expected["runTime"] == analysis.run_time
     assert expected["status"] == analysis.status

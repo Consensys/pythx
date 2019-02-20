@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from typing import Dict, List
 
@@ -7,33 +8,51 @@ from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 class Client:
-    def __init__(self, eth_address: str, password: str, handler: APIHandler = None):
+    def __init__(
+        self,
+        eth_address: str = None,
+        password: str = None,
+        access_token: str = None,
+        refresh_token: str = None,
+        handler: APIHandler = None,
+        staging: bool = False,
+    ):
         self.eth_address = eth_address
         self.password = password
-        self.handler = handler or APIHandler()
+        self.handler = handler or APIHandler(staging=staging)
 
-        self.access_token = None
-        self.refresh_token = None
+        self.access_token = access_token
+        self.refresh_token = refresh_token
         self.last_auth_ts = None
 
     def _assemble_send_parse(
-        self, req_obj, resp_model, assert_authentication=True, auth_header=None
+        self, req_obj, resp_model, assert_authentication=True, include_auth_header=True
     ):
         if assert_authentication:
             self._assert_authenticated()
-        auth_header = auth_header or {
-            "Authorization": "Bearer {}".format(self.access_token)
-        }
+        auth_header = (
+            {"Authorization": "Bearer {}".format(self.access_token)}
+            if include_auth_header
+            else {}
+        )
+        LOGGER.debug("Assembling request dict:")
         req_dict = self.handler.assemble_request(req_obj)
+        LOGGER.debug(req_dict)
+        LOGGER.debug("Sending request")
         resp = self.handler.send_request(req_dict, auth_header=auth_header)
+        LOGGER.debug("Got response %s", resp)
+        LOGGER.debug("Parsing response")
         return self.handler.parse_response(resp, resp_model)
 
     def _assert_authenticated(self):
+        # TODO: Decode JWT and check expiration
         if self.last_auth_ts is None:
             # We haven't authenticated yet
             self.login()
-            print("Logging in again")
             return
         now = datetime.now()
         access_expiration = self.last_auth_ts + timedelta(
@@ -57,7 +76,10 @@ class Client:
             eth_address=self.eth_address, password=self.password
         )
         resp_model = self._assemble_send_parse(
-            req, respmodels.AuthLoginResponse, assert_authentication=False
+            req,
+            respmodels.AuthLoginResponse,
+            assert_authentication=False,
+            include_auth_header=False,
         )
         self.access_token = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
@@ -86,9 +108,9 @@ class Client:
         self.last_auth_ts = datetime.now()
         return resp_model
 
-    def analysis_list(self, date_from: datetime, date_to: datetime):
+    def analysis_list(self, date_from: datetime = None, date_to: datetime = None, offset: int = None):
         req = reqmodels.AnalysisListRequest(
-            offset=0, date_from=date_from, date_to=date_to
+            offset=offset, date_from=date_from, date_to=date_to
         )
         return self._assemble_send_parse(req, respmodels.AnalysisListResponse)
 
@@ -136,11 +158,17 @@ class Client:
     def openapi(self, mode="yaml"):
         req = reqmodels.OASRequest(mode=mode)
         return self._assemble_send_parse(
-            req, respmodels.OASResponse, assert_authentication=False
+            req,
+            respmodels.OASResponse,
+            assert_authentication=False,
+            include_auth_header=False,
         )
 
     def version(self):
         req = reqmodels.VersionRequest()
         return self._assemble_send_parse(
-            req, respmodels.VersionResponse, assert_authentication=False
+            req,
+            respmodels.VersionResponse,
+            assert_authentication=False,
+            include_auth_header=False,
         )

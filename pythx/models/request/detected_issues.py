@@ -12,10 +12,11 @@ from pythx.models.util import dict_delete_none_fields
 class DetectedIssuesRequest(AnalysisStatusRequest):
     def __init__(self, uuid: str):
         super().__init__(uuid)
+        self.uuid = uuid
 
     @property
     def endpoint(self):
-        return "v1/version"
+        return "v1/analyses/{}/issues".format(self.uuid)
 
     @property
     def method(self):

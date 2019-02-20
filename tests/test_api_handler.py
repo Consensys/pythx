@@ -39,6 +39,7 @@ TEST_LIST_RESPONSE = {
             "maruVersion": "v0.2.0",
             "mythrilVersion": "0.19.11",
             "maestroVersion": "v1.1.4",
+            "harveyVersion": "0.0.8",
             "queueTime": 1,
             "runTime": 300,
             "status": "Running",
@@ -51,6 +52,7 @@ TEST_LIST_RESPONSE = {
             "maruVersion": "v0.2.0",
             "mythrilVersion": "0.19.11",
             "maestroVersion": "v1.1.4",
+            "harveyVersion": "0.0.8",
             "queueTime": 0,
             "runTime": 0,
             "status": "Finished",
@@ -65,6 +67,7 @@ TEST_STATUS_RESPONSE = {
     "apiVersion": "string",
     "mythrilVersion": "string",
     "maestroVersion": "string",
+    "harveyVersion": "string",
     "maruVersion": "string",
     "queueTime": 0,
     "runTime": 0,
@@ -78,6 +81,7 @@ TEST_SUBMISSION_RESPONSE = {
     "maruVersion": "v0.2.0",
     "mythrilVersion": "0.19.11",
     "maestroVersion": "string",
+    "harveyVersion": "string",
     "queueTime": 0,
     "status": "Queued",
     "submittedAt": "2019-01-10T01:29:38.410Z",
@@ -210,6 +214,8 @@ def test_parse_analysis_submission_response():
     assert model.analysis.api_version == TEST_SUBMISSION_RESPONSE["apiVersion"]
     assert model.analysis.maru_version == TEST_SUBMISSION_RESPONSE["maruVersion"]
     assert model.analysis.mythril_version == TEST_SUBMISSION_RESPONSE["mythrilVersion"]
+    assert model.analysis.maestro_version == TEST_SUBMISSION_RESPONSE["maestroVersion"]
+    assert model.analysis.harvey_version == TEST_SUBMISSION_RESPONSE["harveyVersion"]
     assert model.analysis.queue_time == TEST_SUBMISSION_RESPONSE["queueTime"]
     assert model.analysis.status.title() == TEST_SUBMISSION_RESPONSE["status"]
     assert model.analysis.submitted_at == dateutil.parser.parse(

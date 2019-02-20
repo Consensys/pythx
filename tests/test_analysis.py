@@ -12,6 +12,7 @@ VALID_INPUT_JSON_TPL = """{{
     "maruVersion": "{maru_version}",
     "mythrilVersion": "{mythril_version}",
     "maestroVersion": "{maestro_version}",
+    "harveyVersion": "{harvey_version}",
     "queueTime": {queue_time},
     "status": "{status}",
     "submittedAt": "{submitted_at}",
@@ -24,6 +25,7 @@ API_VERSION = "v1.3.0"
 MARU_VERSION = "v0.2.0"
 MYTHRIL_VERSION = "0.19.11"
 MAESTRO_VERSION = "v1.1.4"
+HARVEY_VERSION = "0.0.8"
 QUEUE_TIME = 0
 STATUS = "Queued"
 SUBMITTED_AT = "2019-01-10T01:29:38.410Z"
@@ -34,6 +36,7 @@ ANALYSIS = Analysis(
     maru_version=MARU_VERSION,
     mythril_version=MYTHRIL_VERSION,
     maestro_version=MAESTRO_VERSION,
+    harvey_version=HARVEY_VERSION,
     queue_time=QUEUE_TIME,
     status=STATUS,
     submitted_at=SUBMITTED_AT,
@@ -48,6 +51,7 @@ def test_analysis_from_valid_json():
         maru_version=MARU_VERSION,
         mythril_version=MYTHRIL_VERSION,
         maestro_version=MAESTRO_VERSION,
+        harvey_version=HARVEY_VERSION,
         queue_time=QUEUE_TIME,
         status=STATUS,
         submitted_at=SUBMITTED_AT,
@@ -58,6 +62,8 @@ def test_analysis_from_valid_json():
     assert analysis.api_version == API_VERSION
     assert analysis.maru_version == MARU_VERSION
     assert analysis.mythril_version == MYTHRIL_VERSION
+    assert analysis.maestro_version == MAESTRO_VERSION
+    assert analysis.harvey_version == HARVEY_VERSION
     assert analysis.queue_time == QUEUE_TIME
     assert analysis.run_time == 0  # default value
     assert analysis.status == AnalysisStatus.QUEUED
@@ -77,6 +83,7 @@ def test_analysis_to_json():
         maru_version=MARU_VERSION,
         mythril_version=MYTHRIL_VERSION,
         maestro_version=MAESTRO_VERSION,
+        harvey_version=HARVEY_VERSION,
         queue_time=QUEUE_TIME,
         status=STATUS,
         submitted_at=SUBMITTED_AT,
@@ -88,6 +95,7 @@ def test_analysis_to_json():
         "maruVersion": MARU_VERSION,
         "mythrilVersion": MYTHRIL_VERSION,
         "maestroVersion": MAESTRO_VERSION,
+        "harveyVersion": HARVEY_VERSION,
         "queueTime": QUEUE_TIME,
         "runTime": 0,
         "status": STATUS,
@@ -103,6 +111,7 @@ def test_analysis_to_dict():
         maru_version=MARU_VERSION,
         mythril_version=MYTHRIL_VERSION,
         maestro_version=MAESTRO_VERSION,
+        harvey_version=HARVEY_VERSION,
         queue_time=QUEUE_TIME,
         status=STATUS,
         submitted_at=SUBMITTED_AT,
@@ -114,6 +123,7 @@ def test_analysis_to_dict():
         "maruVersion": MARU_VERSION,
         "mythrilVersion": MYTHRIL_VERSION,
         "maestroVersion": MAESTRO_VERSION,
+        "harveyVersion":HARVEY_VERSION,
         "queueTime": QUEUE_TIME,
         "runTime": 0,
         "status": STATUS,
@@ -130,6 +140,7 @@ def test_analysis_from_valid_dict():
             maru_version=MARU_VERSION,
             mythril_version=MYTHRIL_VERSION,
             maestro_version=MAESTRO_VERSION,
+            harvey_version=HARVEY_VERSION,
             queue_time=QUEUE_TIME,
             status=STATUS,
             submitted_at=SUBMITTED_AT,
@@ -141,6 +152,8 @@ def test_analysis_from_valid_dict():
     assert analysis.api_version == API_VERSION
     assert analysis.maru_version == MARU_VERSION
     assert analysis.mythril_version == MYTHRIL_VERSION
+    assert analysis.maestro_version == MAESTRO_VERSION
+    assert analysis.harvey_version == HARVEY_VERSION
     assert analysis.queue_time == QUEUE_TIME
     assert analysis.run_time == 0  # default value
     assert analysis.status == AnalysisStatus.QUEUED

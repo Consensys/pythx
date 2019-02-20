@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 from typing import Any, Dict, List
+import logging
 
 import dateutil.parser
 
@@ -8,6 +9,8 @@ from pythx.models.exceptions import RequestDecodeError, RequestValidationError
 from pythx.models.request.base import BaseRequest
 from pythx.models.util import dict_delete_none_fields
 
+
+LOGGER = logging.getLogger(__name__)
 ANALYSIS_SUBMISSION_KEYS = ("bytecode", "sources")
 
 
@@ -55,6 +58,7 @@ class AnalysisSubmissionRequest(BaseRequest):
         return {"data": self.to_dict()}
 
     def validate(self):
+        LOGGER.debug("Validating %s", self.to_dict())
         valid = True
         msg = "Error validating analysis submission request: {}"
         if self.analysis_mode not in ("full", "quick"):
@@ -97,8 +101,8 @@ class AnalysisSubmissionRequest(BaseRequest):
             "sourceMap": self.source_map,
             "deployedBytecode": self.deployed_bytecode,
             "deployedSourceMap": self.deployed_source_map,
-            "sources": self.sources,
-            "sourceList": self.source_list,
+            "sources": self.sources if self.sources else None,
+            "sourceList": self.source_list if self.source_list else None,
             "version": self.solc_version,
             "analysisMode": self.analysis_mode,
         }

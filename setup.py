@@ -30,7 +30,7 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     description="A Python library for the MythX platform",
-    entry_points={"console_scripts": ["pythx=pythx.cli:main"]},
+    entry_points={"console_scripts": ["pythx=pythx.cli.main:cli"]},
     install_requires=requirements,
     license="MIT license",
     long_description=readme + "\n\n" + history,
@@ -41,7 +41,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
-    url="https://github.com/ConsenSys/pythx",
+    url="https://github.com/dmuhs/pythx",
     version="0.1.0",
     zip_safe=False,
 )

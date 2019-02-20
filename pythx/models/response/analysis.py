@@ -13,6 +13,7 @@ ANALYSIS_KEYS = (
     "apiVersion",
     "mythrilVersion",
     "maestroVersion",
+    "harveyVersion",
     "maruVersion",
     "queueTime",
     "status",
@@ -35,6 +36,7 @@ class Analysis(BaseResponse):
         api_version: str,
         mythril_version: str,
         maestro_version: str,
+        harvey_version: str,
         maru_version: str,
         queue_time: int,
         status: AnalysisStatus,
@@ -46,6 +48,7 @@ class Analysis(BaseResponse):
         self.api_version = api_version
         self.mythril_version = mythril_version
         self.maestro_version = maestro_version
+        self.harvey_version = harvey_version
         self.maru_version = maru_version
         self.queue_time = queue_time
         self.run_time = run_time
@@ -71,6 +74,7 @@ class Analysis(BaseResponse):
             "apiVersion": self.api_version,
             "mythrilVersion": self.mythril_version,
             "maestroVersion": self.maestro_version,
+            "harveyVersion": self.harvey_version,
             "maruVersion": self.maru_version,
             "queueTime": self.queue_time,
             "runTime": self.run_time,
