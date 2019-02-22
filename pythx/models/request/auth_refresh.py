@@ -34,7 +34,7 @@ class AuthRefreshRequest(BaseRequest):
 
     @property
     def payload(self):
-        return self.to_dict()
+        return {"accessToken": self.access_token, "refreshToken": self.refresh_token}
 
     def validate(self):
         pass
