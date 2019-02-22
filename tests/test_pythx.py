@@ -5,7 +5,8 @@ from pythx.cli import main
 
 
 @pytest.mark.parametrize(
-    "command_name", ["check", "login", "logout", "openapi", "ps", "status", "top", "version"]
+    "command_name",
+    ["check", "login", "logout", "openapi", "ps", "status", "top", "version"],
 )
 def test_subcommands(command_name):
     runner = CliRunner()

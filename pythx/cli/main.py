@@ -84,7 +84,7 @@ def recover_client(config_path, staging=False):
         )
     else:
         config = parse_config(config_path, tokens_required=True)
-        c =  Client(
+        c = Client(
             eth_address=config["username"],
             password=config["password"],
             access_token=config["access"],
@@ -125,7 +125,9 @@ def logout(config, staging):
 @cli.command(help="Get the OpenAPI spec in HTML or YAML format")
 @staging_opt
 @click.option("--html", "mode", flag_value="html", help="Get the HTML OpenAPI spec")
-@click.option("--yaml", "mode", flag_value="yaml", default=True, help="Get the YAML OpenAPI spec")
+@click.option(
+    "--yaml", "mode", flag_value="yaml", default=True, help="Get the YAML OpenAPI spec"
+)
 def openapi(staging, mode):
     c = Client()  # no auth required
     click.echo(c.openapi(mode).data)
@@ -142,7 +144,7 @@ def version(staging):
         ("Mythril", resp.mythril_version),
         ("Maestro", resp.maestro_version),
         ("Harvey", resp.harvey_version),
-        ("Hash", resp.hashed_version)
+        ("Hash", resp.hashed_version),
     ):
         click.echo("{}: {}".format(name, value))
 
@@ -165,7 +167,6 @@ def status(config, staging, uuid):
         ("Status", resp.status.title()),
         ("Submitted By", resp.submitted_by),
         ("Submitted At", resp.submitted_at),
-
     ):
         click.echo("{}: {}".format(name, value))
 
@@ -207,13 +208,33 @@ def top(config, staging, interval):
 @config_opt
 @staging_opt
 @click.option(
-    "--bytecode", "-b", type=click.STRING, default=None, help="Analysis job creation byte code"
+    "--bytecode",
+    "-b",
+    type=click.STRING,
+    default=None,
+    help="Analysis job creation byte code",
 )
 @click.option(
-    "--source", "-s", type=click.STRING, default=None,help="Analysis job Solidity source code"
+    "--source",
+    "-s",
+    type=click.STRING,
+    default=None,
+    help="Analysis job Solidity source code",
 )
-@click.option("--bytecode-file", "-bf", type=click.Path(exists=True), default=None, help="Path to file containing creation bytecode")
-@click.option("--source-file", "-sf", type=click.Path(exists=True), default=None, help="Path to file containing Solidity source code")
+@click.option(
+    "--bytecode-file",
+    "-bf",
+    type=click.Path(exists=True),
+    default=None,
+    help="Path to file containing creation bytecode",
+)
+@click.option(
+    "--source-file",
+    "-sf",
+    type=click.Path(exists=True),
+    default=None,
+    help="Path to file containing Solidity source code",
+)
 def check(config, staging, bytecode, source, bytecode_file, source_file):
     c = recover_client(config_path=config, staging=staging)
     bytecode_f = bytecode if bytecode else None
@@ -225,10 +246,7 @@ def check(config, staging, bytecode, source, bytecode_file, source_file):
         with open(source_file, "r") as sf:
             sources_f = {source_file: {"source": sf.read().strip()}}
 
-    resp = c.analyze(
-        bytecode=bytecode_f,
-        sources=sources_f
-    )
+    resp = c.analyze(bytecode=bytecode_f, sources=sources_f)
     click.echo("Submitted analysis: {}".format(resp.analysis.uuid))
 
 

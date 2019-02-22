@@ -123,7 +123,7 @@ def test_analysis_to_dict():
         "maruVersion": MARU_VERSION,
         "mythrilVersion": MYTHRIL_VERSION,
         "maestroVersion": MAESTRO_VERSION,
-        "harveyVersion":HARVEY_VERSION,
+        "harveyVersion": HARVEY_VERSION,
         "queueTime": QUEUE_TIME,
         "runTime": 0,
         "status": STATUS,

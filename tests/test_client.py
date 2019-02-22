@@ -133,7 +133,7 @@ VALID_ISSUES = [
 ]
 
 
-def get_client(resp_data, logged_in=True):
+def get_client(resp_data, logged_in=True, expired=False):
     client = Client(
         eth_address="0xdeadbeef",
         password="supersecure",
@@ -143,7 +143,9 @@ def get_client(resp_data, logged_in=True):
         # simulate that we're already logged in
         client.access_token = DEFAULT_ACCESS_TOKEN
         client.refresh_token = DEFAULT_REFRESH_TOKEN
-        client.last_auth_ts = AUTH_DATE
+        client._get_jwt_expiration_ts = (
+            lambda _: datetime(1994, 7, 29) if expired else datetime(9999, 1, 1)
+        )
     return client
 
 
@@ -152,7 +154,6 @@ def test_login():
 
     assert client.access_token is None
     assert client.refresh_token is None
-    assert client.last_auth_ts is None
 
     resp = client.login()
 
@@ -162,7 +163,6 @@ def test_login():
 
     assert client.access_token == ACCESS_TOKEN
     assert client.refresh_token == REFRESH_TOKEN
-    assert type(client.last_auth_ts) == datetime
 
 
 def test_logout():
@@ -172,7 +172,6 @@ def test_logout():
     assert type(resp) == respmodels.AuthLogoutResponse
     assert client.access_token is None
     assert client.refresh_token is None
-    assert client.last_auth_ts is None
 
 
 def test_refresh():
@@ -184,8 +183,6 @@ def test_refresh():
     assert resp.refresh_token == REFRESH_TOKEN
     assert resp.to_dict() == API_REFRESH_RESPONSE
 
-    assert type(client.last_auth_ts) == datetime
-    assert client.last_auth_ts != AUTH_DATE
     assert client.access_token == ACCESS_TOKEN
     assert client.refresh_token == REFRESH_TOKEN
 
@@ -212,29 +209,27 @@ def test_auto_login():
 
 
 def test_expired_auth_and_refresh_token():
-    LAST_AUTH = datetime(1994, 7, 29)
-    client = get_client([API_LOGIN_RESPONSE, API_LIST_RESPONSE], logged_in=True)
-    client.last_auth_ts = LAST_AUTH  # exired auth and refresh ts
+    client = get_client(
+        [API_LOGIN_RESPONSE, API_LIST_RESPONSE], logged_in=True, expired=True
+    )
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
     )
     assert type(resp) == respmodels.AnalysisListResponse
     assert resp.total == len(API_LIST_RESPONSE["analyses"])
     assert resp.to_dict() == API_LIST_RESPONSE
-    assert client.last_auth_ts > LAST_AUTH
 
 
 def test_expired_auth_token():
-    LAST_AUTH = datetime.now() - timedelta(seconds=config["timeouts"]["access"] + 2)
-    client = get_client([API_REFRESH_RESPONSE, API_LIST_RESPONSE], logged_in=True)
-    client.last_auth_ts = LAST_AUTH  # exired auth ts
+    client = get_client(
+        [API_REFRESH_RESPONSE, API_LIST_RESPONSE], logged_in=True, expired=True
+    )
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
     )
     assert type(resp) == respmodels.AnalysisListResponse
     assert resp.total == len(API_LIST_RESPONSE["analyses"])
     assert resp.to_dict() == API_LIST_RESPONSE
-    assert client.last_auth_ts > LAST_AUTH
 
 
 def assert_analysis(analysis):

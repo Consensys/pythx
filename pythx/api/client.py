@@ -1,4 +1,5 @@
 import logging
+import jwt
 from datetime import datetime, timedelta
 from typing import Dict, List
 
@@ -27,7 +28,6 @@ class Client:
 
         self.access_token = access_token
         self.refresh_token = refresh_token
-        self.last_auth_ts = None
 
     def _assemble_send_parse(
         self, req_obj, resp_model, assert_authentication=True, include_auth_header=True
@@ -48,19 +48,19 @@ class Client:
         LOGGER.debug("Parsing response")
         return self.handler.parse_response(resp, resp_model)
 
+    @staticmethod
+    def _get_jwt_expiration_ts(token):
+        return datetime.fromtimestamp(jwt.decode(token, verify=False)["exp"])
+
     def _assert_authenticated(self):
         # TODO: Decode JWT and check expiration
-        if self.last_auth_ts is None:
+        if self.access_token is None or self.refresh_token is None:
             # We haven't authenticated yet
             self.login()
             return
         now = datetime.now()
-        access_expiration = self.last_auth_ts + timedelta(
-            seconds=config["timeouts"]["access"]
-        )
-        refresh_expiration = self.last_auth_ts + timedelta(
-            seconds=config["timeouts"]["refresh"]
-        )
+        access_expiration = self._get_jwt_expiration_ts(self.access_token)
+        refresh_expiration = self._get_jwt_expiration_ts(self.refresh_token)
         if now < access_expiration:
             # auth token still valid - continue
             pass
@@ -83,7 +83,6 @@ class Client:
         )
         self.access_token = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
-        self.last_auth_ts = datetime.now()
         return resp_model
 
     def logout(self):
@@ -91,7 +90,6 @@ class Client:
         resp_model = self._assemble_send_parse(req, respmodels.AuthLogoutResponse)
         self.access_token = None
         self.refresh_token = None
-        self.last_auth_ts = None
         return resp_model
 
     def refresh(self, assert_authentication=True):
@@ -105,10 +103,11 @@ class Client:
         )
         self.access_token = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
-        self.last_auth_ts = datetime.now()
         return resp_model
 
-    def analysis_list(self, date_from: datetime = None, date_to: datetime = None, offset: int = None):
+    def analysis_list(
+        self, date_from: datetime = None, date_to: datetime = None, offset: int = None
+    ):
         req = reqmodels.AnalysisListRequest(
             offset=offset, date_from=date_from, date_to=date_to
         )
