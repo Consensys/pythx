@@ -24,7 +24,7 @@ ANALYSIS_KEYS = (
 
 class AnalysisStatus(str, Enum):
     QUEUED = "Queued"
-    RUNNING = "Running"
+    IN_PROGRESS = "In Progress"
     ERROR = "Error"
     FINISHED = "Finished"
 
