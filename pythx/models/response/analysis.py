@@ -43,6 +43,7 @@ class Analysis(BaseResponse):
         submitted_at: str,
         submitted_by: str,
         run_time: int = 0,
+        error: str = None,
     ):
         self.uuid = uuid
         self.api_version = api_version
@@ -55,6 +56,7 @@ class Analysis(BaseResponse):
         self.status = AnalysisStatus(status.title())
         self.submitted_at = deserialize_api_timestamp(submitted_at)
         self.submitted_by = submitted_by
+        self.error = error
 
     def validate(self):
         pass
@@ -69,7 +71,7 @@ class Analysis(BaseResponse):
         )
 
     def to_dict(self):
-        return {
+        d = {
             "uuid": self.uuid,
             "apiVersion": self.api_version,
             "mythrilVersion": self.mythril_version,
@@ -82,3 +84,7 @@ class Analysis(BaseResponse):
             "submittedAt": serialize_api_timestamp(self.submitted_at),
             "submittedBy": self.submitted_by,
         }
+        if self.error is not None:
+            d.update({"error": self.error})
+
+        return d
