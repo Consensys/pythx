@@ -42,7 +42,7 @@ TEST_LIST_RESPONSE = {
             "harveyVersion": "0.0.8",
             "queueTime": 1,
             "runTime": 300,
-            "status": "Running",
+            "status": "In Progress",
             "submittedAt": "2019-01-10T01:29:38.410Z",
             "submittedBy": "000008544b0aa00010a91111",
             "uuid": "0680a1e2-b908-4c9a-a15b-636ef9b61486",
