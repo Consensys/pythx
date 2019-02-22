@@ -97,7 +97,8 @@ class Client:
         resp_model = self._assemble_send_parse(
             req,
             respmodels.AuthRefreshResponse,
-            assert_authentication=assert_authentication,
+            assert_authentication=False,
+            include_auth_header=False,
         )
         self.access_token = resp_model.access_token
         self.refresh_token = resp_model.refresh_token

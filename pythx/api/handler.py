@@ -55,7 +55,7 @@ class APIHandler:
         if response.status_code != 200:
             raise PythXAPIError(
                 "Got unexpected status code {}: {}".format(
-                    response.status_code, response.content
+                    response.status_code, response.content.decode()
                 )
             )
         return response.text

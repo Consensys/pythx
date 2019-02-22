@@ -177,13 +177,15 @@ def status(config, staging, uuid):
 )
 def ps(config, staging, number):
     resp = ps_core(config, staging, number)
-    click.echo("Got {} analyses:".format(resp.total))
-    pprint(resp.to_dict())
+    data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
+    click.echo(tabulate(data, tablefmt="fancy_grid"))
 
 
 def ps_core(config, staging, number):
     c = recover_client(config_path=config, staging=staging)
     resp = c.analysis_list()
+    # todo: pagination if too few
+    resp.analyses = resp.analyses[:number+1]
     return resp
 
 
@@ -195,7 +197,8 @@ def top(config, staging, interval):
     while True:
         click.clear()
         resp = ps_core(config=config, staging=staging, number=20)
-        pprint(resp.to_dict())
+        data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
+        click.echo(tabulate(data, tablefmt="fancy_grid"))
         time.sleep(interval)
 
 
