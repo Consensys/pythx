@@ -50,7 +50,6 @@ class Client:
         return datetime.fromtimestamp(jwt.decode(token, verify=False)["exp"])
 
     def _assert_authenticated(self):
-        # TODO: Decode JWT and check expiration
         if self.access_token is None or self.refresh_token is None:
             # We haven't authenticated yet
             self.login()
@@ -60,12 +59,14 @@ class Client:
         refresh_expiration = self._get_jwt_expiration_ts(self.refresh_token)
         if now < access_expiration:
             # auth token still valid - continue
-            pass
+            LOGGER.debug("Auth check passed, token still valid: {} < {}".format(now, access_expiration))
         elif access_expiration < now < refresh_expiration:
             # access token expired, but refresh token hasn't - use it to get new access token
+            LOGGER.debug("Auth refresh needed: {} < {} < {}".format(access_expiration, now, refresh_expiration))
             self.refresh(assert_authentication=False)
         else:
             # refresh token has also expired - let's login again
+            LOGGER.debug("Access and refresh token have expired - logging in again")
             self.login()
 
     def login(self):

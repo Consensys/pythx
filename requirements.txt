@@ -2,3 +2,4 @@ Click>=6.0
 python-dateutil==2.7.5
 inflection==0.3.1
 PyJWT==1.7.1
+tabulate==0.8.3

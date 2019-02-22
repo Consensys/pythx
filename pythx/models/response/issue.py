@@ -113,7 +113,7 @@ class Issue:
             swc_title=d["swcTitle"],
             description_short=d["description"]["head"],
             description_long=d["description"]["tail"],
-            severity=Severity[d["severity"].upper()],
+            severity=Severity(d["severity"]) if d["severity"] else Severity.NONE,
             locations=locs,
             extra=d["extra"],
         )

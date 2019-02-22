@@ -6,6 +6,7 @@ import json
 import tempfile
 import logging
 import time
+from tabulate import tabulate
 
 from pprint import pprint
 from pythx.api import Client
@@ -120,6 +121,7 @@ def login(staging, config):
         login_resp.access_token,
         login_resp.refresh_token,
     )
+    click.echo("Successfully logged in as {}".format(c.eth_address))
 
 
 @cli.command(help="Log out of your MythX account")
@@ -130,6 +132,7 @@ def logout(config, staging):
     # delete the credentials storage and logout
     os.remove(config)
     c.logout()
+    click.echo("Successfully logged out")
 
 
 @cli.command(help="Get the OpenAPI spec in HTML or YAML format")
@@ -147,16 +150,9 @@ def openapi(staging, mode):
 @staging_opt
 def version(staging):
     c = Client()  # no auth required
-    resp = c.version()
-    for name, value in (
-        ("API", resp.api_version),
-        ("Maru", resp.maru_version),
-        ("Mythril", resp.mythril_version),
-        ("Maestro", resp.maestro_version),
-        ("Harvey", resp.harvey_version),
-        ("Hash", resp.hashed_version),
-    ):
-        click.echo("{}: {}".format(name, value))
+    resp = c.version().to_dict()
+    data = ((k.title(), v) for k, v in resp.items())
+    click.echo(tabulate(data, tablefmt="fancy_grid"))
 
 
 @cli.command(help="Get the status of an analysis by its UUID")
@@ -165,20 +161,9 @@ def version(staging):
 @click.argument("uuid", type=click.UUID)
 def status(config, staging, uuid):
     c = recover_client(config_path=config, staging=staging)
-    resp = c.status(uuid).analysis
-    for name, value in (
-        ("UUID", resp.uuid),
-        ("API Version", resp.api_version),
-        ("Mythril", resp.mythril_version),
-        ("Maestro", resp.maestro_version),
-        ("Maru", resp.maru_version),
-        ("Queue Time", resp.queue_time),
-        ("Run Time", resp.run_time),
-        ("Status", resp.status.title()),
-        ("Submitted By", resp.submitted_by),
-        ("Submitted At", resp.submitted_at),
-    ):
-        click.echo("{}: {}".format(name, value))
+    resp = c.status(uuid).analysis.to_dict()
+    data = ((k, v) for k, v in resp.items())
+    click.echo(tabulate(data, tablefmt="fancy_grid"))
 
 
 @cli.command(help="Get a greppable overview of submitted analyses")
@@ -257,7 +242,7 @@ def check(config, staging, bytecode, source, bytecode_file, source_file):
             sources_f = {path.abspath(source_file): {"source": sf.read().strip()}}
 
     resp = c.analyze(bytecode=bytecode_f, sources=sources_f)
-    click.echo("Submitted analysis: {}".format(resp.analysis.uuid))
+    click.echo("Analysis submitted as job {}".format(resp.analysis.uuid))
 
 
 @cli.command(help="Check the detected issues of a finished analysis job")
@@ -267,4 +252,8 @@ def check(config, staging, bytecode, source, bytecode_file, source_file):
 def report(config, staging, uuid):
     c = recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
-    pprint(resp.to_dict())
+    data = []
+    for issue in resp.issues:
+        locations = ", ".join((x.source_map for x in issue.locations))
+        data.append((locations, issue.swc_title, issue.severity, issue.description_short))
+    click.echo(tabulate(data, tablefmt="fancy_grid"))
