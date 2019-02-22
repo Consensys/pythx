@@ -13,16 +13,26 @@ from pythx.api import Client
 import click
 
 
-logging.basicConfig(level=logging.ERROR)
+if environ.get("PYTHX_DEBUG") is not None:
+    logging.basicConfig(level=logging.DEBUG)
+else:
+    logging.basicConfig(level=logging.ERROR)
 LOGGER = logging.getLogger("pythx-cli")
 DEFAULT_STORAGE_PATH = path.join(tempfile.gettempdir(), ".pythx.json")
 CONFIG_KEYS = ("access", "refresh", "username", "password")
 
 staging_opt = click.option(
-    "--staging", default=False, is_flag=True, help="Use the MythX staging environment"
+    "--staging",
+    default=False,
+    is_flag=True,
+    envvar="PYTHX_STAGING",
+    help="Use the MythX staging environment",
 )
 config_opt = click.option(
-    "--config", default=DEFAULT_STORAGE_PATH, help="Path to user credentials JSON file"
+    "--config",
+    default=DEFAULT_STORAGE_PATH,
+    envvar="PYTHX_CONFIG",
+    help="Path to user credentials JSON file",
 )
 
 
@@ -73,7 +83,7 @@ def recover_client(config_path, staging=False):
             hide_input=True,
             default="trial",
         )
-        c = Client(eth_address=eth_address, password=password)
+        c = Client(eth_address=eth_address, password=password, staging=staging)
         c.login()
         update_config(
             config_path=config_path,
@@ -244,7 +254,7 @@ def check(config, staging, bytecode, source, bytecode_file, source_file):
             bytecode_f = bf.read().strip()  # CLI arg bytecode takes preference
     if source_file:
         with open(source_file, "r") as sf:
-            sources_f = {source_file: {"source": sf.read().strip()}}
+            sources_f = {path.abspath(source_file): {"source": sf.read().strip()}}
 
     resp = c.analyze(bytecode=bytecode_f, sources=sources_f)
     click.echo("Submitted analysis: {}".format(resp.analysis.uuid))

@@ -12,19 +12,19 @@ from pythx.models.exceptions import PythXAPIError
 
 
 def print_request(req):
-    return "HTTP/1.1 {method} {url}\n{headers}\n\n{body}".format(
+    return "\nHTTP/1.1 {method} {url}\n{headers}\n\n{body}\n".format(
         method=req.method,
         url=req.url,
         headers="\n".join("{}: {}".format(k, v) for k, v in req.headers.items()),
-        body=req.body,
+        body=req.body.decode(),
     )
 
 
 def print_response(res):
-    return "HTTP/1.1 {status_code}\n{headers}\n\n{body}".format(
+    return "\nHTTP/1.1 {status_code}\n{headers}\n\n{body}\n".format(
         status_code=res.status_code,
         headers="\n".join("{}: {}".format(k, v) for k, v in res.headers.items()),
-        body=res.content,
+        body=res.content.decode(),
     )
 
 
@@ -50,8 +50,8 @@ class APIHandler:
         response = requests.request(
             method=method, url=url, headers=headers, json=payload, params=params
         )
-        LOGGER.debug("Sent request: %s", print_request(response.request))
-        LOGGER.debug("Got response: %s", print_response(response))
+        LOGGER.debug(print_request(response.request))
+        LOGGER.debug(print_response(response))
         if response.status_code != 200:
             raise PythXAPIError(
                 "Got unexpected status code {}: {}".format(

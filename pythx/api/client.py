@@ -39,12 +39,9 @@ class Client:
             if include_auth_header
             else {}
         )
-        LOGGER.debug("Assembling request dict:")
         req_dict = self.handler.assemble_request(req_obj)
-        LOGGER.debug(req_dict)
         LOGGER.debug("Sending request")
         resp = self.handler.send_request(req_dict, auth_header=auth_header)
-        LOGGER.debug("Got response %s", resp)
         LOGGER.debug("Parsing response")
         return self.handler.parse_response(resp, resp_model)
 
