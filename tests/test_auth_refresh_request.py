@@ -8,6 +8,7 @@ from pythx.models.request import AuthRefreshRequest
 ACCESS_TOKEN = "my_fancy_access_token"
 REFRESH_TOKEN = "my_fancy_refresh_token"
 AUTH_REFRESH = {"access": ACCESS_TOKEN, "refresh": REFRESH_TOKEN}
+AUTH_REFRESH_PAYLOAD = {"accessToken": ACCESS_TOKEN, "refreshToken": REFRESH_TOKEN}
 AUTH_REFRESH_REQUEST = AuthRefreshRequest(
     access_token=ACCESS_TOKEN, refresh_token=REFRESH_TOKEN
 )
@@ -19,7 +20,7 @@ def assert_auth_refresh_request(req: AuthRefreshRequest):
     assert req.method == "POST"
     assert req.headers == {}
     assert req.parameters == {}
-    assert req.payload == AUTH_REFRESH
+    assert req.payload == AUTH_REFRESH_PAYLOAD
 
 
 def test_auth_refresh_request_from_valid_json():
