@@ -183,6 +183,14 @@ def ps(config, staging, number):
 
 def ps_core(config, staging, number):
     c = recover_client(config_path=config, staging=staging)
+    if c.eth_address == "0x0000000000000000000000000000000000000000":
+        click.echo((
+        "This functionality is only available to registered users. "
+        "Head over to https://mythx.io/ and register a free account to "
+        "list your past analyses. Alternatively, you can look up the "
+        "status of a specific job by calling 'pythx status <uuid>'."
+        ))
+        sys.exit(0)
     resp = c.analysis_list()
     # todo: pagination if too few
     resp.analyses = resp.analyses[:number+1]
@@ -195,8 +203,8 @@ def ps_core(config, staging, number):
 @click.option("--interval", default=5, type=click.INT, help="Refresh interval")
 def top(config, staging, interval):
     while True:
-        click.clear()
         resp = ps_core(config=config, staging=staging, number=20)
+        click.clear()
         data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
         click.echo(tabulate(data, tablefmt="fancy_grid"))
         time.sleep(interval)
