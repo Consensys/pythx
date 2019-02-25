@@ -106,7 +106,7 @@ def recover_client(config_path, staging=False):
 
 @click.group()
 def cli():
-    pass
+    pass  # pragma: no cover
 
 
 @cli.command(help="Login to your MythX account")
