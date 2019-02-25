@@ -2,16 +2,13 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import AnalysisStatusRequest
 
-UUID = "70c06039-b5d9-4556-85cb-67633bef5b99"
-STATUS = {"uuid": UUID}
-STATUS_REQUEST = AnalysisStatusRequest(uuid=UUID)
-
 
 def assert_status_request(req: AnalysisStatusRequest):
-    assert req.uuid == UUID
+    assert req.uuid == testdata.UUID_1
     assert req.method == "GET"
     assert req.headers == {}
     assert req.parameters == {}
@@ -19,7 +16,7 @@ def assert_status_request(req: AnalysisStatusRequest):
 
 
 def test_analysis_status_request_from_valid_json():
-    req = AnalysisStatusRequest.from_json(json.dumps(STATUS))
+    req = AnalysisStatusRequest.from_json(json.dumps(testdata.ANALYSIS_STATUS_REQUEST_DICT))
     assert_status_request(req)
 
 
@@ -29,7 +26,7 @@ def test_analysis_status_request_from_invalid_json():
 
 
 def test_analysis_status_request_from_valid_dict():
-    req = AnalysisStatusRequest.from_dict(STATUS)
+    req = AnalysisStatusRequest.from_dict(testdata.ANALYSIS_STATUS_REQUEST_DICT)
     assert_status_request(req)
 
 
@@ -39,12 +36,12 @@ def test_analysis_status_request_from_invalid_dict():
 
 
 def test_analysis_status_request_to_json():
-    assert json.loads(STATUS_REQUEST.to_json()) == STATUS
+    assert json.loads(testdata.ANALYSIS_STATUS_REQUEST_OBJECT.to_json()) == testdata.ANALYSIS_STATUS_REQUEST_DICT
 
 
 def test_analysis_status_request_to_dict():
-    assert STATUS_REQUEST.to_dict() == STATUS
+    assert testdata.ANALYSIS_STATUS_REQUEST_OBJECT.to_dict() == testdata.ANALYSIS_STATUS_REQUEST_DICT
 
 
 def test_validate():
-    STATUS_REQUEST.validate()
+    testdata.ANALYSIS_STATUS_REQUEST_OBJECT.validate()

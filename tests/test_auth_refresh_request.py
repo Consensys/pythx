@@ -2,29 +2,22 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import AuthRefreshRequest
 
-ACCESS_TOKEN = "my_fancy_access_token"
-REFRESH_TOKEN = "my_fancy_refresh_token"
-AUTH_REFRESH = {"access": ACCESS_TOKEN, "refresh": REFRESH_TOKEN}
-AUTH_REFRESH_PAYLOAD = {"accessToken": ACCESS_TOKEN, "refreshToken": REFRESH_TOKEN}
-AUTH_REFRESH_REQUEST = AuthRefreshRequest(
-    access_token=ACCESS_TOKEN, refresh_token=REFRESH_TOKEN
-)
-
 
 def assert_auth_refresh_request(req: AuthRefreshRequest):
-    assert req.access_token == ACCESS_TOKEN
-    assert req.refresh_token == REFRESH_TOKEN
+    assert req.access_token == testdata.ACCESS_TOKEN_1
+    assert req.refresh_token == testdata.REFRESH_TOKEN_1
     assert req.method == "POST"
     assert req.headers == {}
     assert req.parameters == {}
-    assert req.payload == AUTH_REFRESH_PAYLOAD
+    assert req.payload == testdata.REFRESH_REQUEST_PAYLOAD_DICT
 
 
 def test_auth_refresh_request_from_valid_json():
-    resp = AuthRefreshRequest.from_json(json.dumps(AUTH_REFRESH))
+    resp = AuthRefreshRequest.from_json(json.dumps(testdata.REFRESH_REQUEST_DICT))
     assert_auth_refresh_request(resp)
 
 
@@ -34,7 +27,7 @@ def test_auth_refresh_request_from_invalid_json():
 
 
 def test_auth_refresh_request_from_valid_dict():
-    resp = AuthRefreshRequest.from_dict(AUTH_REFRESH)
+    resp = AuthRefreshRequest.from_dict(testdata.REFRESH_REQUEST_DICT)
     assert_auth_refresh_request(resp)
 
 
@@ -44,12 +37,12 @@ def test_auth_refresh_request_from_invalid_dict():
 
 
 def test_auth_refresh_request_to_json():
-    assert json.loads(AUTH_REFRESH_REQUEST.to_json()) == AUTH_REFRESH
+    assert json.loads(testdata.REFRESH_REQUEST_OBJECT.to_json()) == testdata.REFRESH_REQUEST_DICT
 
 
 def test_auth_refresh_request_to_dict():
-    assert AUTH_REFRESH_REQUEST.to_dict() == AUTH_REFRESH
+    assert testdata.REFRESH_REQUEST_OBJECT.to_dict() == testdata.REFRESH_REQUEST_DICT
 
 
 def test_validate():
-    AUTH_REFRESH_REQUEST.validate()
+    testdata.REFRESH_REQUEST_OBJECT.validate()

@@ -2,51 +2,27 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response import VersionResponse
 
-API_VERSION = "1.0"
-MARU_VERSION = "1.1"
-MYTHRIL_VERSION = "1.2"
-MAESTRO_VERSION = "1.3"
-HARVEY_VERSION = "1.4"
-HASHED_VERSION = "31337deadbeef"
-
-VERSION = {
-    "api": API_VERSION,
-    "maru": MARU_VERSION,
-    "mythril": MYTHRIL_VERSION,
-    "maestro": MAESTRO_VERSION,
-    "harvey": HARVEY_VERSION,
-    "hash": HASHED_VERSION,
-}
-
-VERSION_REQUEST = VersionResponse(
-    api_version=API_VERSION,
-    maru_version=MARU_VERSION,
-    mythril_version=MYTHRIL_VERSION,
-    maestro_version=MAESTRO_VERSION,
-    harvey_version=HARVEY_VERSION,
-    hashed_version=HASHED_VERSION,
-)
-
 
 def assert_version_response(resp: VersionResponse):
-    assert resp.api_version == API_VERSION
-    assert resp.maru_version == MARU_VERSION
-    assert resp.mythril_version == MYTHRIL_VERSION
-    assert resp.maestro_version == MAESTRO_VERSION
-    assert resp.harvey_version == HARVEY_VERSION
-    assert resp.hashed_version == HASHED_VERSION
+    assert resp.api_version == testdata.API_VERSION_1
+    assert resp.maru_version == testdata.MARU_VERSION_1
+    assert resp.mythril_version == testdata.MYTHRIL_VERSION_1
+    assert resp.maestro_version == testdata.MAESTRO_VERSION_1
+    assert resp.harvey_version == testdata.HARVEY_VERSION_1
+    assert resp.hashed_version == testdata.HASHED_VERSION_1
 
 
 def test_auth_logout_request_from_valid_json():
-    resp = VersionResponse.from_json(json.dumps(VERSION))
+    resp = VersionResponse.from_json(json.dumps(testdata.VERSION_RESPONSE_DICT))
     assert_version_response(resp)
 
 
 def test_auth_logout_request_from_valid_dict():
-    resp = VersionResponse.from_dict(VERSION)
+    resp = VersionResponse.from_dict(testdata.VERSION_RESPONSE_DICT)
     assert_version_response(resp)
 
 
@@ -61,12 +37,12 @@ def test_auth_logout_request_from_invalid_json():
 
 
 def test_auth_logout_request_to_json():
-    assert json.loads(VERSION_REQUEST.to_json()) == VERSION
+    assert json.loads(testdata.VERSION_RESPONSE_OBJECT.to_json()) == testdata.VERSION_RESPONSE_DICT
 
 
 def test_auth_logout_request_to_dict():
-    assert VERSION_REQUEST.to_dict() == VERSION
+    assert testdata.VERSION_RESPONSE_OBJECT.to_dict() == testdata.VERSION_RESPONSE_DICT
 
 
 def test_validate():
-    VERSION_REQUEST.validate()
+    testdata.VERSION_RESPONSE_OBJECT.validate()

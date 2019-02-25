@@ -2,24 +2,18 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response import AuthLoginResponse
 
-ACCESS_TOKEN = "my_fancy_access_token"
-REFRESH_TOKEN = "my_fancy_refresh_token"
-AUTH_LOGIN = {"access": ACCESS_TOKEN, "refresh": REFRESH_TOKEN}
-AUTH_LOGIN_RESPONSE = AuthLoginResponse(
-    access_token=ACCESS_TOKEN, refresh_token=REFRESH_TOKEN
-)
-
 
 def assert_auth_login_response(resp: AuthLoginResponse):
-    assert resp.access_token == ACCESS_TOKEN
-    assert resp.refresh_token == REFRESH_TOKEN
+    assert resp.access_token == testdata.ACCESS_TOKEN_1
+    assert resp.refresh_token == testdata.REFRESH_TOKEN_1
 
 
 def test_auth_login_response_from_valid_json():
-    resp = AuthLoginResponse.from_json(json.dumps(AUTH_LOGIN))
+    resp = AuthLoginResponse.from_json(json.dumps(testdata.LOGIN_RESPONSE_DICT))
     assert_auth_login_response(resp)
 
 
@@ -29,7 +23,7 @@ def test_auth_login_response_from_invalid_json():
 
 
 def test_auth_login_response_from_valid_dict():
-    resp = AuthLoginResponse.from_dict(AUTH_LOGIN)
+    resp = AuthLoginResponse.from_dict(testdata.LOGIN_RESPONSE_DICT)
     assert_auth_login_response(resp)
 
 
@@ -39,12 +33,12 @@ def test_auth_login_response_from_invalid_dict():
 
 
 def test_auth_login_response_to_json():
-    assert json.loads(AUTH_LOGIN_RESPONSE.to_json()) == AUTH_LOGIN
+    assert json.loads(testdata.LOGIN_RESPONSE_OBJECT.to_json()) == testdata.LOGIN_RESPONSE_DICT
 
 
 def test_auth_login_response_to_dict():
-    assert AUTH_LOGIN_RESPONSE.to_dict() == AUTH_LOGIN
+    assert testdata.LOGIN_RESPONSE_OBJECT.to_dict() == testdata.LOGIN_RESPONSE_DICT
 
 
 def test_validate():
-    AUTH_LOGIN_RESPONSE.validate()
+    testdata.LOGIN_RESPONSE_OBJECT.validate()
