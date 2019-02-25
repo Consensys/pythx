@@ -1,3 +1,4 @@
+import logging
 import urllib.parse
 from typing import Dict, List
 
@@ -8,6 +9,26 @@ from pythx.middleware.base import BaseMiddleware
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
 from pythx.models.exceptions import PythXAPIError
+
+
+def print_request(req):
+    return "\nHTTP/1.1 {method} {url}\n{headers}\n\n{body}\n".format(
+        method=req.method,
+        url=req.url,
+        headers="\n".join("{}: {}".format(k, v) for k, v in req.headers.items()),
+        body=req.body.decode(),
+    )
+
+
+def print_response(res):
+    return "\nHTTP/1.1 {status_code}\n{headers}\n\n{body}\n".format(
+        status_code=res.status_code,
+        headers="\n".join("{}: {}".format(k, v) for k, v in res.headers.items()),
+        body=res.content.decode(),
+    )
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class APIHandler:
@@ -27,12 +48,14 @@ class APIHandler:
         payload = request_data["payload"]
         params = request_data["params"]
         response = requests.request(
-            method=method, url=url, headers=headers, data=payload, params=params
+            method=method, url=url, headers=headers, json=payload, params=params
         )
+        LOGGER.debug(print_request(response.request))
+        LOGGER.debug(print_response(response))
         if response.status_code != 200:
             raise PythXAPIError(
                 "Got unexpected status code {}: {}".format(
-                    response.status_code, response.content
+                    response.status_code, response.content.decode()
                 )
             )
         return response.text

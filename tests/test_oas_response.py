@@ -2,21 +2,19 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response import OASResponse
 
-CONTENT = "openapi spec stuff"
-OAS_RESPONSE = OASResponse(data=CONTENT)
-
 
 def test_oas_response_from_valid_json():
-    resp = OASResponse.from_json(CONTENT)
-    assert resp.data == CONTENT
+    resp = OASResponse.from_json(testdata.OPENAPI_RESPONSE)
+    assert resp.data == testdata.OPENAPI_RESPONSE
 
 
 def test_oas_response_from_valid_dict():
-    resp = OASResponse.from_dict({"data": CONTENT})
-    assert resp.data == CONTENT
+    resp = OASResponse.from_dict({"data": testdata.OPENAPI_RESPONSE})
+    assert resp.data == testdata.OPENAPI_RESPONSE
 
 
 def test_oas_response_from_invalid_dict():
@@ -30,12 +28,12 @@ def test_oas_response_invalid_type():
 
 
 def test_oas_response_to_json():
-    assert OAS_RESPONSE.to_json() == json.dumps({"data": CONTENT})
+    assert testdata.OPENAPI_RESPONSE_OBJECT.to_json() == json.dumps({"data": testdata.OPENAPI_RESPONSE})
 
 
 def test_oas_response_to_dict():
-    assert OAS_RESPONSE.to_dict() == {"data": CONTENT}
+    assert testdata.OPENAPI_RESPONSE_OBJECT.to_dict() == {"data": testdata.OPENAPI_RESPONSE}
 
 
 def test_validate():
-    OAS_RESPONSE.validate()
+    testdata.OPENAPI_RESPONSE_OBJECT.validate()

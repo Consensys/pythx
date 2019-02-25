@@ -18,7 +18,7 @@ class OASRequest(BaseRequest):
 
     @property
     def endpoint(self):
-        return "v1/openapi" + ".yaml" if self.mode == "yaml" else ""
+        return "v1/openapi" + (".yaml" if self.mode == "yaml" else "")
 
     @property
     def method(self):

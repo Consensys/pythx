@@ -5,3 +5,4 @@ omit =
     pythx/middleware/base.py
     pythx/models/request/base.py
     pythx/models/response/base.py
+    pythx/cli/*

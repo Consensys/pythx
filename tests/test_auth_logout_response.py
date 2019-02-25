@@ -2,10 +2,9 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response import AuthLogoutResponse
-
-AUTH_LOGOUT_RESPONSE = AuthLogoutResponse()
 
 
 def test_auth_login_response_from_valid_json():
@@ -29,12 +28,12 @@ def test_auth_login_response_from_invalid_dict():
 
 
 def test_auth_login_response_to_json():
-    assert AUTH_LOGOUT_RESPONSE.to_json() == "{}"
+    assert testdata.LOGOUT_RESPONSE_OBJECT.to_json() == "{}"
 
 
 def test_auth_login_response_to_dict():
-    assert AUTH_LOGOUT_RESPONSE.to_dict() == {}
+    assert testdata.LOGOUT_RESPONSE_OBJECT.to_dict() == {}
 
 
 def test_validate():
-    AUTH_LOGOUT_RESPONSE.validate()
+    testdata.LOGOUT_RESPONSE_OBJECT.validate()

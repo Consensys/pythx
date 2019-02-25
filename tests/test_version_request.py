@@ -2,10 +2,11 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import VersionRequest
 
-VERSION_REQUEST = VersionRequest()
+
 
 
 def assert_version_request(req):
@@ -27,12 +28,12 @@ def test_auth_logout_request_from_valid_dict():
 
 
 def test_auth_logout_request_to_json():
-    assert VERSION_REQUEST.to_json() == "{}"
+    assert testdata.VERSION_REQUEST_OBJECT.to_json() == "{}"
 
 
 def test_auth_logout_request_to_dict():
-    assert VERSION_REQUEST.to_dict() == {}
+    assert testdata.VERSION_REQUEST_OBJECT.to_dict() == {}
 
 
 def test_validate():
-    VERSION_REQUEST.validate()
+    testdata.VERSION_REQUEST_OBJECT.validate()

@@ -4,6 +4,7 @@ from datetime import datetime
 import dateutil.parser
 import pytest
 
+from . import common as testdata
 from pythx import config
 from pythx.api.handler import APIHandler
 from pythx.middleware.base import BaseMiddleware
@@ -22,104 +23,8 @@ class TestMiddleware(BaseMiddleware):
         return resp
 
 
-TEST_ANALYSIS_LIST = reqmodels.AnalysisListRequest(
-    offset=0, date_from=datetime.now(), date_to=datetime.now()
-)
-TEST_ANALYSIS_SUBMISSION = reqmodels.AnalysisSubmissionRequest(bytecode="0x")
-TEST_ANALYSIS_STATUS = reqmodels.AnalysisStatusRequest(uuid="test")
-TEST_DETECTED_ISSUES = reqmodels.DetectedIssuesRequest(uuid="test")
-TEST_AUTH_LOGIN = reqmodels.AuthLoginRequest(eth_address="0x0", password="lelwat")
-TEST_AUTH_LOGOUT = reqmodels.AuthLogoutRequest()
-TEST_AUTH_REFRESH = reqmodels.AuthRefreshRequest(access_token="", refresh_token="")
-
-TEST_LIST_RESPONSE = {
-    "analyses": [
-        {
-            "apiVersion": "v1.3.0",
-            "maruVersion": "v0.2.0",
-            "mythrilVersion": "0.19.11",
-            "maestroVersion": "v1.1.4",
-            "queueTime": 1,
-            "runTime": 300,
-            "status": "Running",
-            "submittedAt": "2019-01-10T01:29:38.410Z",
-            "submittedBy": "000008544b0aa00010a91111",
-            "uuid": "0680a1e2-b908-4c9a-a15b-636ef9b61486",
-        },
-        {
-            "apiVersion": "v1.3.0",
-            "maruVersion": "v0.2.0",
-            "mythrilVersion": "0.19.11",
-            "maestroVersion": "v1.1.4",
-            "queueTime": 0,
-            "runTime": 0,
-            "status": "Finished",
-            "submittedAt": "2019-01-10T01:28:56.551Z",
-            "submittedBy": "000008544b0aa00010a91111",
-            "uuid": "78e3e82b-869d-4df1-8acf-cb1161281b71",
-        },
-    ],
-    "total": 2,
-}
-TEST_STATUS_RESPONSE = {
-    "apiVersion": "string",
-    "mythrilVersion": "string",
-    "maestroVersion": "string",
-    "maruVersion": "string",
-    "queueTime": 0,
-    "runTime": 0,
-    "status": "Queued",
-    "submittedAt": "2019-02-04T16:04:39Z",
-    "submittedBy": "string",
-    "uuid": "string",
-}
-TEST_SUBMISSION_RESPONSE = {
-    "apiVersion": "v1.3.0",
-    "maruVersion": "v0.2.0",
-    "mythrilVersion": "0.19.11",
-    "maestroVersion": "string",
-    "queueTime": 0,
-    "status": "Queued",
-    "submittedAt": "2019-01-10T01:29:38.410Z",
-    "submittedBy": "000008544b0aa00010a91111",
-    "uuid": "0680a1e2-b908-4c9a-a15b-636ef9b61486",
-}
-TEST_ISSUES_RESPONSE = [
-    {
-        "issues": [
-            {
-                "swcID": "SWC-103",
-                "swcTitle": "FloatingPragma",
-                "description": {
-                    "head": "A floating pragma is set.",
-                    "tail": 'It is recommended to make a conscious choice on what version of Solidity is used for compilation. Currently any version equal or grater than "0.4.24" is allowed.',
-                },
-                "severity": "Low",
-                "locations": [
-                    {
-                        "sourceMap": "48:1:0",
-                        "sourceType": "raw_bytecode",
-                        "sourceFormat": "evm-byzantium-bytecode",
-                        "sourceList": ["/test/my-super-safe-contract.sol"],
-                    }
-                ],
-                "extra": {},
-            }
-        ],
-        "sourceType": "solidity-file",
-        "sourceFormat": "text",
-        "sourceList": ["/test/my-super-safe-contract.sol"],
-        "meta": {},
-    }
-]
-TEST_LOGIN_RESPONSE = {"access": "string", "refresh": "string"}
-TEST_REFRESH_RESPONSE = {"access": "string", "refresh": "string"}
-TEST_LOGOUT_RESPONSE = {}
-
 STAGING_HANDLER = APIHandler(middlewares=[TestMiddleware()], staging=True)
 PROD_HANDLER = APIHandler(middlewares=[TestMiddleware()])
-
-MOCK_API_URL = "mock://test.com/path"
 
 
 def assert_request_dict_keys(d):
@@ -147,13 +52,13 @@ def assert_response_middleware_hook(model):
 @pytest.mark.parametrize(
     "request_obj",
     [
-        TEST_ANALYSIS_LIST,
-        TEST_DETECTED_ISSUES,
-        TEST_ANALYSIS_STATUS,
-        TEST_ANALYSIS_SUBMISSION,
-        TEST_AUTH_LOGIN,
-        TEST_AUTH_LOGOUT,
-        TEST_AUTH_REFRESH,
+        testdata.ANALYSIS_LIST_REQUEST_OBJECT,
+        testdata.DETECTED_ISSUES_REQUEST_OBJECT,
+        testdata.ANALYSIS_STATUS_REQUEST_OBJECT,
+        testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT,
+        testdata.LOGIN_REQUEST_OBJECT,
+        testdata.LOGOUT_REQUEST_OBJECT,
+        testdata.REFRESH_REQUEST_OBJECT,
     ],
 )
 def test_request_dicts(request_obj):
@@ -186,72 +91,74 @@ def assert_analysis(analysis, data):
 
 def test_parse_analysis_list_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(TEST_LIST_RESPONSE), respmodels.AnalysisListResponse
+        json.dumps(testdata.ANALYSIS_LIST_RESPONSE_DICT), respmodels.AnalysisListResponse
     )
     assert_response_middleware_hook(model)
     for i, analysis in enumerate(model.analyses):
-        response_obj = TEST_LIST_RESPONSE["analyses"][i]
+        response_obj = testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"][i]
         assert_analysis(analysis, response_obj)
 
 
 def test_parse_analysis_status_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(TEST_STATUS_RESPONSE), respmodels.AnalysisStatusResponse
+        json.dumps(testdata.ANALYSIS_STATUS_RESPONSE_DICT), respmodels.AnalysisStatusResponse
     )
     assert_response_middleware_hook(model)
-    assert_analysis(model.analysis, TEST_STATUS_RESPONSE)
+    assert_analysis(model.analysis, testdata.ANALYSIS_STATUS_RESPONSE_DICT)
 
 
 def test_parse_analysis_submission_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(TEST_SUBMISSION_RESPONSE), respmodels.AnalysisSubmissionResponse
+        json.dumps(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT), respmodels.AnalysisSubmissionResponse
     )
     assert_response_middleware_hook(model)
-    assert model.analysis.api_version == TEST_SUBMISSION_RESPONSE["apiVersion"]
-    assert model.analysis.maru_version == TEST_SUBMISSION_RESPONSE["maruVersion"]
-    assert model.analysis.mythril_version == TEST_SUBMISSION_RESPONSE["mythrilVersion"]
-    assert model.analysis.queue_time == TEST_SUBMISSION_RESPONSE["queueTime"]
-    assert model.analysis.status.title() == TEST_SUBMISSION_RESPONSE["status"]
+    assert model.analysis.api_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["apiVersion"]
+    assert model.analysis.maru_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["maruVersion"]
+    assert model.analysis.mythril_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["mythrilVersion"]
+    assert model.analysis.maestro_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["maestroVersion"]
+    assert model.analysis.harvey_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["harveyVersion"]
+    assert model.analysis.queue_time == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["queueTime"]
+    assert model.analysis.status.title() == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["status"]
     assert model.analysis.submitted_at == dateutil.parser.parse(
-        TEST_SUBMISSION_RESPONSE["submittedAt"]
+        testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["submittedAt"]
     )
-    assert model.analysis.submitted_by == TEST_SUBMISSION_RESPONSE["submittedBy"]
-    assert model.analysis.uuid == TEST_SUBMISSION_RESPONSE["uuid"]
+    assert model.analysis.submitted_by == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["submittedBy"]
+    assert model.analysis.uuid == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["uuid"]
 
 
 def test_parse_detected_issues_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(TEST_ISSUES_RESPONSE), respmodels.DetectedIssuesResponse
+        json.dumps(testdata.DETECTED_ISSUES_RESPONSE_DICT), respmodels.DetectedIssuesResponse
     )
     assert_response_middleware_hook(model)
-    assert model.issues[0].to_dict() == TEST_ISSUES_RESPONSE[0]["issues"][0]
-    assert model.source_type == TEST_ISSUES_RESPONSE[0]["sourceType"]
-    assert model.source_format == TEST_ISSUES_RESPONSE[0]["sourceFormat"]
-    assert model.source_list == TEST_ISSUES_RESPONSE[0]["sourceList"]
-    assert model.meta_data == TEST_ISSUES_RESPONSE[0]["meta"]
+    assert model.issues[0].to_dict() == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["issues"][0]
+    assert model.source_type == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["sourceType"]
+    assert model.source_format == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["sourceFormat"]
+    assert model.source_list == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["sourceList"]
+    assert model.meta_data == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["meta"]
 
 
 def test_parse_login_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(TEST_LOGIN_RESPONSE), respmodels.AuthLoginResponse
+        json.dumps(testdata.LOGIN_RESPONSE_DICT), respmodels.AuthLoginResponse
     )
     assert_response_middleware_hook(model)
-    assert model.access_token == TEST_LOGIN_RESPONSE["access"]
-    assert model.refresh_token == TEST_LOGIN_RESPONSE["refresh"]
+    assert model.access_token == testdata.LOGIN_RESPONSE_DICT["access"]
+    assert model.refresh_token == testdata.LOGIN_RESPONSE_DICT["refresh"]
 
 
 def test_parse_refresh_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(TEST_LOGIN_RESPONSE), respmodels.AuthRefreshResponse
+        json.dumps(testdata.LOGIN_RESPONSE_DICT), respmodels.AuthRefreshResponse
     )
     assert_response_middleware_hook(model)
-    assert model.access_token == TEST_LOGIN_RESPONSE["access"]
-    assert model.refresh_token == TEST_LOGIN_RESPONSE["refresh"]
+    assert model.access_token == testdata.LOGIN_RESPONSE_DICT["access"]
+    assert model.refresh_token == testdata.LOGIN_RESPONSE_DICT["refresh"]
 
 
 def test_parse_logout_response():
     model = PROD_HANDLER.parse_response(
-        (json.dumps(TEST_LOGOUT_RESPONSE)), respmodels.AuthLogoutResponse
+        (json.dumps(testdata.LOGOUT_RESPONSE_DICT)), respmodels.AuthLogoutResponse
     )
     assert_response_middleware_hook(model)
     assert model.to_dict() == {}
@@ -264,7 +171,7 @@ def test_send_request_successful(requests_mock):
         {
             "method": "GET",
             "headers": {},
-            "url": MOCK_API_URL,
+            "url": testdata.MOCK_API_URL,
             "payload": {},
             "params": {},
         },
@@ -274,7 +181,7 @@ def test_send_request_successful(requests_mock):
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]
     assert h.method == "GET"
-    assert h.url == MOCK_API_URL
+    assert h.url == testdata.MOCK_API_URL
     assert h.headers["Authorization"] == "Bearer foo"
 
 
@@ -285,7 +192,7 @@ def test_send_request_failure(requests_mock):
             {
                 "method": "GET",
                 "headers": {},
-                "url": MOCK_API_URL,
+                "url": testdata.MOCK_API_URL,
                 "payload": {},
                 "params": {},
             },
@@ -295,7 +202,7 @@ def test_send_request_failure(requests_mock):
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]
     assert h.method == "GET"
-    assert h.url == MOCK_API_URL
+    assert h.url == testdata.MOCK_API_URL
     assert h.headers["Authorization"] == "Bearer foo"
 
 
@@ -306,7 +213,7 @@ def test_send_request_unauthenticated(requests_mock):
             {
                 "method": "GET",
                 "headers": {},
-                "url": MOCK_API_URL,
+                "url": testdata.MOCK_API_URL,
                 "payload": {},
                 "params": {},
             }
@@ -315,5 +222,5 @@ def test_send_request_unauthenticated(requests_mock):
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]
     assert h.method == "GET"
-    assert h.url == MOCK_API_URL
+    assert h.url == testdata.MOCK_API_URL
     assert h.headers.get("Authorization") is None

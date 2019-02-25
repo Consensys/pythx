@@ -2,52 +2,47 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import AuthLoginRequest
 
-ETH_ADDRESS = "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d"
-PASSWORD = "supersecure"
 
-LOGIN = {"ethAddress": ETH_ADDRESS, "password": PASSWORD}
-LOGIN_REQUEST = AuthLoginRequest(eth_address=ETH_ADDRESS, password=PASSWORD)
-
-
-def assert_login_request(req: AuthLoginRequest):
-    assert req.eth_address == ETH_ADDRESS
-    assert req.password == PASSWORD
+def assert_login(req: AuthLoginRequest):
+    assert req.eth_address == testdata.ETH_ADDRESS
+    assert req.password == testdata.PASSWORD
     assert req.method == "POST"
     assert req.headers == {}
     assert req.parameters == {}
-    assert req.payload == LOGIN
+    assert req.payload == testdata.LOGIN_REQUEST_DICT
 
 
-def test_auth_login_request_from_valid_json():
-    req = AuthLoginRequest.from_json(json.dumps(LOGIN))
-    assert_login_request(req)
+def test_login_from_valid_json():
+    req = AuthLoginRequest.from_json(json.dumps(testdata.LOGIN_REQUEST_DICT))
+    assert_login(req)
 
 
-def test_auth_login_request_from_invalid_json():
+def test_login_from_invalid_json():
     with pytest.raises(RequestDecodeError):
         AuthLoginRequest.from_json("{}")
 
 
-def test_auth_login_request_from_valid_dict():
-    req = AuthLoginRequest.from_dict(LOGIN)
-    assert_login_request(req)
+def test_login_from_valid_dict():
+    req = AuthLoginRequest.from_dict(testdata.LOGIN_REQUEST_DICT)
+    assert_login(req)
 
 
-def test_auth_login_request_from_invalid_dict():
+def test_login_from_invalid_dict():
     with pytest.raises(RequestDecodeError):
         AuthLoginRequest.from_dict({})
 
 
-def test_auth_login_request_to_json():
-    assert json.loads(LOGIN_REQUEST.to_json()) == LOGIN
+def test_login_to_json():
+    assert json.loads(testdata.LOGIN_REQUEST_OBJECT.to_json()) == testdata.LOGIN_REQUEST_DICT
 
 
-def test_auth_login_request_to_dict():
-    assert LOGIN_REQUEST.to_dict() == LOGIN
+def test_login_to_dict():
+    assert testdata.LOGIN_REQUEST_OBJECT.to_dict() == testdata.LOGIN_REQUEST_DICT
 
 
 def test_validate():
-    LOGIN_REQUEST.validate()
+    testdata.LOGIN_REQUEST_OBJECT.validate()

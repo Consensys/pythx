@@ -101,10 +101,10 @@ class Issue:
         # TODO: validate
         locs = [
             SourceLocation(
-                source_map=loc["sourceMap"],
-                source_type=loc["sourceType"],
-                source_format=loc["sourceFormat"],
-                source_list=loc["sourceList"],
+                source_map=loc.get("sourceMap"),
+                source_type=loc.get("sourceType"),
+                source_format=loc.get("sourceFormat"),
+                source_list=loc.get("sourceList"),
             )
             for loc in d["locations"]
         ]
@@ -113,7 +113,7 @@ class Issue:
             swc_title=d["swcTitle"],
             description_short=d["description"]["head"],
             description_long=d["description"]["tail"],
-            severity=Severity[d["severity"].upper()],
+            severity=Severity(d["severity"]) if d["severity"] else Severity.NONE,
             locations=locs,
             extra=d["extra"],
         )

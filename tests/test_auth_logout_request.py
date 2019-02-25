@@ -2,17 +2,13 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import AuthLogoutRequest
 
-GLOBAL = True
-
-LOGOUT = {"global": GLOBAL}
-LOGOUT_REQUEST = AuthLogoutRequest(global_=GLOBAL)
-
 
 def assert_logout_request(req):
-    assert req.global_ == GLOBAL
+    assert req.global_ == testdata.GLOBAL_LOGOUT
     assert req.method == "POST"
     assert req.headers == {}
     assert req.parameters == {}
@@ -20,7 +16,7 @@ def assert_logout_request(req):
 
 
 def test_auth_logout_request_from_valid_json():
-    req = AuthLogoutRequest.from_json(json.dumps(LOGOUT))
+    req = AuthLogoutRequest.from_json(json.dumps(testdata.LOGOUT_REQUEST_DICT))
     assert_logout_request(req)
 
 
@@ -30,7 +26,7 @@ def test_auth_logout_request_from_invalid_json():
 
 
 def test_auth_logout_request_from_valid_dict():
-    req = AuthLogoutRequest.from_dict(LOGOUT)
+    req = AuthLogoutRequest.from_dict(testdata.LOGOUT_REQUEST_DICT)
     assert_logout_request(req)
 
 
@@ -40,12 +36,12 @@ def test_auth_logout_request_from_invalid_dict():
 
 
 def test_auth_logout_request_to_json():
-    assert json.loads(LOGOUT_REQUEST.to_json()) == LOGOUT
+    assert json.loads(testdata.LOGOUT_REQUEST_OBJECT.to_json()) == testdata.LOGOUT_REQUEST_DICT
 
 
 def test_auth_logout_request_to_dict():
-    assert LOGOUT_REQUEST.to_dict() == LOGOUT
+    assert testdata.LOGOUT_REQUEST_OBJECT.to_dict() == testdata.LOGOUT_REQUEST_DICT
 
 
 def test_validate():
-    LOGOUT_REQUEST.validate()
+    testdata.LOGOUT_REQUEST_OBJECT.validate()

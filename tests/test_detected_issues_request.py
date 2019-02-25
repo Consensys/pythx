@@ -2,17 +2,14 @@ import json
 
 import pytest
 
+from . import common as testdata
 from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import DetectedIssuesRequest
 
-UUID = "70c06039-b5d9-4556-85cb-67633bef5b99"
-ISSUES = {"uuid": UUID}
-ISSUES_REQUEST = DetectedIssuesRequest(uuid=UUID)
-
 
 def test_analysis_issues_request_from_valid_json():
-    req = DetectedIssuesRequest.from_json(json.dumps(ISSUES))
-    assert req.uuid == UUID
+    req = DetectedIssuesRequest.from_json(json.dumps(testdata.DETECTED_ISSUES_REQUEST_DICT))
+    assert req.uuid == testdata.UUID_1
     assert req.method == "GET"
     assert req.headers == {}
     assert req.parameters == {}
@@ -25,8 +22,8 @@ def test_analysis_issues_request_from_invalid_json():
 
 
 def test_analysis_issues_request_from_valid_dict():
-    req = DetectedIssuesRequest.from_dict(ISSUES)
-    assert req.uuid == UUID
+    req = DetectedIssuesRequest.from_dict(testdata.DETECTED_ISSUES_REQUEST_DICT)
+    assert req.uuid == testdata.UUID_1
 
 
 def test_analysis_issues_request_from_invalid_dict():
@@ -35,12 +32,12 @@ def test_analysis_issues_request_from_invalid_dict():
 
 
 def test_analysis_issues_request_to_json():
-    assert json.loads(ISSUES_REQUEST.to_json()) == ISSUES
+    assert json.loads(testdata.DETECTED_ISSUES_REQUEST_OBJECT.to_json()) == testdata.DETECTED_ISSUES_REQUEST_DICT
 
 
 def test_analysis_issues_request_to_dict():
-    assert ISSUES_REQUEST.to_dict() == ISSUES
+    assert testdata.DETECTED_ISSUES_REQUEST_OBJECT.to_dict() == testdata.DETECTED_ISSUES_REQUEST_DICT
 
 
 def test_validate():
-    ISSUES_REQUEST.validate()
+    testdata.DETECTED_ISSUES_REQUEST_OBJECT.validate()
