@@ -2,6 +2,7 @@ import json
 import jwt
 from copy import copy
 from datetime import datetime, timedelta
+from dateutil.tz import tzutc
 
 import pytest
 from . import common as testdata
@@ -31,11 +32,11 @@ def get_client(resp_data, logged_in=True, access_expired=False, refresh_expired=
     if logged_in:
         # simulate that we're already logged in with tokens
         client.access_token = jwt.encode(
-            {"exp": datetime(1994, 7, 29) if access_expired else datetime(9999, 1, 1)},
+            {"exp": datetime(1994, 7, 29, tzinfo=tzutc()) if access_expired else datetime(9999, 1, 1,tzinfo=tzutc())},
             "secret",
         )
         client.refresh_token = jwt.encode(
-            {"exp": datetime(1994, 7, 29) if refresh_expired else datetime(9999, 1, 1)},
+            {"exp": datetime(1994, 7, 29, tzinfo=tzutc()) if refresh_expired else datetime(9999, 1, 1, tzinfo=tzutc())},
             "secret",
         )
 
