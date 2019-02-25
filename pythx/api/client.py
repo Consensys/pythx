@@ -47,7 +47,7 @@ class Client:
 
     @staticmethod
     def _get_jwt_expiration_ts(token):
-        return datetime.fromtimestamp(jwt.decode(token, verify=False)["exp"])
+        return datetime.utcfromtimestamp((jwt.decode(token, verify=False)["exp"]))
 
     def _assert_authenticated(self):
         if self.access_token is None or self.refresh_token is None:

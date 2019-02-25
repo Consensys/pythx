@@ -260,8 +260,8 @@ def test_version():
 
 def test_jwt_expiration():
     assert Client._get_jwt_expiration_ts(testdata.ACCESS_TOKEN_1) == datetime(
-        2019, 2, 24, 17, 31, 19, 28000
+        2019, 2, 24, 16, 31, 19, 28000
     )
     assert Client._get_jwt_expiration_ts(testdata.REFRESH_TOKEN_1) == datetime(
-        2019, 3, 24, 17, 21, 19, 28000
+        2019, 3, 24, 16, 21, 19, 28000
     )
