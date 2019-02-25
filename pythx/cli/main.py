@@ -1,18 +1,17 @@
 """Console script for pythx."""
-import sys
-import os
-from os import path, environ
 import json
-import tempfile
 import logging
+import os
+import sys
+import tempfile
 import time
-from tabulate import tabulate
-
+from os import environ, path
 from pprint import pprint
-from pythx.api import Client
 
 import click
+from tabulate import tabulate
 
+from pythx.api import Client
 
 if environ.get("PYTHX_DEBUG") is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -184,16 +183,18 @@ def ps(config, staging, number):
 def ps_core(config, staging, number):
     c = recover_client(config_path=config, staging=staging)
     if c.eth_address == "0x0000000000000000000000000000000000000000":
-        click.echo((
-        "This functionality is only available to registered users. "
-        "Head over to https://mythx.io/ and register a free account to "
-        "list your past analyses. Alternatively, you can look up the "
-        "status of a specific job by calling 'pythx status <uuid>'."
-        ))
+        click.echo(
+            (
+                "This functionality is only available to registered users. "
+                "Head over to https://mythx.io/ and register a free account to "
+                "list your past analyses. Alternatively, you can look up the "
+                "status of a specific job by calling 'pythx status <uuid>'."
+            )
+        )
         sys.exit(0)
     resp = c.analysis_list()
     # todo: pagination if too few
-    resp.analyses = resp.analyses[:number+1]
+    resp.analyses = resp.analyses[: number + 1]
     return resp
 
 
@@ -266,5 +267,7 @@ def report(config, staging, uuid):
     data = []
     for issue in resp.issues:
         locations = ", ".join((x.source_map for x in issue.locations))
-        data.append((locations, issue.swc_title, issue.severity, issue.description_short))
+        data.append(
+            (locations, issue.swc_title, issue.severity, issue.description_short)
+        )
     click.echo(tabulate(data, tablefmt="fancy_grid"))

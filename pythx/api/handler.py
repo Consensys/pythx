@@ -1,5 +1,5 @@
-import urllib.parse
 import logging
+import urllib.parse
 from typing import Dict, List
 
 import requests

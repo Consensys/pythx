@@ -1,4 +1,5 @@
 import json
+from copy import copy
 
 import dateutil.parser
 import pytest
@@ -30,6 +31,7 @@ QUEUE_TIME = 0
 STATUS = "Queued"
 SUBMITTED_AT = "2019-01-10T01:29:38.410Z"
 SUBMITTED_BY = "000008544b0aa00010a91111"
+ERROR = "my test error"
 ANALYSIS = Analysis(
     uuid=UUID,
     api_version=API_VERSION,
@@ -132,6 +134,40 @@ def test_analysis_to_dict():
     }
 
 
+def assert_analysis(analysis):
+    assert analysis.uuid == UUID
+    assert analysis.api_version == API_VERSION
+    assert analysis.maru_version == MARU_VERSION
+    assert analysis.mythril_version == MYTHRIL_VERSION
+    assert analysis.maestro_version == MAESTRO_VERSION
+    assert analysis.harvey_version == HARVEY_VERSION
+    assert analysis.queue_time == QUEUE_TIME
+    assert analysis.run_time == 0  # default value
+    assert analysis.status == AnalysisStatus.QUEUED
+    assert analysis.submitted_at == deserialize_api_timestamp(SUBMITTED_AT)
+    assert analysis.submitted_by == SUBMITTED_BY
+
+
+def test_analysis_propagate_error_field():
+    input_str = VALID_INPUT_JSON_TPL.format(
+        uuid=UUID,
+        api_version=API_VERSION,
+        maru_version=MARU_VERSION,
+        mythril_version=MYTHRIL_VERSION,
+        maestro_version=MAESTRO_VERSION,
+        harvey_version=HARVEY_VERSION,
+        queue_time=QUEUE_TIME,
+        status=STATUS,
+        submitted_at=SUBMITTED_AT,
+        submitted_by=SUBMITTED_BY,
+    )
+    analysis = copy(ANALYSIS)
+    # add optional error field
+    analysis.error = ERROR
+    analysis_dict = analysis.to_dict()
+    analysis_dict["error"] == ERROR
+
+
 def test_analysis_from_valid_dict():
     input_dict = json.loads(
         VALID_INPUT_JSON_TPL.format(
@@ -148,17 +184,7 @@ def test_analysis_from_valid_dict():
         )
     )
     analysis = Analysis.from_dict(input_dict)
-    assert analysis.uuid == UUID
-    assert analysis.api_version == API_VERSION
-    assert analysis.maru_version == MARU_VERSION
-    assert analysis.mythril_version == MYTHRIL_VERSION
-    assert analysis.maestro_version == MAESTRO_VERSION
-    assert analysis.harvey_version == HARVEY_VERSION
-    assert analysis.queue_time == QUEUE_TIME
-    assert analysis.run_time == 0  # default value
-    assert analysis.status == AnalysisStatus.QUEUED
-    assert analysis.submitted_at == deserialize_api_timestamp(SUBMITTED_AT)
-    assert analysis.submitted_by == SUBMITTED_BY
+    assert_analysis(analysis)
 
 
 def test_analysis_from_invalid_dict():

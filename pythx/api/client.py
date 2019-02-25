@@ -1,13 +1,13 @@
 import logging
-import jwt
 from datetime import datetime, timedelta
 from typing import Dict, List
+
+import jwt
 
 from pythx.api.handler import APIHandler
 from pythx.config import config
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
-
 
 LOGGER = logging.getLogger(__name__)
 
@@ -59,10 +59,18 @@ class Client:
         refresh_expiration = self._get_jwt_expiration_ts(self.refresh_token)
         if now < access_expiration:
             # auth token still valid - continue
-            LOGGER.debug("Auth check passed, token still valid: {} < {}".format(now, access_expiration))
+            LOGGER.debug(
+                "Auth check passed, token still valid: {} < {}".format(
+                    now, access_expiration
+                )
+            )
         elif access_expiration < now < refresh_expiration:
             # access token expired, but refresh token hasn't - use it to get new access token
-            LOGGER.debug("Auth refresh needed: {} < {} < {}".format(access_expiration, now, refresh_expiration))
+            LOGGER.debug(
+                "Auth refresh needed: {} < {} < {}".format(
+                    access_expiration, now, refresh_expiration
+                )
+            )
             self.refresh(assert_authentication=False)
         else:
             # refresh token has also expired - let's login again

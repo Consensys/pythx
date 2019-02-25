@@ -1,14 +1,13 @@
 import json
+import logging
 from datetime import datetime
 from typing import Any, Dict, List
-import logging
 
 import dateutil.parser
 
 from pythx.models.exceptions import RequestDecodeError, RequestValidationError
 from pythx.models.request.base import BaseRequest
 from pythx.models.util import dict_delete_none_fields
-
 
 LOGGER = logging.getLogger(__name__)
 ANALYSIS_SUBMISSION_KEYS = ("bytecode", "sources")

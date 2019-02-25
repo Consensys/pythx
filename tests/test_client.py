@@ -1,4 +1,5 @@
 import json
+import jwt
 from copy import copy
 from datetime import datetime, timedelta
 
@@ -27,8 +28,8 @@ MYTHRIL_VERSION = "1.2"
 MAESTRO_VERSION = "1.3"
 HARVEY_VERSION = "1.4"
 HASHED_VERSION = "31337deadbeef"
-DEFAULT_ACCESS_TOKEN = "my_default_access_token"
-DEFAULT_REFRESH_TOKEN = "my_default_refresh_token"
+DEFAULT_ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNmQ0OGI2Yi03ZjFiLTQ0NjEtYjI1OS1hM2M5MmQzMGI4NWQiLCJpc3MiOiJNeXRocmlsIEFQSSIsImV4cCI6MTU1MTAyNTg3OS4wMjgsInVzZXJJZCI6IjEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNCIsImlhdCI6MTU1MTAyNTI3OX0.M9SGJayVcreihIFis406wmZLtq3kSsbiV5VAbIuCE0U"
+DEFAULT_REFRESH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNDY3NzZkZC1iY2FjLTQ0NGItOGYwMy02ZDcyYWY3MjcwYWMiLCJpc3MiOiJNeXRocmlsIEFQSSIsImV4cCI6MTU1MzQ0NDQ3OS4wMjgsImlhdCI6MTU1MTAyNTI3OX0.iPRrfFZgnotvMuqu5shi4aQR9GCZR5kUjyzqTTQhZp8"
 ACCESS_TOKEN = "my_fancy_access_token"
 REFRESH_TOKEN = "my_fancy_refresh_token"
 AUTH_DATE = datetime.now()
@@ -133,19 +134,23 @@ VALID_ISSUES = [
 ]
 
 
-def get_client(resp_data, logged_in=True, expired=False):
+def get_client(resp_data, logged_in=True, access_expired=False, refresh_expired=False):
     client = Client(
         eth_address="0xdeadbeef",
         password="supersecure",
         handler=MockAPIHandler(resp_data),
     )
     if logged_in:
-        # simulate that we're already logged in
-        client.access_token = DEFAULT_ACCESS_TOKEN
-        client.refresh_token = DEFAULT_REFRESH_TOKEN
-        client._get_jwt_expiration_ts = (
-            lambda _: datetime(1994, 7, 29) if expired else datetime(9999, 1, 1)
+        # simulate that we're already logged in with tokens
+        client.access_token = jwt.encode(
+            {"exp": datetime(1994, 7, 29) if access_expired else datetime(9999, 1, 1)},
+            "secret",
         )
+        client.refresh_token = jwt.encode(
+            {"exp": datetime(1994, 7, 29) if refresh_expired else datetime(9999, 1, 1)},
+            "secret",
+        )
+
     return client
 
 
@@ -210,7 +215,10 @@ def test_auto_login():
 
 def test_expired_auth_and_refresh_token():
     client = get_client(
-        [API_LOGIN_RESPONSE, API_LIST_RESPONSE], logged_in=True, expired=True
+        [API_LOGIN_RESPONSE, API_LIST_RESPONSE],
+        logged_in=True,
+        access_expired=True,
+        refresh_expired=True,
     )
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
@@ -220,9 +228,9 @@ def test_expired_auth_and_refresh_token():
     assert resp.to_dict() == API_LIST_RESPONSE
 
 
-def test_expired_auth_token():
+def test_expired_access_token():
     client = get_client(
-        [API_REFRESH_RESPONSE, API_LIST_RESPONSE], logged_in=True, expired=True
+        [API_REFRESH_RESPONSE, API_LIST_RESPONSE], logged_in=True, access_expired=True
     )
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
@@ -359,3 +367,12 @@ def test_version():
     assert resp.mythril_version == MYTHRIL_VERSION
     assert resp.harvey_version == HARVEY_VERSION
     assert resp.hashed_version == HASHED_VERSION
+
+
+def test_jwt_expiration():
+    assert Client._get_jwt_expiration_ts(DEFAULT_ACCESS_TOKEN) == datetime(
+        2019, 2, 24, 17, 31, 19, 28000
+    )
+    assert Client._get_jwt_expiration_ts(DEFAULT_REFRESH_TOKEN) == datetime(
+        2019, 3, 24, 17, 21, 19, 28000
+    )
