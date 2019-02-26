@@ -32,11 +32,19 @@ def get_client(resp_data, logged_in=True, access_expired=False, refresh_expired=
     if logged_in:
         # simulate that we're already logged in with tokens
         client.access_token = jwt.encode(
-            {"exp": datetime(1994, 7, 29, tzinfo=tzutc()) if access_expired else datetime(9999, 1, 1,tzinfo=tzutc())},
+            {
+                "exp": datetime(1994, 7, 29, tzinfo=tzutc())
+                if access_expired
+                else datetime(9999, 1, 1, tzinfo=tzutc())
+            },
             "secret",
         )
         client.refresh_token = jwt.encode(
-            {"exp": datetime(1994, 7, 29, tzinfo=tzutc()) if refresh_expired else datetime(9999, 1, 1, tzinfo=tzutc())},
+            {
+                "exp": datetime(1994, 7, 29, tzinfo=tzutc())
+                if refresh_expired
+                else datetime(9999, 1, 1, tzinfo=tzutc())
+            },
             "secret",
         )
 
@@ -93,7 +101,10 @@ def test_analysis_list():
 
 
 def test_auto_login():
-    client = get_client([testdata.LOGIN_RESPONSE_DICT, testdata.ANALYSIS_LIST_RESPONSE_DICT], logged_in=False)
+    client = get_client(
+        [testdata.LOGIN_RESPONSE_DICT, testdata.ANALYSIS_LIST_RESPONSE_DICT],
+        logged_in=False,
+    )
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
     )
@@ -119,7 +130,9 @@ def test_expired_auth_and_refresh_token():
 
 def test_expired_access_token():
     client = get_client(
-        [testdata.REFRESH_RESPONSE_DICT, testdata.ANALYSIS_LIST_RESPONSE_DICT], logged_in=True, access_expired=True
+        [testdata.REFRESH_RESPONSE_DICT, testdata.ANALYSIS_LIST_RESPONSE_DICT],
+        logged_in=True,
+        access_expired=True,
     )
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)

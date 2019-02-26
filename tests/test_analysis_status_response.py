@@ -22,7 +22,9 @@ def assert_analysis_data(expected, analysis: Analysis):
 
 
 def test_analysis_list_from_valid_json():
-    resp = AnalysisStatusResponse.from_json(json.dumps(testdata.ANALYSIS_STATUS_RESPONSE_DICT))
+    resp = AnalysisStatusResponse.from_json(
+        json.dumps(testdata.ANALYSIS_STATUS_RESPONSE_DICT)
+    )
     assert_analysis_data(testdata.ANALYSIS_STATUS_RESPONSE_DICT, resp.analysis)
 
 

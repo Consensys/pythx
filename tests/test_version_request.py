@@ -7,8 +7,6 @@ from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import VersionRequest
 
 
-
-
 def assert_version_request(req):
     assert req.method == "GET"
     assert req.headers == {}

@@ -40,7 +40,10 @@ def test_auth_refresh_response_from_invalid_dict():
 
 
 def test_auth_refresh_response_to_json():
-    assert json.loads(testdata.REFRESH_RESPONSE_OBJECT.to_json()) == testdata.REFRESH_RESPONSE_DICT
+    assert (
+        json.loads(testdata.REFRESH_RESPONSE_OBJECT.to_json())
+        == testdata.REFRESH_RESPONSE_DICT
+    )
 
 
 def test_auth_refresh_response_to_dict():

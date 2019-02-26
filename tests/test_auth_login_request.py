@@ -37,7 +37,10 @@ def test_login_from_invalid_dict():
 
 
 def test_login_to_json():
-    assert json.loads(testdata.LOGIN_REQUEST_OBJECT.to_json()) == testdata.LOGIN_REQUEST_DICT
+    assert (
+        json.loads(testdata.LOGIN_REQUEST_OBJECT.to_json())
+        == testdata.LOGIN_REQUEST_DICT
+    )
 
 
 def test_login_to_dict():

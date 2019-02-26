@@ -1,8 +1,34 @@
 from datetime import datetime
 import dateutil.parser
 
-from pythx.models.request import VersionRequest, OASRequest, AuthLogoutRequest, AuthRefreshRequest, DetectedIssuesRequest, AuthLoginRequest, AnalysisListRequest, AnalysisStatusRequest, AnalysisSubmissionRequest
-from pythx.models.response import VersionResponse, OASResponse, Issue,Severity,SourceFormat,SourceLocation,SourceType,DetectedIssuesResponse, AuthRefreshResponse, AuthLogoutResponse, AuthLoginResponse, AnalysisSubmissionResponse, Analysis, AnalysisListResponse, AnalysisStatusResponse
+from pythx.models.request import (
+    VersionRequest,
+    OASRequest,
+    AuthLogoutRequest,
+    AuthRefreshRequest,
+    DetectedIssuesRequest,
+    AuthLoginRequest,
+    AnalysisListRequest,
+    AnalysisStatusRequest,
+    AnalysisSubmissionRequest,
+)
+from pythx.models.response import (
+    VersionResponse,
+    OASResponse,
+    Issue,
+    Severity,
+    SourceFormat,
+    SourceLocation,
+    SourceType,
+    DetectedIssuesResponse,
+    AuthRefreshResponse,
+    AuthLogoutResponse,
+    AuthLoginResponse,
+    AnalysisSubmissionResponse,
+    Analysis,
+    AnalysisListResponse,
+    AnalysisStatusResponse,
+)
 
 
 # BASE DATA
@@ -139,10 +165,7 @@ ANALYSIS_OBJECT = Analysis(
 # LOGIN
 LOGIN_REQUEST_DICT = {"ethAddress": ETH_ADDRESS, "password": PASSWORD}
 LOGIN_REQUEST_OBJECT = AuthLoginRequest(eth_address=ETH_ADDRESS, password=PASSWORD)
-LOGIN_RESPONSE_DICT = {
-    "access": ACCESS_TOKEN_1,
-    "refresh": REFRESH_TOKEN_1
-}
+LOGIN_RESPONSE_DICT = {"access": ACCESS_TOKEN_1, "refresh": REFRESH_TOKEN_1}
 LOGIN_RESPONSE_OBJECT = AuthLoginResponse(
     access_token=ACCESS_TOKEN_1, refresh_token=REFRESH_TOKEN_1
 )
@@ -154,9 +177,14 @@ LOGOUT_RESPONSE_DICT = {}
 LOGOUT_RESPONSE_OBJECT = AuthLogoutResponse()
 
 # REFRESH
-REFRESH_REQUEST_PAYLOAD_DICT = {"accessToken": ACCESS_TOKEN_1, "refreshToken": REFRESH_TOKEN_1}
+REFRESH_REQUEST_PAYLOAD_DICT = {
+    "accessToken": ACCESS_TOKEN_1,
+    "refreshToken": REFRESH_TOKEN_1,
+}
 REFRESH_REQUEST_DICT = LOGIN_RESPONSE_DICT
-REFRESH_REQUEST_OBJECT = AuthRefreshRequest(access_token=ACCESS_TOKEN_1, refresh_token=REFRESH_TOKEN_1)
+REFRESH_REQUEST_OBJECT = AuthRefreshRequest(
+    access_token=ACCESS_TOKEN_1, refresh_token=REFRESH_TOKEN_1
+)
 REFRESH_RESPONSE_DICT = LOGIN_RESPONSE_DICT
 REFRESH_RESPONSE_OBJECT = AuthRefreshResponse(
     access_token=ACCESS_TOKEN_1, refresh_token=REFRESH_TOKEN_1
@@ -259,7 +287,11 @@ ANALYSIS_STATUS_RESPONSE_OBJECT = AnalysisStatusResponse(
 )
 
 # ANALYSIS LIST
-ANALYSIS_LIST_REQUEST_DICT = {"offset": OFFSET, "dateFrom": DATE_FROM, "dateTo": DATE_TO}
+ANALYSIS_LIST_REQUEST_DICT = {
+    "offset": OFFSET,
+    "dateFrom": DATE_FROM,
+    "dateTo": DATE_TO,
+}
 ANALYSIS_LIST_REQUEST_OBJECT = AnalysisListRequest(
     offset=OFFSET,
     date_from=dateutil.parser.parse(DATE_FROM),

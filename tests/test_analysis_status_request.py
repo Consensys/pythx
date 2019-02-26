@@ -16,7 +16,9 @@ def assert_status_request(req: AnalysisStatusRequest):
 
 
 def test_analysis_status_request_from_valid_json():
-    req = AnalysisStatusRequest.from_json(json.dumps(testdata.ANALYSIS_STATUS_REQUEST_DICT))
+    req = AnalysisStatusRequest.from_json(
+        json.dumps(testdata.ANALYSIS_STATUS_REQUEST_DICT)
+    )
     assert_status_request(req)
 
 
@@ -36,11 +38,17 @@ def test_analysis_status_request_from_invalid_dict():
 
 
 def test_analysis_status_request_to_json():
-    assert json.loads(testdata.ANALYSIS_STATUS_REQUEST_OBJECT.to_json()) == testdata.ANALYSIS_STATUS_REQUEST_DICT
+    assert (
+        json.loads(testdata.ANALYSIS_STATUS_REQUEST_OBJECT.to_json())
+        == testdata.ANALYSIS_STATUS_REQUEST_DICT
+    )
 
 
 def test_analysis_status_request_to_dict():
-    assert testdata.ANALYSIS_STATUS_REQUEST_OBJECT.to_dict() == testdata.ANALYSIS_STATUS_REQUEST_DICT
+    assert (
+        testdata.ANALYSIS_STATUS_REQUEST_OBJECT.to_dict()
+        == testdata.ANALYSIS_STATUS_REQUEST_DICT
+    )
 
 
 def test_validate():

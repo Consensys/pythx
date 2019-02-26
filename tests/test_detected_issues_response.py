@@ -31,7 +31,9 @@ def assert_detected_issues(resp):
 
 
 def test_detected_issues_from_valid_json():
-    resp = DetectedIssuesResponse.from_json(json.dumps(testdata.DETECTED_ISSUES_RESPONSE_DICT))
+    resp = DetectedIssuesResponse.from_json(
+        json.dumps(testdata.DETECTED_ISSUES_RESPONSE_DICT)
+    )
     assert_detected_issues(resp)
 
 

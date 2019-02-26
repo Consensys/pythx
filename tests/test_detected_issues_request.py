@@ -8,7 +8,9 @@ from pythx.models.request import DetectedIssuesRequest
 
 
 def test_analysis_issues_request_from_valid_json():
-    req = DetectedIssuesRequest.from_json(json.dumps(testdata.DETECTED_ISSUES_REQUEST_DICT))
+    req = DetectedIssuesRequest.from_json(
+        json.dumps(testdata.DETECTED_ISSUES_REQUEST_DICT)
+    )
     assert req.uuid == testdata.UUID_1
     assert req.method == "GET"
     assert req.headers == {}
@@ -32,11 +34,17 @@ def test_analysis_issues_request_from_invalid_dict():
 
 
 def test_analysis_issues_request_to_json():
-    assert json.loads(testdata.DETECTED_ISSUES_REQUEST_OBJECT.to_json()) == testdata.DETECTED_ISSUES_REQUEST_DICT
+    assert (
+        json.loads(testdata.DETECTED_ISSUES_REQUEST_OBJECT.to_json())
+        == testdata.DETECTED_ISSUES_REQUEST_DICT
+    )
 
 
 def test_analysis_issues_request_to_dict():
-    assert testdata.DETECTED_ISSUES_REQUEST_OBJECT.to_dict() == testdata.DETECTED_ISSUES_REQUEST_DICT
+    assert (
+        testdata.DETECTED_ISSUES_REQUEST_OBJECT.to_dict()
+        == testdata.DETECTED_ISSUES_REQUEST_DICT
+    )
 
 
 def test_validate():

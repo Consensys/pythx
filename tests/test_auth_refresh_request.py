@@ -37,7 +37,10 @@ def test_auth_refresh_request_from_invalid_dict():
 
 
 def test_auth_refresh_request_to_json():
-    assert json.loads(testdata.REFRESH_REQUEST_OBJECT.to_json()) == testdata.REFRESH_REQUEST_DICT
+    assert (
+        json.loads(testdata.REFRESH_REQUEST_OBJECT.to_json())
+        == testdata.REFRESH_REQUEST_DICT
+    )
 
 
 def test_auth_refresh_request_to_dict():

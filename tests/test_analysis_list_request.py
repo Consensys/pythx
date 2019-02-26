@@ -10,7 +10,6 @@ from pythx.models.request import AnalysisListRequest
 from . import common as testdata
 
 
-
 def assert_analysis_list_request(req):
     assert req.offset == testdata.OFFSET
     assert req.date_from.isoformat() == testdata.DATE_FROM
@@ -42,11 +41,17 @@ def test_analysis_list_request_from_invalid_dict():
 
 
 def test_analysis_list_request_to_json():
-    assert json.loads(testdata.ANALYSIS_LIST_REQUEST_OBJECT.to_json()) == testdata.ANALYSIS_LIST_REQUEST_DICT
+    assert (
+        json.loads(testdata.ANALYSIS_LIST_REQUEST_OBJECT.to_json())
+        == testdata.ANALYSIS_LIST_REQUEST_DICT
+    )
 
 
 def test_analysis_list_request_to_dict():
-    assert testdata.ANALYSIS_LIST_REQUEST_OBJECT.to_dict() == testdata.ANALYSIS_LIST_REQUEST_DICT
+    assert (
+        testdata.ANALYSIS_LIST_REQUEST_OBJECT.to_dict()
+        == testdata.ANALYSIS_LIST_REQUEST_DICT
+    )
 
 
 def test_validate():

@@ -91,7 +91,8 @@ def assert_analysis(analysis, data):
 
 def test_parse_analysis_list_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.ANALYSIS_LIST_RESPONSE_DICT), respmodels.AnalysisListResponse
+        json.dumps(testdata.ANALYSIS_LIST_RESPONSE_DICT),
+        respmodels.AnalysisListResponse,
     )
     assert_response_middleware_hook(model)
     for i, analysis in enumerate(model.analyses):
@@ -101,7 +102,8 @@ def test_parse_analysis_list_response():
 
 def test_parse_analysis_status_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.ANALYSIS_STATUS_RESPONSE_DICT), respmodels.AnalysisStatusResponse
+        json.dumps(testdata.ANALYSIS_STATUS_RESPONSE_DICT),
+        respmodels.AnalysisStatusResponse,
     )
     assert_response_middleware_hook(model)
     assert_analysis(model.analysis, testdata.ANALYSIS_STATUS_RESPONSE_DICT)
@@ -109,31 +111,62 @@ def test_parse_analysis_status_response():
 
 def test_parse_analysis_submission_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT), respmodels.AnalysisSubmissionResponse
+        json.dumps(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT),
+        respmodels.AnalysisSubmissionResponse,
     )
     assert_response_middleware_hook(model)
-    assert model.analysis.api_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["apiVersion"]
-    assert model.analysis.maru_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["maruVersion"]
-    assert model.analysis.mythril_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["mythrilVersion"]
-    assert model.analysis.maestro_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["maestroVersion"]
-    assert model.analysis.harvey_version == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["harveyVersion"]
-    assert model.analysis.queue_time == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["queueTime"]
-    assert model.analysis.status.title() == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["status"]
+    assert (
+        model.analysis.api_version
+        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["apiVersion"]
+    )
+    assert (
+        model.analysis.maru_version
+        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["maruVersion"]
+    )
+    assert (
+        model.analysis.mythril_version
+        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["mythrilVersion"]
+    )
+    assert (
+        model.analysis.maestro_version
+        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["maestroVersion"]
+    )
+    assert (
+        model.analysis.harvey_version
+        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["harveyVersion"]
+    )
+    assert (
+        model.analysis.queue_time
+        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["queueTime"]
+    )
+    assert (
+        model.analysis.status.title()
+        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["status"]
+    )
     assert model.analysis.submitted_at == dateutil.parser.parse(
         testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["submittedAt"]
     )
-    assert model.analysis.submitted_by == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["submittedBy"]
+    assert (
+        model.analysis.submitted_by
+        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["submittedBy"]
+    )
     assert model.analysis.uuid == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["uuid"]
 
 
 def test_parse_detected_issues_response():
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.DETECTED_ISSUES_RESPONSE_DICT), respmodels.DetectedIssuesResponse
+        json.dumps(testdata.DETECTED_ISSUES_RESPONSE_DICT),
+        respmodels.DetectedIssuesResponse,
     )
     assert_response_middleware_hook(model)
-    assert model.issues[0].to_dict() == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["issues"][0]
+    assert (
+        model.issues[0].to_dict()
+        == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["issues"][0]
+    )
     assert model.source_type == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["sourceType"]
-    assert model.source_format == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["sourceFormat"]
+    assert (
+        model.source_format == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["sourceFormat"]
+    )
     assert model.source_list == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["sourceList"]
     assert model.meta_data == testdata.DETECTED_ISSUES_RESPONSE_DICT[0]["meta"]
 

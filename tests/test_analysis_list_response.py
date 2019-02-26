@@ -27,10 +27,14 @@ def assert_analysis_data(expected, analysis: Analysis):
 
 
 def test_analysis_list_from_valid_json():
-    resp = AnalysisListResponse.from_json(json.dumps(testdata.ANALYSIS_LIST_RESPONSE_DICT))
+    resp = AnalysisListResponse.from_json(
+        json.dumps(testdata.ANALYSIS_LIST_RESPONSE_DICT)
+    )
     assert len(resp.analyses) == 2
     for i, analysis in enumerate(resp.analyses):
-        assert_analysis_data(testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"][i], analysis)
+        assert_analysis_data(
+            testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"][i], analysis
+        )
 
 
 def test_analysis_list_from_invalid_json():
@@ -47,7 +51,9 @@ def test_analysis_list_from_valid_dict():
     resp = AnalysisListResponse.from_dict(testdata.ANALYSIS_LIST_RESPONSE_DICT)
     assert len(resp.analyses) == 2
     for i, analysis in enumerate(resp.analyses):
-        assert_analysis_data(testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"][i], analysis)
+        assert_analysis_data(
+            testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"][i], analysis
+        )
 
 
 def test_analysis_list_from_invalid_dict():

@@ -23,7 +23,9 @@ def assert_analysis_data(expected, analysis: Analysis):
 
 
 def test_analysis_list_from_valid_json():
-    resp = AnalysisSubmissionResponse.from_json(json.dumps(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT))
+    resp = AnalysisSubmissionResponse.from_json(
+        json.dumps(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT)
+    )
     assert_analysis_data(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT, resp.analysis)
 
 
@@ -33,7 +35,9 @@ def test_analysis_list_from_empty_json():
 
 
 def test_analysis_list_from_valid_dict():
-    resp = AnalysisSubmissionResponse.from_dict(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT)
+    resp = AnalysisSubmissionResponse.from_dict(
+        testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT
+    )
     assert_analysis_data(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT, resp.analysis)
 
 

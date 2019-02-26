@@ -28,11 +28,15 @@ def test_oas_response_invalid_type():
 
 
 def test_oas_response_to_json():
-    assert testdata.OPENAPI_RESPONSE_OBJECT.to_json() == json.dumps({"data": testdata.OPENAPI_RESPONSE})
+    assert testdata.OPENAPI_RESPONSE_OBJECT.to_json() == json.dumps(
+        {"data": testdata.OPENAPI_RESPONSE}
+    )
 
 
 def test_oas_response_to_dict():
-    assert testdata.OPENAPI_RESPONSE_OBJECT.to_dict() == {"data": testdata.OPENAPI_RESPONSE}
+    assert testdata.OPENAPI_RESPONSE_OBJECT.to_dict() == {
+        "data": testdata.OPENAPI_RESPONSE
+    }
 
 
 def test_validate():

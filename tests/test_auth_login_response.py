@@ -33,7 +33,10 @@ def test_auth_login_response_from_invalid_dict():
 
 
 def test_auth_login_response_to_json():
-    assert json.loads(testdata.LOGIN_RESPONSE_OBJECT.to_json()) == testdata.LOGIN_RESPONSE_DICT
+    assert (
+        json.loads(testdata.LOGIN_RESPONSE_OBJECT.to_json())
+        == testdata.LOGIN_RESPONSE_DICT
+    )
 
 
 def test_auth_login_response_to_dict():

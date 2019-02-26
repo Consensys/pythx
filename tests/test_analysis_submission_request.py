@@ -7,8 +7,6 @@ from pythx.models.exceptions import RequestDecodeError, RequestValidationError
 from pythx.models.request import AnalysisSubmissionRequest
 
 
-
-
 def assert_submission_request(req: AnalysisSubmissionRequest):
     assert req.contract_name == testdata.CONTRACT_NAME
     assert req.bytecode == testdata.BYTECODE
@@ -25,7 +23,9 @@ def assert_submission_request(req: AnalysisSubmissionRequest):
 
 
 def test_analysis_submission_request_from_valid_json():
-    req = AnalysisSubmissionRequest.from_json(json.dumps(testdata.ANALYSIS_SUBMISSION_REQUEST_DICT))
+    req = AnalysisSubmissionRequest.from_json(
+        json.dumps(testdata.ANALYSIS_SUBMISSION_REQUEST_DICT)
+    )
     assert_submission_request(req)
 
 
@@ -45,11 +45,17 @@ def test_analysis_submission_request_from_invalid_dict():
 
 
 def test_analysis_submission_request_to_json():
-    assert json.loads(testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT.to_json()) == testdata.ANALYSIS_SUBMISSION_REQUEST_DICT
+    assert (
+        json.loads(testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT.to_json())
+        == testdata.ANALYSIS_SUBMISSION_REQUEST_DICT
+    )
 
 
 def test_analysis_submission_request_to_dict():
-    assert testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT.to_dict() == testdata.ANALYSIS_SUBMISSION_REQUEST_DICT
+    assert (
+        testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT.to_dict()
+        == testdata.ANALYSIS_SUBMISSION_REQUEST_DICT
+    )
 
 
 def test_analysis_submission_request_bytecode_only():
@@ -57,7 +63,10 @@ def test_analysis_submission_request_bytecode_only():
     assert req.bytecode == testdata.BYTECODE
     assert req.analysis_mode == "quick"  # default value
     assert req.to_dict() == {"bytecode": testdata.BYTECODE, "analysisMode": "quick"}
-    assert json.loads(req.to_json()) == {"bytecode": testdata.BYTECODE, "analysisMode": "quick"}
+    assert json.loads(req.to_json()) == {
+        "bytecode": testdata.BYTECODE,
+        "analysisMode": "quick",
+    }
 
 
 def test_analysis_submission_request_source_only():
@@ -65,7 +74,10 @@ def test_analysis_submission_request_source_only():
     assert req.sources == testdata.SOURCES
     assert req.analysis_mode == "quick"  # default value
     assert req.to_dict() == {"sources": testdata.SOURCES, "analysisMode": "quick"}
-    assert json.loads(req.to_json()) == {"sources": testdata.SOURCES, "analysisMode": "quick"}
+    assert json.loads(req.to_json()) == {
+        "sources": testdata.SOURCES,
+        "analysisMode": "quick",
+    }
 
 
 def test_analysis_submission_request_invalid_mode():

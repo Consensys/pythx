@@ -36,7 +36,10 @@ def test_auth_logout_request_from_invalid_dict():
 
 
 def test_auth_logout_request_to_json():
-    assert json.loads(testdata.LOGOUT_REQUEST_OBJECT.to_json()) == testdata.LOGOUT_REQUEST_DICT
+    assert (
+        json.loads(testdata.LOGOUT_REQUEST_OBJECT.to_json())
+        == testdata.LOGOUT_REQUEST_DICT
+    )
 
 
 def test_auth_logout_request_to_dict():
