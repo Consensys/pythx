@@ -54,7 +54,7 @@ class Client:
             # We haven't authenticated yet
             self.login()
             return
-        now = datetime.now()
+        now = datetime.utcnow()
         access_expiration = self._get_jwt_expiration_ts(self.access_token)
         refresh_expiration = self._get_jwt_expiration_ts(self.refresh_token)
         if now < access_expiration:

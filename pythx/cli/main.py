@@ -7,6 +7,7 @@ import tempfile
 import time
 from os import environ, path
 from pprint import pprint
+from collections import defaultdict
 
 import click
 from tabulate import tabulate
@@ -53,6 +54,7 @@ def parse_config(config_path, tokens_required=False):
                 config_path
             )
         )
+        sys.exit(1)
     return config
 
 
@@ -121,6 +123,13 @@ def login(staging, config):
         login_resp.refresh_token,
     )
     click.echo("Successfully logged in as {}".format(c.eth_address))
+    update_config(
+        config_path=config,
+        username=c.eth_address,
+        password=c.password,
+        access=c.access_token,
+        refresh=c.refresh_token,
+    )
 
 
 @cli.command(help="Log out of your MythX account")
@@ -132,6 +141,34 @@ def logout(config, staging):
     os.remove(config)
     c.logout()
     click.echo("Successfully logged out")
+    update_config(
+        config_path=config,
+        username=c.eth_address,
+        password=c.password,
+        access=c.access_token,
+        refresh=c.refresh_token,
+    )
+
+
+@cli.command(help="Refresh your MythX API token")
+@staging_opt
+@config_opt
+def refresh(staging, config):
+    c = recover_client(config, staging)
+    login_resp = c.refresh()
+    LOGGER.debug(
+        "Access token %s\nRefresh token: %s",
+        login_resp.access_token,
+        login_resp.refresh_token,
+    )
+    click.echo("Successfully refreshed tokens for {}".format(c.eth_address))
+    update_config(
+        config_path=config,
+        username=c.eth_address,
+        password=c.password,
+        access=c.access_token,
+        refresh=c.refresh_token,
+    )
 
 
 @cli.command(help="Get the OpenAPI spec in HTML or YAML format")
@@ -163,6 +200,13 @@ def status(config, staging, uuid):
     resp = c.status(uuid).analysis.to_dict()
     data = ((k, v) for k, v in resp.items())
     click.echo(tabulate(data, tablefmt="fancy_grid"))
+    update_config(
+        config_path=config,
+        username=c.eth_address,
+        password=c.password,
+        access=c.access_token,
+        refresh=c.refresh_token,
+    )
 
 
 @cli.command(help="Get a greppable overview of submitted analyses")
@@ -195,6 +239,13 @@ def ps_core(config, staging, number):
     resp = c.analysis_list()
     # todo: pagination if too few
     resp.analyses = resp.analyses[: number + 1]
+    update_config(
+        config_path=config,
+        username=c.eth_address,
+        password=c.password,
+        access=c.access_token,
+        refresh=c.refresh_token,
+    )
     return resp
 
 
@@ -204,7 +255,7 @@ def ps_core(config, staging, number):
 @click.option("--interval", default=5, type=click.INT, help="Refresh interval")
 def top(config, staging, interval):
     while True:
-        resp = ps_core(config=config, staging=staging, number=20)
+        resp = ps_core(config_path=config, staging=staging, number=20)
         click.clear()
         data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
         click.echo(tabulate(data, tablefmt="fancy_grid"))
@@ -255,6 +306,28 @@ def check(config, staging, bytecode, source, bytecode_file, source_file):
 
     resp = c.analyze(bytecode=bytecode_f, sources=sources_f)
     click.echo("Analysis submitted as job {}".format(resp.analysis.uuid))
+    update_config(
+        config_path=config,
+        username=c.eth_address,
+        password=c.password,
+        access=c.access_token,
+        refresh=c.refresh_token,
+    )
+
+
+def get_source_location_by_offset(filename, offset):
+    overall = 0
+    line_ctr = 0
+    with open(filename) as f:
+        for line in f:
+            line_ctr += 1
+            overall += len(line)
+            if overall >= offset:
+                return line_ctr, overall - offset
+    LOGGER.error(
+        "Error finding the source location in {} for offset {}".format(filename, offset)
+    )
+    sys.exit(1)
 
 
 @cli.command(help="Check the detected issues of a finished analysis job")
@@ -264,10 +337,41 @@ def check(config, staging, bytecode, source, bytecode_file, source_file):
 def report(config, staging, uuid):
     c = recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
-    data = []
+
+    file_to_issue = defaultdict(list)
+
     for issue in resp.issues:
-        locations = ", ".join((x.source_map for x in issue.locations))
-        data.append(
-            (locations, issue.swc_title, issue.severity, issue.description_short)
+        source_locs = [loc.source_map.split(":") for loc in issue.locations]
+        for offset, length, file_idx in source_locs:
+            if resp.source_list:
+                filename = resp.source_list[int(file_idx)]
+                line, column = get_source_location_by_offset(filename, int(offset))
+            else:
+                filename = "Unknown"
+        file_to_issue[filename].append(
+            (line, column, issue.swc_title, issue.severity, issue.description_short)
         )
-    click.echo(tabulate(data, tablefmt="fancy_grid"))
+
+    for filename, data in file_to_issue.items():
+        click.echo("Report for {}".format(filename))
+        click.echo(
+            tabulate(
+                data,
+                tablefmt="fancy_grid",
+                headers=(
+                    "Line",
+                    "Column",
+                    "SWC Title",
+                    "Severity",
+                    "Short Description",
+                ),
+            )
+        )
+
+    update_config(
+        config_path=config,
+        username=c.eth_address,
+        password=c.password,
+        access=c.access_token,
+        refresh=c.refresh_token,
+    )
