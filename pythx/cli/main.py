@@ -253,7 +253,7 @@ def ps_core(config, staging, number):
 @click.option("--interval", default=5, type=click.INT, help="Refresh interval")
 def top(config, staging, interval):
     while True:
-        resp = ps_core(config_path=config, staging=staging, number=20)
+        resp = ps_core(config, staging, 20)
         click.clear()
         data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
         click.echo(tabulate(data, tablefmt="fancy_grid"))
