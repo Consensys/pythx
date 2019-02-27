@@ -71,8 +71,10 @@ def update_config(config_path, username, password, access, refresh):
         )
 
 
-def recover_client(config_path, staging=False):
+def recover_client(config_path, staging=False, exit_on_missing=False):
     if not path.isfile(config_path):
+        if exit_on_missing:
+            return None
         # config doesn't exist - assume first use
         eth_address = environ.get("PYTHX_USERNAME") or click.prompt(
             "Please enter your Ethereum address",
@@ -136,18 +138,14 @@ def login(staging, config):
 @config_opt
 @staging_opt
 def logout(config, staging):
-    c = recover_client(config_path=config, staging=staging)
+    c = recover_client(config_path=config, staging=staging, exit_on_missing=True)
+    if c is None:
+        click.echo("You are already logged out.")
+        sys.exit(0)
     # delete the credentials storage and logout
     os.remove(config)
     c.logout()
     click.echo("Successfully logged out")
-    update_config(
-        config_path=config,
-        username=c.eth_address,
-        password=c.password,
-        access=c.access_token,
-        refresh=c.refresh_token,
-    )
 
 
 @cli.command(help="Refresh your MythX API token")
