@@ -14,10 +14,12 @@ from tabulate import tabulate
 
 from pythx.api import Client
 
+
 if environ.get("PYTHX_DEBUG") is not None:
     logging.basicConfig(level=logging.DEBUG)
 else:
     logging.basicConfig(level=logging.ERROR)
+
 LOGGER = logging.getLogger("pythx-cli")
 DEFAULT_STORAGE_PATH = path.join(tempfile.gettempdir(), ".pythx.json")
 CONFIG_KEYS = ("access", "refresh", "username", "password")
@@ -35,6 +37,50 @@ config_opt = click.option(
     envvar="PYTHX_CONFIG",
     help="Path to user credentials JSON file",
 )
+html_opt = click.option(
+    "--html", "mode", flag_value="html", help="Get the HTML OpenAPI spec"
+)
+yaml_opt = click.option(
+    "--yaml", "mode", flag_value="yaml", default=True, help="Get the YAML OpenAPI spec"
+)
+number_opt = click.option(
+    "--number",
+    default=20,
+    type=click.IntRange(min=1, max=100),
+    help="The number of most recent analysis jobs to display",
+)
+bytecode_opt = click.option(
+    "--bytecode",
+    "-b",
+    type=click.STRING,
+    default=None,
+    help="Analysis job creation byte code",
+)
+source_opt = click.option(
+    "--source",
+    "-s",
+    type=click.STRING,
+    default=None,
+    help="Analysis job Solidity source code",
+)
+bytecode_file_opt = click.option(
+    "--bytecode-file",
+    "-bf",
+    type=click.Path(exists=True),
+    default=None,
+    help="Path to file containing creation bytecode",
+)
+source_file_opt = click.option(
+    "--source-file",
+    "-sf",
+    type=click.Path(exists=True),
+    default=None,
+    help="Path to file containing Solidity source code",
+)
+interval_opt = click.option(
+    "--interval", default=5, type=click.INT, help="Refresh interval"
+)
+uuid_arg = click.argument("uuid", type=click.UUID)
 
 
 def parse_config(config_path, tokens_required=False):
@@ -58,14 +104,14 @@ def parse_config(config_path, tokens_required=False):
     return config
 
 
-def update_config(config_path, username, password, access, refresh):
+def update_config(config_path, client):
     with open(config_path, "w+") as config_f:
         json.dump(
             {
-                "username": username,
-                "password": password,
-                "access": access,
-                "refresh": refresh,
+                "username": client.eth_address,
+                "password": client.password,
+                "access": client.access_token,
+                "refresh": client.refresh_token,
             },
             config_f,
         )
@@ -89,13 +135,7 @@ def recover_client(config_path, staging=False, exit_on_missing=False):
         )
         c = Client(eth_address=eth_address, password=password, staging=staging)
         c.login()
-        update_config(
-            config_path=config_path,
-            username=eth_address,
-            password=password,
-            access=c.access_token,
-            refresh=c.refresh_token,
-        )
+        update_config(config_path=config_path, client=c)
     else:
         config = parse_config(config_path, tokens_required=True)
         c = Client(
@@ -106,6 +146,40 @@ def recover_client(config_path, staging=False, exit_on_missing=False):
             staging=staging,
         )
     return c
+
+
+def ps_core(config, staging, number):
+    c = recover_client(config_path=config, staging=staging)
+    if c.eth_address == "0x0000000000000000000000000000000000000000":
+        click.echo(
+            (
+                "This functionality is only available to registered users. "
+                "Head over to https://mythx.io/ and register a free account to "
+                "list your past analyses. Alternatively, you can look up the "
+                "status of a specific job by calling 'pythx status <uuid>'."
+            )
+        )
+        sys.exit(0)
+    resp = c.analysis_list()
+    # todo: pagination if too few
+    resp.analyses = resp.analyses[: number + 1]
+    update_config(config_path=config, client=c)
+    return resp
+
+
+def get_source_location_by_offset(filename, offset):
+    overall = 0
+    line_ctr = 0
+    with open(filename) as f:
+        for line in f:
+            line_ctr += 1
+            overall += len(line)
+            if overall >= offset:
+                return line_ctr, overall - offset
+    LOGGER.error(
+        "Error finding the source location in {} for offset {}".format(filename, offset)
+    )
+    sys.exit(1)
 
 
 @click.group()
@@ -125,13 +199,7 @@ def login(staging, config):
         login_resp.refresh_token,
     )
     click.echo("Successfully logged in as {}".format(c.eth_address))
-    update_config(
-        config_path=config,
-        username=c.eth_address,
-        password=c.password,
-        access=c.access_token,
-        refresh=c.refresh_token,
-    )
+    update_config(config_path=config, client=c)
 
 
 @cli.command(help="Log out of your MythX account")
@@ -160,21 +228,13 @@ def refresh(staging, config):
         login_resp.refresh_token,
     )
     click.echo("Successfully refreshed tokens for {}".format(c.eth_address))
-    update_config(
-        config_path=config,
-        username=c.eth_address,
-        password=c.password,
-        access=c.access_token,
-        refresh=c.refresh_token,
-    )
+    update_config(config_path=config, client=c)
 
 
 @cli.command(help="Get the OpenAPI spec in HTML or YAML format")
 @staging_opt
-@click.option("--html", "mode", flag_value="html", help="Get the HTML OpenAPI spec")
-@click.option(
-    "--yaml", "mode", flag_value="yaml", default=True, help="Get the YAML OpenAPI spec"
-)
+@html_opt
+@yaml_opt
 def openapi(staging, mode):
     c = Client()  # no auth required
     click.echo(c.openapi(mode).data)
@@ -183,7 +243,7 @@ def openapi(staging, mode):
 @cli.command(help="Print version information of PythX and the API")
 @staging_opt
 def version(staging):
-    c = Client()  # no auth required
+    c = Client(staging=staging)  # no auth required
     resp = c.version().to_dict()
     data = ((k.title(), v) for k, v in resp.items())
     click.echo(tabulate(data, tablefmt="fancy_grid"))
@@ -192,65 +252,29 @@ def version(staging):
 @cli.command(help="Get the status of an analysis by its UUID")
 @config_opt
 @staging_opt
-@click.argument("uuid", type=click.UUID)
+@uuid_arg
 def status(config, staging, uuid):
     c = recover_client(config_path=config, staging=staging)
     resp = c.status(uuid).analysis.to_dict()
     data = ((k, v) for k, v in resp.items())
     click.echo(tabulate(data, tablefmt="fancy_grid"))
-    update_config(
-        config_path=config,
-        username=c.eth_address,
-        password=c.password,
-        access=c.access_token,
-        refresh=c.refresh_token,
-    )
+    update_config(config_path=config, client=c)
 
 
 @cli.command(help="Get a greppable overview of submitted analyses")
 @config_opt
 @staging_opt
-@click.option(
-    "--number",
-    default=20,
-    type=click.IntRange(min=1, max=100),
-    help="The number of most recent analysis jobs to display",
-)
+@number_opt
 def ps(config, staging, number):
     resp = ps_core(config, staging, number)
     data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
     click.echo(tabulate(data, tablefmt="fancy_grid"))
 
 
-def ps_core(config, staging, number):
-    c = recover_client(config_path=config, staging=staging)
-    if c.eth_address == "0x0000000000000000000000000000000000000000":
-        click.echo(
-            (
-                "This functionality is only available to registered users. "
-                "Head over to https://mythx.io/ and register a free account to "
-                "list your past analyses. Alternatively, you can look up the "
-                "status of a specific job by calling 'pythx status <uuid>'."
-            )
-        )
-        sys.exit(0)
-    resp = c.analysis_list()
-    # todo: pagination if too few
-    resp.analyses = resp.analyses[: number + 1]
-    update_config(
-        config_path=config,
-        username=c.eth_address,
-        password=c.password,
-        access=c.access_token,
-        refresh=c.refresh_token,
-    )
-    return resp
-
-
 @cli.command(help="Display the most recent analysis jobs and their status")
 @config_opt
 @staging_opt
-@click.option("--interval", default=5, type=click.INT, help="Refresh interval")
+@interval_opt
 def top(config, staging, interval):
     while True:
         resp = ps_core(config, staging, 20)
@@ -263,34 +287,10 @@ def top(config, staging, interval):
 @cli.command(help="Submit a new analysis job based on source code, byte code, or both")
 @config_opt
 @staging_opt
-@click.option(
-    "--bytecode",
-    "-b",
-    type=click.STRING,
-    default=None,
-    help="Analysis job creation byte code",
-)
-@click.option(
-    "--source",
-    "-s",
-    type=click.STRING,
-    default=None,
-    help="Analysis job Solidity source code",
-)
-@click.option(
-    "--bytecode-file",
-    "-bf",
-    type=click.Path(exists=True),
-    default=None,
-    help="Path to file containing creation bytecode",
-)
-@click.option(
-    "--source-file",
-    "-sf",
-    type=click.Path(exists=True),
-    default=None,
-    help="Path to file containing Solidity source code",
-)
+@bytecode_opt
+@source_opt
+@bytecode_file_opt
+@source_file_opt
 def check(config, staging, bytecode, source, bytecode_file, source_file):
     c = recover_client(config_path=config, staging=staging)
     bytecode_f = bytecode if bytecode else None
@@ -304,34 +304,13 @@ def check(config, staging, bytecode, source, bytecode_file, source_file):
 
     resp = c.analyze(bytecode=bytecode_f, sources=sources_f)
     click.echo("Analysis submitted as job {}".format(resp.analysis.uuid))
-    update_config(
-        config_path=config,
-        username=c.eth_address,
-        password=c.password,
-        access=c.access_token,
-        refresh=c.refresh_token,
-    )
-
-
-def get_source_location_by_offset(filename, offset):
-    overall = 0
-    line_ctr = 0
-    with open(filename) as f:
-        for line in f:
-            line_ctr += 1
-            overall += len(line)
-            if overall >= offset:
-                return line_ctr, overall - offset
-    LOGGER.error(
-        "Error finding the source location in {} for offset {}".format(filename, offset)
-    )
-    sys.exit(1)
+    update_config(config_path=config, client=c)
 
 
 @cli.command(help="Check the detected issues of a finished analysis job")
 @config_opt
 @staging_opt
-@click.argument("uuid", type=click.STRING)
+@uuid_arg
 def report(config, staging, uuid):
     c = recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
@@ -340,15 +319,15 @@ def report(config, staging, uuid):
 
     for issue in resp.issues:
         source_locs = [loc.source_map.split(":") for loc in issue.locations]
-        for offset, length, file_idx in source_locs:
+        for offset, _, file_idx in source_locs:
             if resp.source_list:
                 filename = resp.source_list[int(file_idx)]
                 line, column = get_source_location_by_offset(filename, int(offset))
             else:
                 filename = "Unknown"
-        file_to_issue[filename].append(
-            (line, column, issue.swc_title, issue.severity, issue.description_short)
-        )
+            file_to_issue[filename].append(
+                (line, column, issue.swc_title, issue.severity, issue.description_short)
+            )
 
     for filename, data in file_to_issue.items():
         click.echo("Report for {}".format(filename))
@@ -366,10 +345,4 @@ def report(config, staging, uuid):
             )
         )
 
-    update_config(
-        config_path=config,
-        username=c.eth_address,
-        password=c.password,
-        access=c.access_token,
-        refresh=c.refresh_token,
-    )
+    update_config(config_path=config, client=c)

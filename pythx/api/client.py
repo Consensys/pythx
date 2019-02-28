@@ -33,7 +33,7 @@ class Client:
         self, req_obj, resp_model, assert_authentication=True, include_auth_header=True
     ):
         if assert_authentication:
-            self._assert_authenticated()
+            self.assert_authentication()
         auth_header = (
             {"Authorization": "Bearer {}".format(self.access_token)}
             if include_auth_header
@@ -49,7 +49,7 @@ class Client:
     def _get_jwt_expiration_ts(token):
         return datetime.utcfromtimestamp((jwt.decode(token, verify=False)["exp"]))
 
-    def _assert_authenticated(self):
+    def assert_authentication(self):
         if self.access_token is None or self.refresh_token is None:
             # We haven't authenticated yet
             self.login()
