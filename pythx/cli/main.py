@@ -70,6 +70,12 @@ source_file_opt = click.option(
 interval_opt = click.option(
     "--interval", default=5, type=click.INT, help="Refresh interval"
 )
+solc_path_opt = click.option(
+    "--solc-path",
+    type=click.Path(exists=True),
+    default=None,
+    help="Path to the solc compiler"
+)
 uuid_arg = click.argument("uuid", type=click.UUID)
 
 
@@ -174,10 +180,10 @@ def get_source_location_by_offset(filename, offset):
 
 def compile_from_source(source_path: str, solc_path: str = None):
     solc_path = spawn.find_executable("solc") if solc_path is None else solc_path
-    if solc_path is None or not path.isfile(solc_path):
+    if solc_path is None:
         # user solc path invalid or no default "solc" command found
         click.echo(
-            "Invalid solc path. Please make sure solc is on your PATH or your custom path is valid."
+            "Invalid solc path. Please make sure solc is on your PATH."
         )
         sys.exit(1)
     solc_command = [
@@ -297,7 +303,8 @@ def top(config, staging, interval):
 @staging_opt
 @bytecode_file_opt
 @source_file_opt
-def check(config, staging, bytecode_file, source_file):
+@solc_path_opt
+def check(config, staging, bytecode_file, source_file, solc_path):
     c = recover_client(config_path=config, staging=staging)
     if bytecode_file:
         with open(bytecode_file, "r") as bf:
@@ -308,8 +315,9 @@ def check(config, staging, bytecode_file, source_file):
         with open(source_file, "r") as source_f:
             source_content = source_f.read().strip()
         compiled = compile_from_source(
-            source_file
-        )  # TODO: Add option for custom solc path
+            source_file,
+            solc_path=solc_path
+        )
         if len(compiled["contracts"]) > 1:
             click.echo(
                 (
@@ -354,12 +362,14 @@ def report(config, staging, uuid):
 
     for issue in resp.issues:
         source_locs = [loc.source_map.split(":") for loc in issue.locations]
+        source_locs = [(int(o), int(l), int(i)) for o, l, i in source_locs]
         for offset, _, file_idx in source_locs:
-            if resp.source_list:
-                filename = resp.source_list[int(file_idx)]
+            if resp.source_list and file_idx > 0:
+                filename = resp.source_list[file_idx]
                 line, column = get_source_location_by_offset(filename, int(offset))
             else:
                 filename = "Unknown"
+                line, column = 0, 0
             file_to_issue[filename].append(
                 (line, column, issue.swc_title, issue.severity, issue.description_short)
             )
