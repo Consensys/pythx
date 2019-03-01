@@ -8,6 +8,10 @@ import time
 from os import environ, path
 from pprint import pprint
 from collections import defaultdict
+from distutils import spawn
+from subprocess import check_output
+from copy import copy
+import tempfile
 
 import click
 from tabulate import tabulate
@@ -48,20 +52,6 @@ number_opt = click.option(
     default=20,
     type=click.IntRange(min=1, max=100),
     help="The number of most recent analysis jobs to display",
-)
-bytecode_opt = click.option(
-    "--bytecode",
-    "-b",
-    type=click.STRING,
-    default=None,
-    help="Analysis job creation byte code",
-)
-source_opt = click.option(
-    "--source",
-    "-s",
-    type=click.STRING,
-    default=None,
-    help="Analysis job Solidity source code",
 )
 bytecode_file_opt = click.option(
     "--bytecode-file",
@@ -182,6 +172,24 @@ def get_source_location_by_offset(filename, offset):
     sys.exit(1)
 
 
+def compile_from_source(source_path: str, solc_path: str = None):
+    solc_path = spawn.find_executable("solc") if solc_path is None else solc_path
+    if solc_path is None or not path.isfile(solc_path):
+        # user solc path invalid or no default "solc" command found
+        click.echo(
+            "Invalid solc path. Please make sure solc is on your PATH or your custom path is valid."
+        )
+        sys.exit(1)
+    solc_command = [
+        solc_path,
+        "--combined-json",
+        "ast,bin,bin-runtime,srcmap,srcmap-runtime",
+        source_path,
+    ]
+    output = check_output(solc_command)
+    return json.loads(output)
+
+
 @click.group()
 def cli():
     pass  # pragma: no cover
@@ -287,22 +295,49 @@ def top(config, staging, interval):
 @cli.command(help="Submit a new analysis job based on source code, byte code, or both")
 @config_opt
 @staging_opt
-@bytecode_opt
-@source_opt
 @bytecode_file_opt
 @source_file_opt
-def check(config, staging, bytecode, source, bytecode_file, source_file):
+def check(config, staging, bytecode_file, source_file):
     c = recover_client(config_path=config, staging=staging)
-    bytecode_f = bytecode if bytecode else None
-    sources_f = {"cli-src.sol": {"source": source}} if source else {}
     if bytecode_file:
         with open(bytecode_file, "r") as bf:
-            bytecode_f = bf.read().strip()  # CLI arg bytecode takes preference
-    if source_file:
-        with open(source_file, "r") as sf:
-            sources_f = {path.abspath(source_file): {"source": sf.read().strip()}}
+            bytecode_f = bf.read().strip()
+        # analyze creation bytecode only
+        resp = c.analyze(bytecode=bytecode_f)
+    elif source_file:
+        with open(source_file, "r") as source_f:
+            source_content = source_f.read().strip()
+        compiled = compile_from_source(
+            source_file
+        )  # TODO: Add option for custom solc path
+        if len(compiled["contracts"]) > 1:
+            click.echo(
+                (
+                    "The PythX CLI currently does not support sending multiple contracts. "
+                    "Please consider using Truffle Security at "
+                    "https://github.com/ConsenSys/truffle-security or open a PR to PythX "
+                    "at https://github.com/dmuhs/pythx/. :)"
+                )
+            )
+            sys.exit(1)
 
-    resp = c.analyze(bytecode=bytecode_f, sources=sources_f)
+        for _, contract_data in compiled["contracts"].items():
+            bytecode = contract_data["bin"]
+            source_map = contract_data["srcmap"]
+
+        sources_dict = copy(compiled["sources"])
+        sources_dict[source_file]["source"] = source_content
+        resp = c.analyze(
+            bytecode=bytecode,
+            source_map=source_map,
+            source_list=compiled["sourceList"],
+            sources=sources_dict,
+            solc_version=compiled["version"],
+        )
+    else:
+        click.echo("Please pass a bytecode or a source code file")
+        sys.exit(1)
+
     click.echo("Analysis submitted as job {}".format(resp.analysis.uuid))
     update_config(config_path=config, client=c)
 
