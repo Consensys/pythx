@@ -58,6 +58,7 @@ By default, PythX comes enabled with a trial user:
 Submit an Solidity source file for analysis:
 
 .. code-block::
+
         $ pythx check -sf test.sol
         Analysis submitted as job df137587-7fc1-466a-a4b2-d63392099682
 
@@ -65,6 +66,7 @@ Submit an Solidity source file for analysis:
 Check the status of your analysis job:
 
 .. code-block::
+
         $ pythx status df137587-7fc1-466a-a4b2-d63392099682
         ╒════════════════╤══════════════════════════════════════╕
         │ uuid           │ df137587-7fc1-466a-a4b2-d63392099682 │
