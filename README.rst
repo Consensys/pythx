@@ -96,8 +96,8 @@ Check the status of your analysis job:
         ╘════════════════╧══════════════════════════════════════╛
 
 
-Get the analysis report. Resolving the source maps is still a bit buggy,
-sorry. :)
+Get the analysis report. Pinpointing the line and column locations is still
+a bit buggy, sorry. :)
 
 .. code-block::
 
