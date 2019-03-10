@@ -23,7 +23,7 @@ PythX
         :target: https://coveralls.io/github/dmuhs/pythx?branch=master
 
 
-PythX is a library for the Mythx_ smart contract security analysis platform.
+PythX is a library for the MythX_ smart contract security analysis platform.
 
 .. code-block::
 
@@ -45,7 +45,8 @@ PythX is a library for the Mythx_ smart contract security analysis platform.
         version  Print version information of PythX and the API
 
 
-By default, PythX comes enabled with a trial user:
+By default, PythX comes with a pre-enabled trial user. To get started right
+away, simply login with the default values:
 
 .. code-block::
 
@@ -54,6 +55,8 @@ By default, PythX comes enabled with a trial user:
         Please enter your MythX password [trial]:
         Successfully logged in as 0x0000000000000000000000000000000000000000
 
+If you already have an account on MythX_, simply login with your Ethereum
+address and the API password you have set on the website.
 
 Submit an Solidity source file for analysis:
 
