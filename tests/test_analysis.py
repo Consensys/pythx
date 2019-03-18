@@ -62,3 +62,9 @@ def test_analysis_from_invalid_dict():
 
 def test_validate():
     testdata.ANALYSIS_OBJECT.validate()
+
+
+def test_repr():
+    analysis_repr = repr(testdata.ANALYSIS_OBJECT)
+    assert testdata.ANALYSIS_OBJECT.uuid in analysis_repr
+    testdata.ANALYSIS_OBJECT.status in analysis_repr
