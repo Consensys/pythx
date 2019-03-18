@@ -278,3 +278,8 @@ def test_jwt_expiration():
     assert Client._get_jwt_expiration_ts(testdata.REFRESH_TOKEN_1) == datetime(
         2019, 3, 24, 16, 21, 19, 28000
     )
+
+
+def test_context_handler():
+    with get_client([testdata.LOGOUT_RESPONSE_DICT]) as c:
+        pass

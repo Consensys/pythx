@@ -178,3 +178,9 @@ class Client:
             assert_authentication=False,
             include_auth_header=False,
         )
+
+    def __enter__(self):
+        self.assert_authentication()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.logout()
