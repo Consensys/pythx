@@ -7,4 +7,3 @@ class PythXConfig(dict):
             "production": "https://api.mythx.io/",
             "staging": "https://staging.api.mythx.io/",
         }
-        self["timeouts"] = {"access": 600, "refresh": 3600}  # 10m  # 1h
