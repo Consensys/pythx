@@ -77,7 +77,7 @@ class Client:
             LOGGER.debug("Access and refresh token have expired - logging in again")
             self.login()
 
-    def login(self):
+    def login(self) -> respmodels.AuthLoginResponse:
         req = reqmodels.AuthLoginRequest(
             eth_address=self.eth_address, password=self.password
         )
@@ -91,14 +91,14 @@ class Client:
         self.refresh_token = resp_model.refresh_token
         return resp_model
 
-    def logout(self):
+    def logout(self) -> respmodels.AuthLogoutResponse:
         req = reqmodels.AuthLogoutRequest()
         resp_model = self._assemble_send_parse(req, respmodels.AuthLogoutResponse)
         self.access_token = None
         self.refresh_token = None
         return resp_model
 
-    def refresh(self, assert_authentication=True):
+    def refresh(self, assert_authentication=True) -> respmodels.AuthRefreshResponse:
         req = reqmodels.AuthRefreshRequest(
             access_token=self.access_token, refresh_token=self.refresh_token
         )
@@ -112,9 +112,9 @@ class Client:
         self.refresh_token = resp_model.refresh_token
         return resp_model
 
-    def analysis_list(
+    def analysis_list (
         self, date_from: datetime = None, date_to: datetime = None, offset: int = None
-    ):
+    ) -> respmodels.AnalysisListResponse:
         req = reqmodels.AnalysisListRequest(
             offset=offset, date_from=date_from, date_to=date_to
         )
@@ -131,7 +131,7 @@ class Client:
         source_list: List[str] = None,
         solc_version: str = None,
         analysis_mode: str = "quick",
-    ):
+    ) -> respmodels.AnalysisSubmissionResponse:
         req = reqmodels.AnalysisSubmissionRequest(
             contract_name=contract_name,
             bytecode=bytecode,
@@ -146,22 +146,22 @@ class Client:
         req.validate()
         return self._assemble_send_parse(req, respmodels.AnalysisSubmissionResponse)
 
-    def status(self, uuid: str):
+    def status(self, uuid: str) -> respmodels.AnalysisStatusResponse:
         req = reqmodels.AnalysisStatusRequest(uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisStatusResponse)
 
-    def analysis_ready(self, uuid: str):
+    def analysis_ready(self, uuid: str) -> bool:
         resp = self.status(uuid)
         return (
             resp.analysis.status == respmodels.AnalysisStatus.FINISHED
             or resp.analysis.status == respmodels.AnalysisStatus.ERROR
         )
 
-    def report(self, uuid: str):
+    def report(self, uuid: str) -> respmodels.DetectedIssuesResponse:
         req = reqmodels.DetectedIssuesRequest(uuid)
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
-    def openapi(self, mode="yaml"):
+    def openapi(self, mode="yaml") -> respmodels.OASResponse:
         req = reqmodels.OASRequest(mode=mode)
         return self._assemble_send_parse(
             req,
@@ -170,7 +170,7 @@ class Client:
             include_auth_header=False,
         )
 
-    def version(self):
+    def version(self) -> respmodels.VersionResponse:
         req = reqmodels.VersionRequest()
         return self._assemble_send_parse(
             req,
