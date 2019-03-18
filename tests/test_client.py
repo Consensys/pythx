@@ -282,4 +282,4 @@ def test_jwt_expiration():
 
 def test_context_handler():
     with get_client([testdata.LOGOUT_RESPONSE_DICT]) as c:
-        pass
+        assert c is not None

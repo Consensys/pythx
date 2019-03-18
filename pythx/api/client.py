@@ -181,6 +181,7 @@ class Client:
 
     def __enter__(self):
         self.assert_authentication()
+        return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.logout()
