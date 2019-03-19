@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from copy import deepcopy
 from . import common as testdata
 from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response import (
@@ -82,3 +83,9 @@ def test_valid_swc_id_not_contains():
 def test_invalid_key_contains():
     with pytest.raises(ValueError):
         1337 in testdata.DETECTED_ISSUES_RESPONSE_OBJECT
+
+def test_response_length():
+    resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
+    assert len(resp) == len(resp.issues)
+    resp.issues.append("foo")
+    assert len(resp) == len(resp.issues)

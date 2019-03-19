@@ -63,3 +63,6 @@ class DetectedIssuesResponse(BaseResponse):
         if not type(key) == str:
             raise ValueError("Expected SWC ID of type str but got {} of type {}".format(key, type(key)))
         return any(map(lambda i: i.swc_id == key, self.issues))
+
+    def __len__(self):
+        return len(self.issues)
