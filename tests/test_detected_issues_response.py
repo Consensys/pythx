@@ -93,3 +93,30 @@ def test_response_length():
 def test_issue_iterator():
     for i, issue in enumerate(testdata.DETECTED_ISSUES_RESPONSE_OBJECT):
         assert testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issues[i] == issue
+
+def test_issue_valid_getitem():
+    assert testdata.DETECTED_ISSUES_RESPONSE_OBJECT[0] == testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issues[0]
+
+def test_invalid_getitem():
+    with pytest.raises(IndexError):
+        testdata.DETECTED_ISSUES_RESPONSE_OBJECT[1337]
+
+def test_valid_setitem():
+    resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
+    resp[0] = "foo"
+    assert resp[0] == "foo"
+    assert resp.issues[0] == "foo"
+
+def test_invalid_setitem():
+    with pytest.raises(TypeError):
+        # string key on list access
+        testdata.DETECTED_ISSUES_RESPONSE_OBJECT["foo"]
+
+def test_valid_delete():
+    resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
+    del resp[0]
+    assert resp.issues == []
+
+def test_invalid_delete():
+    with pytest.raises(IndexError):
+        del testdata.DETECTED_ISSUES_RESPONSE_OBJECT[1337]

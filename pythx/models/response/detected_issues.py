@@ -70,3 +70,12 @@ class DetectedIssuesResponse(BaseResponse):
     def __iter__(self):
         for issue in self.issues:
             yield issue
+
+    def __getitem__(self, key):
+        return self.issues[key]
+
+    def __setitem__(self, key, value):
+        self.issues[key] = value
+
+    def __delitem__(self, key):
+        del self.issues[key]
