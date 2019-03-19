@@ -66,3 +66,7 @@ class DetectedIssuesResponse(BaseResponse):
 
     def __len__(self):
         return len(self.issues)
+
+    def __iter__(self):
+        for issue in self.issues:
+            yield issue

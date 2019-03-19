@@ -89,3 +89,7 @@ def test_response_length():
     assert len(resp) == len(resp.issues)
     resp.issues.append("foo")
     assert len(resp) == len(resp.issues)
+
+def test_issue_iterator():
+    for i, issue in enumerate(testdata.DETECTED_ISSUES_RESPONSE_OBJECT):
+        assert testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issues[i] == issue
