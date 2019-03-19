@@ -21,3 +21,6 @@ class AnalysisSubmissionResponse(BaseResponse):
 
     def to_dict(self):
         return self.analysis.to_dict()
+
+    def __getattr__(self, name):
+        return getattr(self.analysis, name)
