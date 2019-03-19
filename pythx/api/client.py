@@ -143,7 +143,7 @@ class Client:
             solc_version=solc_version,
             analysis_mode=analysis_mode,
         )
-        req.validate()
+        # req.validate()
         return self._assemble_send_parse(req, respmodels.AnalysisSubmissionResponse)
 
     def status(self, uuid: str) -> respmodels.AnalysisStatusResponse:

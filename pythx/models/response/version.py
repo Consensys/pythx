@@ -31,13 +31,6 @@ class VersionResponse(BaseResponse):
         self.hashed_version = hashed_version
 
     @classmethod
-    def validate(cls, candidate):
-        try:
-            jsonschema.validate(candidate, cls.schema)
-        except jsonschema.ValidationError as e:
-            raise ResponseValidationError(e)
-
-    @classmethod
     def from_dict(cls, d: Dict):
         cls.validate(d)
         return cls(

@@ -5,7 +5,7 @@ import dateutil.parser
 import pytest
 
 from . import common as testdata
-from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import Analysis, AnalysisStatus
 from pythx.models.util import deserialize_api_timestamp, serialize_api_timestamp
 
@@ -29,11 +29,6 @@ def test_analysis_from_valid_json():
     assert_analysis(analysis)
 
 
-def test_analysis_from_invalid_json():
-    with pytest.raises(ResponseDecodeError):
-        Analysis.from_json("{}")
-
-
 def test_analysis_to_json():
     assert json.loads(testdata.ANALYSIS_OBJECT.to_json()) == testdata.ANALYSIS_DICT
 
@@ -53,15 +48,6 @@ def test_analysis_propagate_error_field():
 def test_analysis_from_valid_dict():
     analysis = Analysis.from_dict(testdata.ANALYSIS_DICT)
     assert_analysis(analysis)
-
-
-def test_analysis_from_invalid_dict():
-    with pytest.raises(ResponseDecodeError):
-        Analysis.from_dict({})
-
-
-def test_validate():
-    testdata.ANALYSIS_OBJECT.validate()
 
 
 def test_repr():

@@ -33,9 +33,6 @@ class AuthLogoutRequest(BaseRequest):
     def payload(self):
         return {}
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d: Dict):
         if "global" not in d:

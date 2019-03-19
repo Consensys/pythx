@@ -3,7 +3,7 @@ import json
 import pytest
 
 from . import common as testdata
-from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import Analysis, AnalysisSubmissionResponse
 from pythx.models.util import serialize_api_timestamp
 
@@ -30,7 +30,7 @@ def test_analysis_submission_from_valid_json():
 
 
 def test_analysis_submission_from_empty_json():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AnalysisSubmissionResponse.from_json("{}")
 
 
@@ -41,14 +41,8 @@ def test_analysis_submission_from_valid_dict():
     assert_analysis_data(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT, resp.analysis)
 
 
-def test_analysis_submission_from_invalid_dict():
-    with pytest.raises(ResponseDecodeError):
-        # list of dicts expected
-        AnalysisSubmissionResponse.from_dict("{}")
-
-
 def test_analysis_submission_from_empty_dict():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AnalysisSubmissionResponse.from_dict({})
 
 

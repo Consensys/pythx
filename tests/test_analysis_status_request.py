@@ -49,7 +49,3 @@ def test_analysis_status_request_to_dict():
         testdata.ANALYSIS_STATUS_REQUEST_OBJECT.to_dict()
         == testdata.ANALYSIS_STATUS_REQUEST_DICT
     )
-
-
-def test_validate():
-    testdata.ANALYSIS_STATUS_REQUEST_OBJECT.validate()

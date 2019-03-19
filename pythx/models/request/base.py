@@ -19,9 +19,9 @@ class BaseRequest(abc.ABC):
     def to_dict(self):
         pass
 
-    @abc.abstractmethod
-    def validate(self):
-        pass
+    # @abc.abstractmethod
+    # def validate(self):
+    #     pass
 
     @abc.abstractproperty
     def payload(self):

@@ -56,20 +56,20 @@ class AnalysisSubmissionRequest(BaseRequest):
     def payload(self):
         return {"data": self.to_dict()}
 
-    def validate(self):
-        LOGGER.debug("Validating %s", self.to_dict())
-        valid = True
-        msg = "Error validating analysis submission request: {}"
-        if self.analysis_mode not in ("full", "quick"):
-            valid = False
-            msg = msg.format("Analysis mode must be one of {full,quick}")
-        elif not (self.bytecode or self.sources):
-            valid = False
-            msg = msg.format("Must pass at least bytecode or source field")
-        # TODO: MOAR
+    # def validate(self):
+    #     LOGGER.debug("Validating %s", self.to_dict())
+    #     valid = True
+    #     msg = "Error validating analysis submission request: {}"
+    #     if self.analysis_mode not in ("full", "quick"):
+    #         valid = False
+    #         msg = msg.format("Analysis mode must be one of {full,quick}")
+    #     elif not (self.bytecode or self.sources):
+    #         valid = False
+    #         msg = msg.format("Must pass at least bytecode or source field")
+    #     # TODO: MOAR
 
-        if not valid:
-            raise RequestValidationError(msg)
+    #     if not valid:
+    #         raise RequestValidationError(msg)
 
     @classmethod
     def from_dict(cls, d: Dict):
@@ -80,7 +80,6 @@ class AnalysisSubmissionRequest(BaseRequest):
                 )
             )
 
-        # TODO: Should we validate here?
         return cls(
             contract_name=d.get("contractName"),
             bytecode=d.get("bytecode"),

@@ -36,9 +36,6 @@ class AuthRefreshRequest(BaseRequest):
     def payload(self):
         return {"accessToken": self.access_token, "refreshToken": self.refresh_token}
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d: Dict):
         if not all(k in d for k in AUTH_REFRESH_KEYS):

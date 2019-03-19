@@ -38,12 +38,12 @@ def test_analysis_list_from_valid_json():
 
 
 def test_analysis_list_from_invalid_json():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AnalysisListResponse.from_json("[]")
 
 
 def test_analysis_list_from_empty_json():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AnalysisListResponse.from_json("{}")
 
 
@@ -57,12 +57,12 @@ def test_analysis_list_from_valid_dict():
 
 
 def test_analysis_list_from_invalid_dict():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AnalysisListResponse.from_dict("[]")
 
 
 def test_analysis_list_from_empty_dict():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AnalysisListResponse.from_dict({})
 
 
@@ -74,17 +74,6 @@ def test_analysis_list_to_dict():
 def test_analysis_list_to_json():
     json_str = testdata.ANALYSIS_LIST_RESPONSE_OBJECT.to_json()
     assert json.loads(json_str) == testdata.ANALYSIS_LIST_RESPONSE_DICT
-
-
-def test_valid_validate():
-    testdata.ANALYSIS_LIST_RESPONSE_OBJECT.validate()
-
-
-def test_invalid_total_validate():
-    resp = deepcopy(testdata.ANALYSIS_LIST_RESPONSE_OBJECT)
-    resp.total = -1
-    with pytest.raises(ResponseValidationError):
-        resp.validate()
 
 
 def test_iteration():

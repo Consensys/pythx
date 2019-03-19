@@ -80,17 +80,13 @@ def test_analysis_submission_request_source_only():
     }
 
 
-def test_analysis_submission_request_invalid_mode():
-    req = AnalysisSubmissionRequest(bytecode=testdata.BYTECODE, analysis_mode="invalid")
-    with pytest.raises(RequestValidationError):
-        req.validate()
+# def test_analysis_submission_request_invalid_mode():
+#     req = AnalysisSubmissionRequest(bytecode=testdata.BYTECODE, analysis_mode="invalid")
+#     with pytest.raises(RequestValidationError):
+#         req.validate()
 
 
-def test_analysis_submission_request_missing_field():
-    req = AnalysisSubmissionRequest()
-    with pytest.raises(RequestValidationError):
-        req.validate()
-
-
-def test_validate():
-    testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT.validate()
+# def test_analysis_submission_request_missing_field():
+#     req = AnalysisSubmissionRequest()
+#     with pytest.raises(RequestValidationError):
+#         req.validate()

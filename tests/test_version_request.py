@@ -31,7 +31,3 @@ def test_auth_logout_request_to_json():
 
 def test_auth_logout_request_to_dict():
     assert testdata.VERSION_REQUEST_OBJECT.to_dict() == {}
-
-
-def test_validate():
-    testdata.VERSION_REQUEST_OBJECT.validate()

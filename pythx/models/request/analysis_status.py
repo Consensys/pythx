@@ -33,9 +33,6 @@ class AnalysisStatusRequest(BaseRequest):
     def payload(self):
         return {}
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d):
         uuid = d.get("uuid")

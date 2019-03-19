@@ -4,7 +4,7 @@ import pytest
 
 from copy import deepcopy
 from . import common as testdata
-from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import (
     DetectedIssuesResponse,
     Issue,
@@ -28,7 +28,7 @@ def assert_detected_issues(resp):
     assert location.source_map == testdata.SOURCE_MAP
     assert location.source_format == SourceFormat.EVM_BYZANTIUM_BYTECODE
     assert location.source_type == SourceType.RAW_BYTECODE
-    assert location.source_list == [testdata.SOURCE_LIST]
+    assert location.source_list == testdata.SOURCE_LIST
 
 
 def test_detected_issues_from_valid_json():
@@ -39,7 +39,7 @@ def test_detected_issues_from_valid_json():
 
 
 def test_detected_issues_from_invalid_json():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         DetectedIssuesResponse.from_json("[]")
 
 
@@ -49,12 +49,12 @@ def test_detected_issues_from_dict():
 
 
 def test_detected_issues_from_invalid_list():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         DetectedIssuesResponse.from_dict([])
 
 
 def test_detected_issues_from_invalid_dict():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         DetectedIssuesResponse.from_dict({})
 
 
@@ -66,10 +66,6 @@ def test_detected_issues_to_json():
 def test_detected_issues_to_dict():
     resp = testdata.DETECTED_ISSUES_RESPONSE_OBJECT.to_dict()
     assert testdata.DETECTED_ISSUES_RESPONSE_DICT == resp
-
-
-def test_validate():
-    testdata.DETECTED_ISSUES_RESPONSE_OBJECT.validate()
 
 
 def test_valid_swc_id_contains():

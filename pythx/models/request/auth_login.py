@@ -36,9 +36,6 @@ class AuthLoginRequest(BaseRequest):
     def payload(self):
         return self.to_dict()
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d: Dict[str, str]):
         if not all(k in d for k in AUTH_LOGIN_KEYS):

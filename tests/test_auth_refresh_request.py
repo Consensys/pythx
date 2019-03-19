@@ -45,7 +45,3 @@ def test_auth_refresh_request_to_json():
 
 def test_auth_refresh_request_to_dict():
     assert testdata.REFRESH_REQUEST_OBJECT.to_dict() == testdata.REFRESH_REQUEST_DICT
-
-
-def test_validate():
-    testdata.REFRESH_REQUEST_OBJECT.validate()

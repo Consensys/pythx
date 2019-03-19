@@ -8,19 +8,6 @@ from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.base import BaseResponse
 from pythx.models.util import deserialize_api_timestamp, serialize_api_timestamp
 
-ANALYSIS_KEYS = (
-    "uuid",
-    "apiVersion",
-    "mythrilVersion",
-    "maestroVersion",
-    "harveyVersion",
-    "maruVersion",
-    "queueTime",
-    "status",
-    "submittedBy",
-    "submittedAt",
-)
-
 
 class AnalysisStatus(str, Enum):
     QUEUED = "Queued"
@@ -58,17 +45,10 @@ class Analysis(BaseResponse):
         self.submitted_by = submitted_by
         self.error = error
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d):
-        if all(k in d for k in ANALYSIS_KEYS):
-            d = {underscore(k): v for k, v in d.items()}
-            return cls(**d)
-        raise ResponseDecodeError(
-            "Not all required keys {} found in data {}".format(ANALYSIS_KEYS, d)
-        )
+        d = {underscore(k): v for k, v in d.items()}
+        return cls(**d)
 
     def to_dict(self):
         d = {

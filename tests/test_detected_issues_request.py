@@ -45,7 +45,3 @@ def test_analysis_issues_request_to_dict():
         testdata.DETECTED_ISSUES_REQUEST_OBJECT.to_dict()
         == testdata.DETECTED_ISSUES_REQUEST_DICT
     )
-
-
-def test_validate():
-    testdata.DETECTED_ISSUES_REQUEST_OBJECT.validate()

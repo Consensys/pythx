@@ -36,9 +36,6 @@ class OASRequest(BaseRequest):
     def headers(self):
         return {}
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d):
         return cls()

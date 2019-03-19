@@ -2,7 +2,7 @@ import json
 
 import pytest
 from . import common as testdata
-from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import Analysis, AnalysisStatusResponse
 from pythx.models.util import serialize_api_timestamp
 
@@ -29,7 +29,7 @@ def test_analysis_list_from_valid_json():
 
 
 def test_analysis_list_from_empty_json():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AnalysisStatusResponse.from_json("{}")
 
 
@@ -38,14 +38,8 @@ def test_analysis_list_from_valid_dict():
     assert_analysis_data(testdata.ANALYSIS_STATUS_RESPONSE_DICT, resp.analysis)
 
 
-def test_analysis_list_from_invalid_dict():
-    with pytest.raises(ResponseDecodeError):
-        # list of dicts expected
-        AnalysisStatusResponse.from_dict("{}")
-
-
 def test_analysis_list_from_empty_dict():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AnalysisStatusResponse.from_dict({})
 
 
@@ -57,7 +51,3 @@ def test_analysis_list_to_dict():
 def test_analysis_list_to_json():
     json_str = testdata.ANALYSIS_STATUS_RESPONSE_OBJECT.to_json()
     assert json.loads(json_str) == testdata.ANALYSIS_STATUS_RESPONSE_DICT
-
-
-def test_validate():
-    testdata.ANALYSIS_STATUS_RESPONSE_OBJECT.validate()

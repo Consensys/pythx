@@ -45,7 +45,3 @@ def test_login_to_json():
 
 def test_login_to_dict():
     assert testdata.LOGIN_REQUEST_OBJECT.to_dict() == testdata.LOGIN_REQUEST_DICT
-
-
-def test_validate():
-    testdata.LOGIN_REQUEST_OBJECT.validate()

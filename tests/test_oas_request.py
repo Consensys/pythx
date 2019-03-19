@@ -39,7 +39,3 @@ def test_oas_request_to_json():
 
 def test_oas_request_to_dict():
     assert testdata.OPENAPI_REQUEST_OBJECT.to_dict() == {}
-
-
-def test_validate():
-    testdata.OPENAPI_REQUEST_OBJECT.validate()
