@@ -69,3 +69,16 @@ def test_detected_issues_to_dict():
 
 def test_validate():
     testdata.DETECTED_ISSUES_RESPONSE_OBJECT.validate()
+
+
+def test_valid_swc_id_contains():
+    assert testdata.SWC_ID in testdata.DETECTED_ISSUES_RESPONSE_OBJECT
+
+
+def test_valid_swc_id_not_contains():
+    assert not "SWC-104" in testdata.DETECTED_ISSUES_RESPONSE_OBJECT
+
+
+def test_invalid_key_contains():
+    with pytest.raises(ValueError):
+        1337 in testdata.DETECTED_ISSUES_RESPONSE_OBJECT
