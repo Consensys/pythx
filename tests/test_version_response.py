@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import VersionResponse
+
+from . import common as testdata
 
 
 def assert_version_response(resp: VersionResponse):

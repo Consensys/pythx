@@ -1,6 +1,8 @@
 import abc
 import json
+
 import jsonschema
+
 from pythx.models.exceptions import RequestValidationError
 
 

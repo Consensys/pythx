@@ -1,9 +1,8 @@
 import json
+from copy import deepcopy
 
 import pytest
 
-from copy import deepcopy
-from . import common as testdata
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import (
     DetectedIssuesResponse,
@@ -13,6 +12,8 @@ from pythx.models.response import (
     SourceLocation,
     SourceType,
 )
+
+from . import common as testdata
 
 
 def assert_detected_issues(resp):
@@ -80,22 +81,30 @@ def test_invalid_key_contains():
     with pytest.raises(ValueError):
         1337 in testdata.DETECTED_ISSUES_RESPONSE_OBJECT
 
+
 def test_response_length():
     resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
     assert len(resp) == len(resp.issues)
     resp.issues.append("foo")
     assert len(resp) == len(resp.issues)
 
+
 def test_issue_iterator():
     for i, issue in enumerate(testdata.DETECTED_ISSUES_RESPONSE_OBJECT):
         assert testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issues[i] == issue
 
+
 def test_issue_valid_getitem():
-    assert testdata.DETECTED_ISSUES_RESPONSE_OBJECT[0] == testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issues[0]
+    assert (
+        testdata.DETECTED_ISSUES_RESPONSE_OBJECT[0]
+        == testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issues[0]
+    )
+
 
 def test_invalid_getitem():
     with pytest.raises(IndexError):
         testdata.DETECTED_ISSUES_RESPONSE_OBJECT[1337]
+
 
 def test_valid_setitem():
     resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
@@ -103,15 +112,18 @@ def test_valid_setitem():
     assert resp[0] == "foo"
     assert resp.issues[0] == "foo"
 
+
 def test_invalid_setitem():
     with pytest.raises(TypeError):
         # string key on list access
         testdata.DETECTED_ISSUES_RESPONSE_OBJECT["foo"]
 
+
 def test_valid_delete():
     resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
     del resp[0]
     assert resp.issues == []
+
 
 def test_invalid_delete():
     with pytest.raises(IndexError):

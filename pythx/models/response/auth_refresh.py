@@ -6,9 +6,10 @@ from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
 from pythx.models.util import resolve_schema
 
+
 class AuthRefreshResponse(BaseResponse):
     with open(resolve_schema(__file__, "auth-refresh.json")) as sf:
-            schema = json.load(sf)
+        schema = json.load(sf)
 
     def __init__(self, access_token: str, refresh_token: str):
         self.access_token = access_token

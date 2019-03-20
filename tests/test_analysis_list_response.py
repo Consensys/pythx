@@ -8,7 +8,6 @@ from pythx.models.response import AnalysisListResponse
 from pythx.models.response.analysis import Analysis
 from pythx.models.util import serialize_api_timestamp
 
-
 from . import common as testdata
 
 
@@ -84,7 +83,9 @@ def test_iteration():
 
 
 def test_valid_getitem():
-    for idx, analysis in list(enumerate(testdata.ANALYSIS_LIST_RESPONSE_OBJECT.analyses)):
+    for idx, analysis in list(
+        enumerate(testdata.ANALYSIS_LIST_RESPONSE_OBJECT.analyses)
+    ):
         assert testdata.ANALYSIS_LIST_RESPONSE_OBJECT[idx] == analysis
 
 
@@ -115,7 +116,9 @@ def test_valid_setitem():
     analysis_list[0] = "foo"
     assert analysis_list.analyses[0] == "foo"
     assert analysis_list[0] == "foo"
-    assert len(analysis_list.analyses) == len(testdata.ANALYSIS_LIST_RESPONSE_OBJECT.analyses)
+    assert len(analysis_list.analyses) == len(
+        testdata.ANALYSIS_LIST_RESPONSE_OBJECT.analyses
+    )
 
 
 def test_invalid_setitem():
@@ -125,7 +128,9 @@ def test_invalid_setitem():
 
 def test_reversed():
     analysis_list = deepcopy(testdata.ANALYSIS_LIST_RESPONSE_OBJECT)
-    assert list(reversed(analysis_list)) == list(reversed(testdata.ANALYSIS_LIST_RESPONSE_OBJECT.analyses))
+    assert list(reversed(analysis_list)) == list(
+        reversed(testdata.ANALYSIS_LIST_RESPONSE_OBJECT.analyses)
+    )
     assert analysis_list.total == testdata.ANALYSIS_LIST_RESPONSE_OBJECT.total
 
 

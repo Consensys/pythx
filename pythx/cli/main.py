@@ -5,19 +5,17 @@ import os
 import sys
 import tempfile
 import time
+from collections import defaultdict
+from copy import copy
+from distutils import spawn
 from os import environ, path
 from pprint import pprint
-from collections import defaultdict
-from distutils import spawn
 from subprocess import check_output
-from copy import copy
-import tempfile
 
 import click
 from tabulate import tabulate
 
 from pythx.api import Client
-
 
 if environ.get("PYTHX_DEBUG") is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -74,7 +72,7 @@ solc_path_opt = click.option(
     "--solc-path",
     type=click.Path(exists=True),
     default=None,
-    help="Path to the solc compiler"
+    help="Path to the solc compiler",
 )
 uuid_arg = click.argument("uuid", type=click.UUID)
 
@@ -182,9 +180,7 @@ def compile_from_source(source_path: str, solc_path: str = None):
     solc_path = spawn.find_executable("solc") if solc_path is None else solc_path
     if solc_path is None:
         # user solc path invalid or no default "solc" command found
-        click.echo(
-            "Invalid solc path. Please make sure solc is on your PATH."
-        )
+        click.echo("Invalid solc path. Please make sure solc is on your PATH.")
         sys.exit(1)
     solc_command = [
         solc_path,
@@ -314,10 +310,7 @@ def check(config, staging, bytecode_file, source_file, solc_path):
     elif source_file:
         with open(source_file, "r") as source_f:
             source_content = source_f.read().strip()
-        compiled = compile_from_source(
-            source_file,
-            solc_path=solc_path
-        )
+        compiled = compile_from_source(source_file, solc_path=solc_path)
         if len(compiled["contracts"]) > 1:
             click.echo(
                 (

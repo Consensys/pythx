@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import AuthLogoutResponse
+
+from . import common as testdata
 
 
 def test_auth_login_response_from_valid_json():

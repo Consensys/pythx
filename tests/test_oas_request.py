@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
 from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import OASRequest
+
+from . import common as testdata
 
 
 def assert_version_request(req):

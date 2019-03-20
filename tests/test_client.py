@@ -1,17 +1,19 @@
 import json
-import jwt
 from copy import copy
 from datetime import datetime, timedelta
+
+import jwt
+import pytest
 from dateutil.tz import tzutc
 
-import pytest
-from . import common as testdata
 import pythx.models.response as respmodels
 from pythx import config
 from pythx.api import APIHandler, Client
 from pythx.models.exceptions import PythXAPIError, RequestValidationError
 from pythx.models.response.analysis import AnalysisStatus
 from pythx.models.util import serialize_api_timestamp
+
+from . import common as testdata
 
 
 class MockAPIHandler(APIHandler):

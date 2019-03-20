@@ -69,20 +69,22 @@ class Analysis(BaseResponse):
         return d
 
     def __eq__(self, candidate):
-        return all((
-            self.uuid == candidate.uuid,
-            self.api_version == candidate.api_version,
-            self.mythril_version == candidate.mythril_version,
-            self.maestro_version == candidate.maestro_version,
-            self.harvey_version == candidate.harvey_version,
-            self.maru_version == candidate.maru_version,
-            self.queue_time == candidate.queue_time,
-            self.run_time == candidate.run_time,
-            self.status == candidate.status,
-            self.submitted_at == candidate.submitted_at,
-            self.submitted_by == candidate.submitted_by,
-            self.error == candidate.error
-        ))
+        return all(
+            (
+                self.uuid == candidate.uuid,
+                self.api_version == candidate.api_version,
+                self.mythril_version == candidate.mythril_version,
+                self.maestro_version == candidate.maestro_version,
+                self.harvey_version == candidate.harvey_version,
+                self.maru_version == candidate.maru_version,
+                self.queue_time == candidate.queue_time,
+                self.run_time == candidate.run_time,
+                self.status == candidate.status,
+                self.submitted_at == candidate.submitted_at,
+                self.submitted_by == candidate.submitted_by,
+                self.error == candidate.error,
+            )
+        )
 
     def __repr__(self):
         return "<Analysis uuid={} status={}>".format(self.uuid, self.status)

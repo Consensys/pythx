@@ -2,7 +2,6 @@ import json
 
 import pytest
 
-from . import common as testdata
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import (
     Issue,
@@ -11,6 +10,8 @@ from pythx.models.response import (
     SourceLocation,
     SourceType,
 )
+
+from . import common as testdata
 
 
 def assert_issue(issue: Issue):

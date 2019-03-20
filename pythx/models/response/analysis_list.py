@@ -7,13 +7,12 @@ from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
 from pythx.models.util import resolve_schema
 
-
 INDEX_ERROR_MSG = "Analysis at index {} was not fetched"
 
 
 class AnalysisListResponse(BaseResponse):
     with open(resolve_schema(__file__, "analysis-list.json")) as sf:
-            schema = json.load(sf)
+        schema = json.load(sf)
 
     def __init__(self, analyses: List[Analysis], total: int) -> None:
         self.analyses = analyses
@@ -23,7 +22,9 @@ class AnalysisListResponse(BaseResponse):
     def validate(cls, candidate):
         super().validate(candidate)
         if not type(candidate) == dict:
-            raise ResponseValidationError("Expected type dict but got {}".format(type(candidate)))
+            raise ResponseValidationError(
+                "Expected type dict but got {}".format(type(candidate))
+            )
 
     @classmethod
     def from_dict(cls, d: dict):
@@ -70,7 +71,9 @@ class AnalysisListResponse(BaseResponse):
 
     def __contains__(self, item):
         if not type(item) in (Analysis, str):
-            raise ValueError("Expected type Analysis or str but got {}".format(type(item)))
+            raise ValueError(
+                "Expected type Analysis or str but got {}".format(type(item))
+            )
         uuid = item.uuid if type(item) == Analysis else item
         return uuid in map(lambda x: x.uuid, self.analyses)
 

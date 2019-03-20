@@ -112,7 +112,7 @@ class Client:
         self.refresh_token = resp_model.refresh_token
         return resp_model
 
-    def analysis_list (
+    def analysis_list(
         self, date_from: datetime = None, date_to: datetime = None, offset: int = None
     ) -> respmodels.AnalysisListResponse:
         req = reqmodels.AnalysisListRequest(

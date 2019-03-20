@@ -9,7 +9,7 @@ from pythx.models.util import resolve_schema
 
 class OASResponse(BaseResponse):
     with open(resolve_schema(__file__, "openapi.json")) as sf:
-            schema = json.load(sf)
+        schema = json.load(sf)
 
     def __init__(self, data: str):
         if not type(data) == str:

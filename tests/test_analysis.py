@@ -4,10 +4,11 @@ from copy import copy
 import dateutil.parser
 import pytest
 
-from . import common as testdata
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import Analysis, AnalysisStatus
 from pythx.models.util import deserialize_api_timestamp, serialize_api_timestamp
+
+from . import common as testdata
 
 
 def assert_analysis(analysis):

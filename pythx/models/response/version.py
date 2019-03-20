@@ -1,6 +1,7 @@
-from os import path
 import json
+from os import path
 from typing import Any, Dict, List
+
 import jsonschema
 
 from pythx.models.exceptions import ResponseValidationError
@@ -12,7 +13,7 @@ from pythx.models.util import resolve_schema
 
 class VersionResponse(BaseResponse):
     with open(resolve_schema(__file__, "version.json")) as sf:
-            schema = json.load(sf)
+        schema = json.load(sf)
 
     def __init__(
         self,

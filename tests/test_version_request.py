@@ -2,8 +2,9 @@ import json
 
 import pytest
 
-from . import common as testdata
 from pythx.models.request import VersionRequest
+
+from . import common as testdata
 
 
 def assert_version_request(req):

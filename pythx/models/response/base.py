@@ -1,6 +1,8 @@
 import abc
 import json
+
 import jsonschema
+
 from pythx.models.exceptions import ResponseValidationError
 
 
@@ -29,4 +31,3 @@ class BaseResponse(abc.ABC):
     @abc.abstractmethod
     def to_dict(self):
         pass
-

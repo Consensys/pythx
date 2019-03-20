@@ -1,10 +1,12 @@
 import json
 
 import pytest
-from . import common as testdata
+
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import Analysis, AnalysisStatusResponse
 from pythx.models.util import serialize_api_timestamp
+
+from . import common as testdata
 
 
 def assert_analysis_data(expected, analysis: Analysis):

@@ -14,7 +14,7 @@ LOGGER = logging.getLogger(__name__)
 
 class AnalysisSubmissionRequest(BaseRequest):
     with open(resolve_schema(__file__, "analysis-submission.json")) as sf:
-            schema = json.load(sf)
+        schema = json.load(sf)
 
     def __init__(
         self,
@@ -74,16 +74,18 @@ class AnalysisSubmissionRequest(BaseRequest):
         )
 
     def to_dict(self):
-        base_dict = dict_delete_none_fields({
-            "contractName": self.contract_name,
-            "bytecode": self.bytecode,
-            "sourceMap": self.source_map,
-            "deployedBytecode": self.deployed_bytecode,
-            "deployedSourceMap": self.deployed_source_map,
-            "sources": self.sources if self.sources else None,
-            "sourceList": self.source_list if self.source_list else None,
-            "version": self.solc_version,
-            "analysisMode": self.analysis_mode,
-        })
+        base_dict = dict_delete_none_fields(
+            {
+                "contractName": self.contract_name,
+                "bytecode": self.bytecode,
+                "sourceMap": self.source_map,
+                "deployedBytecode": self.deployed_bytecode,
+                "deployedSourceMap": self.deployed_source_map,
+                "sources": self.sources if self.sources else None,
+                "sourceList": self.source_list if self.source_list else None,
+                "version": self.solc_version,
+                "analysisMode": self.analysis_mode,
+            }
+        )
         self.validate(base_dict)
         return base_dict

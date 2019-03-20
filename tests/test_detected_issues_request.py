@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
 from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import DetectedIssuesRequest
+
+from . import common as testdata
 
 
 def test_analysis_issues_request_from_valid_json():

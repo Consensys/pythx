@@ -1,35 +1,35 @@
 from datetime import datetime
+
 import dateutil.parser
 
 from pythx.models.request import (
-    VersionRequest,
-    OASRequest,
-    AuthLogoutRequest,
-    AuthRefreshRequest,
-    DetectedIssuesRequest,
-    AuthLoginRequest,
     AnalysisListRequest,
     AnalysisStatusRequest,
     AnalysisSubmissionRequest,
+    AuthLoginRequest,
+    AuthLogoutRequest,
+    AuthRefreshRequest,
+    DetectedIssuesRequest,
+    OASRequest,
+    VersionRequest,
 )
 from pythx.models.response import (
-    VersionResponse,
-    OASResponse,
+    Analysis,
+    AnalysisListResponse,
+    AnalysisStatusResponse,
+    AnalysisSubmissionResponse,
+    AuthLoginResponse,
+    AuthLogoutResponse,
+    AuthRefreshResponse,
+    DetectedIssuesResponse,
     Issue,
+    OASResponse,
     Severity,
     SourceFormat,
     SourceLocation,
     SourceType,
-    DetectedIssuesResponse,
-    AuthRefreshResponse,
-    AuthLogoutResponse,
-    AuthLoginResponse,
-    AnalysisSubmissionResponse,
-    Analysis,
-    AnalysisListResponse,
-    AnalysisStatusResponse,
+    VersionResponse,
 )
-
 
 # BASE DATA
 API_VERSION_1 = "v1.3.0"

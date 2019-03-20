@@ -2,10 +2,11 @@ import json
 
 import pytest
 
-from . import common as testdata
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import Analysis, AnalysisSubmissionResponse
 from pythx.models.util import serialize_api_timestamp
+
+from . import common as testdata
 
 
 def assert_analysis_data(expected, analysis: Analysis):
@@ -59,5 +60,5 @@ def test_analysis_submission_to_json():
 def test_analysis_submission_property_delegation():
     assert_analysis_data(
         testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT,
-        testdata.ANALYSIS_SUBMISSION_RESPONSE_OBJECT
+        testdata.ANALYSIS_SUBMISSION_RESPONSE_OBJECT,
     )

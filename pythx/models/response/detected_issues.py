@@ -9,7 +9,7 @@ from pythx.models.util import resolve_schema
 
 class DetectedIssuesResponse(BaseResponse):
     with open(resolve_schema(__file__, "detected-issues.json")) as sf:
-            schema = json.load(sf)
+        schema = json.load(sf)
 
     def __init__(
         self,
@@ -52,7 +52,11 @@ class DetectedIssuesResponse(BaseResponse):
 
     def __contains__(self, key: str):
         if not type(key) == str:
-            raise ValueError("Expected SWC ID of type str but got {} of type {}".format(key, type(key)))
+            raise ValueError(
+                "Expected SWC ID of type str but got {} of type {}".format(
+                    key, type(key)
+                )
+            )
         return any(map(lambda i: i.swc_id == key, self.issues))
 
     def __len__(self):

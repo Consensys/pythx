@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import AuthRefreshResponse
+
+from . import common as testdata
 
 ACCESS_TOKEN = "my_fancy_access_token"
 REFRESH_TOKEN = "my_fancy_refresh_token"
