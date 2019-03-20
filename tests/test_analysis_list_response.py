@@ -3,7 +3,7 @@ from copy import deepcopy
 
 import pytest
 
-from pythx.models.exceptions import ResponseDecodeError, ResponseValidationError
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import AnalysisListResponse
 from pythx.models.response.analysis import Analysis
 from pythx.models.util import serialize_api_timestamp

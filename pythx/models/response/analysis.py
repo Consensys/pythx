@@ -4,7 +4,6 @@ from enum import Enum
 import dateutil.parser
 from inflection import underscore
 
-from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.base import BaseResponse
 from pythx.models.util import deserialize_api_timestamp, serialize_api_timestamp
 

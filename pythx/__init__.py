@@ -10,8 +10,6 @@ from pythx.api.client import Client
 from pythx.models.exceptions import (
     PythXBaseException,
     PythXAPIError,
-    RequestDecodeError,
     RequestValidationError,
-    ResponseDecodeError,
     ResponseValidationError,
 )

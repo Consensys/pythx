@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 
 import dateutil.parser
 
-from pythx.models.exceptions import RequestDecodeError, RequestValidationError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.analysis_status import AnalysisStatusRequest
 from pythx.models.request.base import BaseRequest
 from pythx.models.util import dict_delete_none_fields

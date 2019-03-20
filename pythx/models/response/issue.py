@@ -4,8 +4,6 @@ from typing import Any, Dict, List, Tuple
 
 from inflection import underscore
 
-from pythx.models.exceptions import ResponseDecodeError
-
 
 class Severity(str, Enum):
     NONE = "None"
