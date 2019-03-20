@@ -1,8 +1,6 @@
 import json
 from enum import Enum
-from typing import Any, Dict, List, Tuple
-
-from inflection import underscore
+from typing import Any, Dict, List
 
 from pythx.models.exceptions import ResponseDecodeError
 
