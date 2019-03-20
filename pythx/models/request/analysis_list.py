@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 
 import dateutil.parser
 
-from pythx.models.exceptions import RequestDecodeError, RequestValidationError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.base import BaseRequest
 from pythx.models.util import dict_delete_none_fields
 
@@ -40,7 +40,7 @@ class AnalysisListRequest(BaseRequest):
     @classmethod
     def from_dict(cls, d: Dict[str, Any]):
         if not all(k in d for k in ANALYSIS_LIST_KEYS):
-            raise RequestDecodeError(
+            raise RequestValidationError(
                 "Not all required keys {} found in data {}".format(
                     ANALYSIS_LIST_KEYS, d
                 )

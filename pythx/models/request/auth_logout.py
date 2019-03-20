@@ -4,12 +4,15 @@ from typing import Any, Dict, List
 
 import dateutil.parser
 
-from pythx.models.exceptions import RequestDecodeError, RequestValidationError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.base import BaseRequest
-from pythx.models.util import dict_delete_none_fields
+from pythx.models.util import dict_delete_none_fields, resolve_schema
 
 
 class AuthLogoutRequest(BaseRequest):
+    with open(resolve_schema(__file__, "auth-logout.json")) as sf:
+        schema = json.load(sf)
+
     def __init__(self, global_: bool = False):
         self.global_ = global_
 
@@ -35,9 +38,10 @@ class AuthLogoutRequest(BaseRequest):
 
     @classmethod
     def from_dict(cls, d: Dict):
-        if "global" not in d:
-            raise RequestDecodeError("Required key 'global' not in data {}".format(d))
+        cls.validate(d)
         return cls(global_=d["global"])
 
     def to_dict(self):
-        return {"global": self.global_}
+        d = {"global": self.global_}
+        self.validate(d)
+        return d

@@ -3,7 +3,7 @@ import json
 import pytest
 
 from . import common as testdata
-from pythx.models.exceptions import RequestDecodeError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import OASRequest
 
 
@@ -29,7 +29,7 @@ def test_oas_request_from_valid_dict():
 
 
 def test_invalid_format():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         OASRequest(mode="invalid")
 
 

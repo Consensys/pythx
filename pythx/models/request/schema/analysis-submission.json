@@ -1,0 +1,67 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "anyOf": [{
+            "required": ["bytecode", "analysisMode"]
+        },
+        {
+            "required": ["sources", "analysisMode"]
+        },
+        {
+            "required": ["sources", "bytecode", "analysisMode"]
+        }
+    ],
+    "properties": {
+        "contractName": {
+            "type": "string"
+        },
+        "bytecode": {
+            "type": "string"
+        },
+        "deployedBytecode": {
+            "type": "string"
+        },
+        "sourceMap": {
+            "type": "string"
+        },
+        "deployedSourceMap": {
+            "type": "string"
+        },
+        "sources": {
+            "type": "object",
+            "patternProperties": {
+                ".*.sol$": {
+                    "type": "object",
+                    "anyOf": [{
+                            "required": ["source"]
+                        },
+                        {
+                            "required": ["ast"]
+                        }
+                    ],
+                    "properties": {
+                        "source": {
+                            "type": "string"
+                        },
+                        "ast": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "sourceList": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "version": {
+            "type": "string"
+        },
+        "analysisMode": {
+            "enum": ["quick", "full"]
+        }
+    }
+}

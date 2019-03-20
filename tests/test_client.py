@@ -164,7 +164,7 @@ def test_analyze_bytecode():
 
 def test_analyze_source_code():
     client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-    resp = client.analyze(sources={"foo.sol": "bar"})
+    resp = client.analyze(sources={"foo.sol": {"source": "bar"}})
 
     assert type(resp) == respmodels.AnalysisSubmissionResponse
     assert_analysis(resp.analysis)
@@ -172,21 +172,21 @@ def test_analyze_source_code():
 
 def test_analyze_source_and_bytecode():
     client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-    resp = client.analyze(sources={"foo.sol": "bar"}, bytecode="0xf00")
+    resp = client.analyze(sources={"foo.sol": {"source": "bar"}}, bytecode="0xf00")
     assert type(resp) == respmodels.AnalysisSubmissionResponse
     assert_analysis(resp.analysis)
 
 
-# def test_analyze_missing_data():
-#     client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-#     with pytest.raises(RequestValidationError):
-#         client.analyze()
+def test_analyze_missing_data():
+    client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
+    with pytest.raises(RequestValidationError):
+        client.analyze()
 
 
-# def test_analyze_invalid_mode():
-#     client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-#     with pytest.raises(RequestValidationError):
-#         client.analyze(bytecode="0xf00", analysis_mode="invalid")
+def test_analyze_invalid_mode():
+    client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
+    with pytest.raises(RequestValidationError):
+        client.analyze(bytecode="0xf00", analysis_mode="invalid")
 
 
 def test_status():

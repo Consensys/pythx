@@ -3,7 +3,7 @@ import json
 import pytest
 
 from . import common as testdata
-from pythx.models.exceptions import RequestDecodeError, RequestValidationError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import AnalysisSubmissionRequest
 
 
@@ -30,7 +30,7 @@ def test_analysis_submission_request_from_valid_json():
 
 
 def test_analysis_submission_request_from_invalid_json():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AnalysisSubmissionRequest.from_json("{}")
 
 
@@ -40,7 +40,7 @@ def test_analysis_submission_request_from_valid_dict():
 
 
 def test_analysis_submission_request_from_invalid_dict():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AnalysisSubmissionRequest.from_dict({})
 
 
@@ -80,13 +80,13 @@ def test_analysis_submission_request_source_only():
     }
 
 
-# def test_analysis_submission_request_invalid_mode():
-#     req = AnalysisSubmissionRequest(bytecode=testdata.BYTECODE, analysis_mode="invalid")
-#     with pytest.raises(RequestValidationError):
-#         req.validate()
+def test_analysis_submission_request_invalid_mode():
+    req = AnalysisSubmissionRequest(bytecode=testdata.BYTECODE, analysis_mode="invalid")
+    with pytest.raises(RequestValidationError):
+        req.to_dict()
 
 
-# def test_analysis_submission_request_missing_field():
-#     req = AnalysisSubmissionRequest()
-#     with pytest.raises(RequestValidationError):
-#         req.validate()
+def test_analysis_submission_request_missing_field():
+    req = AnalysisSubmissionRequest()
+    with pytest.raises(RequestValidationError):
+        req.to_dict()

@@ -3,7 +3,7 @@ import json
 import pytest
 
 from . import common as testdata
-from pythx.models.exceptions import RequestDecodeError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import DetectedIssuesRequest
 
 
@@ -19,7 +19,7 @@ def test_analysis_issues_request_from_valid_json():
 
 
 def test_analysis_issues_request_from_invalid_json():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         DetectedIssuesRequest.from_json("{}")
 
 
@@ -29,7 +29,7 @@ def test_analysis_issues_request_from_valid_dict():
 
 
 def test_analysis_issues_request_from_invalid_dict():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         DetectedIssuesRequest.from_dict({})
 
 

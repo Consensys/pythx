@@ -3,7 +3,6 @@ import json
 import pytest
 
 from . import common as testdata
-from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import VersionRequest
 
 

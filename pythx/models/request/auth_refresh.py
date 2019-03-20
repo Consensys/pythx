@@ -4,14 +4,15 @@ from typing import Any, Dict, List
 
 import dateutil.parser
 
-from pythx.models.exceptions import RequestDecodeError, RequestValidationError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.base import BaseRequest
-from pythx.models.util import dict_delete_none_fields
-
-AUTH_REFRESH_KEYS = ("access", "refresh")
+from pythx.models.util import dict_delete_none_fields, resolve_schema
 
 
 class AuthRefreshRequest(BaseRequest):
+    with open(resolve_schema(__file__, "auth-refresh.json")) as sf:
+        schema = json.load(sf)
+
     def __init__(self, access_token: str, refresh_token: str):
         self.access_token = access_token
         self.refresh_token = refresh_token
@@ -38,11 +39,10 @@ class AuthRefreshRequest(BaseRequest):
 
     @classmethod
     def from_dict(cls, d: Dict):
-        if not all(k in d for k in AUTH_REFRESH_KEYS):
-            raise RequestDecodeError(
-                "Not all required keys {} found in data {}".format(AUTH_REFRESH_KEYS, d)
-            )
+        cls.validate(d)
         return cls(access_token=d["access"], refresh_token=d["refresh"])
 
     def to_dict(self):
-        return {"access": self.access_token, "refresh": self.refresh_token}
+        d = {"access": self.access_token, "refresh": self.refresh_token}
+        self.validate(d)
+        return d

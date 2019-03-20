@@ -5,15 +5,17 @@ from typing import Any, Dict, List
 
 import dateutil.parser
 
-from pythx.models.exceptions import RequestDecodeError, RequestValidationError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.base import BaseRequest
-from pythx.models.util import dict_delete_none_fields
+from pythx.models.util import dict_delete_none_fields, resolve_schema
 
 LOGGER = logging.getLogger(__name__)
-ANALYSIS_SUBMISSION_KEYS = ("bytecode", "sources")
 
 
 class AnalysisSubmissionRequest(BaseRequest):
+    with open(resolve_schema(__file__, "analysis-submission.json")) as sf:
+            schema = json.load(sf)
+
     def __init__(
         self,
         contract_name: str = None,
@@ -56,30 +58,9 @@ class AnalysisSubmissionRequest(BaseRequest):
     def payload(self):
         return {"data": self.to_dict()}
 
-    # def validate(self):
-    #     LOGGER.debug("Validating %s", self.to_dict())
-    #     valid = True
-    #     msg = "Error validating analysis submission request: {}"
-    #     if self.analysis_mode not in ("full", "quick"):
-    #         valid = False
-    #         msg = msg.format("Analysis mode must be one of {full,quick}")
-    #     elif not (self.bytecode or self.sources):
-    #         valid = False
-    #         msg = msg.format("Must pass at least bytecode or source field")
-    #     # TODO: MOAR
-
-    #     if not valid:
-    #         raise RequestValidationError(msg)
-
     @classmethod
     def from_dict(cls, d: Dict):
-        if type(d) is not dict or not any(k in d for k in ANALYSIS_SUBMISSION_KEYS):
-            raise RequestDecodeError(
-                "Not all required keys {} found in data {}".format(
-                    ANALYSIS_SUBMISSION_KEYS, d
-                )
-            )
-
+        cls.validate(d)
         return cls(
             contract_name=d.get("contractName"),
             bytecode=d.get("bytecode"),
@@ -93,7 +74,7 @@ class AnalysisSubmissionRequest(BaseRequest):
         )
 
     def to_dict(self):
-        base_dict = {
+        base_dict = dict_delete_none_fields({
             "contractName": self.contract_name,
             "bytecode": self.bytecode,
             "sourceMap": self.source_map,
@@ -103,6 +84,6 @@ class AnalysisSubmissionRequest(BaseRequest):
             "sourceList": self.source_list if self.source_list else None,
             "version": self.solc_version,
             "analysisMode": self.analysis_mode,
-        }
-
-        return dict_delete_none_fields(base_dict)
+        })
+        self.validate(base_dict)
+        return base_dict

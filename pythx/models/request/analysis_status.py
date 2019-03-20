@@ -37,7 +37,7 @@ class AnalysisStatusRequest(BaseRequest):
     def from_dict(cls, d):
         uuid = d.get("uuid")
         if uuid is None:
-            raise RequestDecodeError("Missing uuid field in data {}".format(d))
+            raise RequestValidationError("Missing uuid field in data {}".format(d))
         return cls(uuid=uuid)
 
     def to_dict(self):
