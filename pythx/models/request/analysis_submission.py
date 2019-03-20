@@ -1,9 +1,5 @@
-import json
 import logging
-from datetime import datetime
-from typing import Any, Dict, List
-
-import dateutil.parser
+from typing import Dict, List
 
 from pythx.models.exceptions import RequestDecodeError, RequestValidationError
 from pythx.models.request.base import BaseRequest

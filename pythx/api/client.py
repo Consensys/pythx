@@ -1,11 +1,10 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, List
 
 import jwt
 
 from pythx.api.handler import APIHandler
-from pythx.config import config
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
 

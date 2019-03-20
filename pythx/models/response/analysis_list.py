@@ -1,10 +1,8 @@
-import json
-from typing import Any, Dict, List
+from typing import List
 
 from pythx.models.exceptions import ResponseDecodeError, ResponseValidationError
 from pythx.models.response.analysis import Analysis
 from pythx.models.response.base import BaseResponse
-from pythx.models.response.issue import Issue, SourceFormat, SourceType
 
 ANALYSIS_LIST_KEYS = ["analyses", "total"]
 

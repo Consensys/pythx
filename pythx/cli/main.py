@@ -5,19 +5,16 @@ import os
 import sys
 import tempfile
 import time
-from os import environ, path
-from pprint import pprint
 from collections import defaultdict
-from distutils import spawn
-from subprocess import check_output
 from copy import copy
-import tempfile
+from distutils import spawn
+from os import environ, path
+from subprocess import check_output
 
 import click
 from tabulate import tabulate
 
 from pythx.api import Client
-
 
 if environ.get("PYTHX_DEBUG") is not None:
     logging.basicConfig(level=logging.DEBUG)

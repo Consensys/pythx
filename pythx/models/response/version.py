@@ -1,10 +1,7 @@
-import json
-from typing import Any, Dict, List
+from typing import Dict
 
 from pythx.models.exceptions import ResponseDecodeError
-from pythx.models.response.analysis import Analysis
 from pythx.models.response.base import BaseResponse
-from pythx.models.response.issue import Issue, SourceFormat, SourceType
 
 VERSION_KEYS = ("api", "harvey", "mythril", "maestro", "maru", "hash")
 
