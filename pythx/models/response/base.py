@@ -11,6 +11,8 @@ class BaseResponse(abc.ABC):
 
     @classmethod
     def validate(cls, candidate):
+        if cls.schema is None:
+            raise TypeError("Cannot use BaseResponse.validate without a schema")
         try:
             jsonschema.validate(candidate, cls.schema)
         except jsonschema.ValidationError as e:
