@@ -1,6 +1,3 @@
-from pythx.models import request as reqmodels
-
-
 class PythXConfig(dict):
     def __init__(self):
         self["endpoints"] = {

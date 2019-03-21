@@ -5,7 +5,6 @@ from typing import Dict, List
 import jwt
 
 from pythx.api.handler import APIHandler
-from pythx.config import config
 from pythx.middleware.toolname import ClientToolNameMiddleware
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
