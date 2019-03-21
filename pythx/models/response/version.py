@@ -1,13 +1,7 @@
 import json
-from os import path
-from typing import Any, Dict, List
+from typing import Dict
 
-import jsonschema
-
-from pythx.models.exceptions import ResponseValidationError
-from pythx.models.response.analysis import Analysis
 from pythx.models.response.base import BaseResponse
-from pythx.models.response.issue import Issue, SourceFormat, SourceType
 from pythx.models.util import resolve_schema
 
 

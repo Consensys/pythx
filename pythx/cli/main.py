@@ -9,7 +9,6 @@ from collections import defaultdict
 from copy import copy
 from distutils import spawn
 from os import environ, path
-from pprint import pprint
 from subprocess import check_output
 
 import click

@@ -1,12 +1,8 @@
 import json
-from datetime import datetime
-from typing import Any, Dict, List
+from typing import Dict
 
-import dateutil.parser
-
-from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.base import BaseRequest
-from pythx.models.util import dict_delete_none_fields, resolve_schema
+from pythx.models.util import resolve_schema
 
 
 class AuthRefreshRequest(BaseRequest):

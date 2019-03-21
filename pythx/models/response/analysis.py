@@ -1,7 +1,5 @@
-import json
 from enum import Enum
 
-import dateutil.parser
 from inflection import underscore
 
 from pythx.models.response.base import BaseResponse
