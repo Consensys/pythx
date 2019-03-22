@@ -88,6 +88,10 @@ even complex use cases.
 
 The PythX CLI
 -------------
+The PythX CLI aims to be a simple example implementation to show developers on
+a practical example how PythX can be used in action. It provides a simple (and
+pretty!) interface to list analyses, submit new ones, check the status of a
+job, and get report data on the found issues.
 
 .. code-block:: console
 
