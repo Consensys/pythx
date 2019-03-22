@@ -1,5 +1,5 @@
-PythX Package Overview
-======================
+pythx package
+=============
 
 Subpackages
 -----------

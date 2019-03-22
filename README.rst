@@ -42,19 +42,19 @@ To get started, simply run
 
 .. code-block:: console
 
-    $ pip install pythx
+    $ pip3 install pythx
 
 Alternatively, clone the repository and run
 
 .. code-block:: console
 
-    $ pip install .
+    $ pip3 install .
 
 Or directly through Python's :code:`setuptools`:
 
 .. code-block:: console
 
-    $ python setup.py install
+    $ python3 setup.py install
 
 Example
 -------
