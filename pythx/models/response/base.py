@@ -1,9 +1,13 @@
 import abc
 import json
+import logging
 
 import jsonschema
 
 from pythx.models.exceptions import ResponseValidationError
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class BaseResponse(abc.ABC):
@@ -12,7 +16,8 @@ class BaseResponse(abc.ABC):
     @classmethod
     def validate(cls, candidate):
         if cls.schema is None:
-            raise TypeError("Cannot use BaseResponse.validate without a schema")
+            LOGGER.warning("Cannot validate {} without a schema".format(cls.__name__))
+            return
         try:
             jsonschema.validate(candidate, cls.schema)
         except jsonschema.ValidationError as e:
