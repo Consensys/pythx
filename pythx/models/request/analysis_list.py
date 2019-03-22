@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 import dateutil.parser
 
-from pythx.models.exceptions import RequestDecodeError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.base import BaseRequest
 
 ANALYSIS_LIST_KEYS = ("offset", "dateFrom", "dateTo")
@@ -35,13 +35,10 @@ class AnalysisListRequest(BaseRequest):
     def payload(self):
         return {}
 
-    def validate(self):
-        return (self.date_from <= self.date_to) and self.offset >= 0
-
     @classmethod
     def from_dict(cls, d: Dict[str, Any]):
         if not all(k in d for k in ANALYSIS_LIST_KEYS):
-            raise RequestDecodeError(
+            raise RequestValidationError(
                 "Not all required keys {} found in data {}".format(
                     ANALYSIS_LIST_KEYS, d
                 )

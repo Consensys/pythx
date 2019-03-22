@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
-from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import AuthRefreshResponse
+
+from . import common as testdata
 
 ACCESS_TOKEN = "my_fancy_access_token"
 REFRESH_TOKEN = "my_fancy_refresh_token"
@@ -25,7 +26,7 @@ def test_auth_refresh_response_from_valid_json():
 
 
 def test_auth_refresh_response_from_invalid_json():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AuthRefreshResponse.from_json("{}")
 
 
@@ -35,7 +36,7 @@ def test_auth_refresh_response_from_valid_dict():
 
 
 def test_auth_refresh_response_from_invalid_dict():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AuthRefreshResponse.from_dict({})
 
 
@@ -48,7 +49,3 @@ def test_auth_refresh_response_to_json():
 
 def test_auth_refresh_response_to_dict():
     assert testdata.REFRESH_RESPONSE_OBJECT.to_dict() == testdata.REFRESH_RESPONSE_DICT
-
-
-def test_validate():
-    testdata.REFRESH_RESPONSE_OBJECT.validate()

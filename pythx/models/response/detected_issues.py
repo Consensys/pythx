@@ -1,13 +1,15 @@
+import json
 from typing import Any, Dict, List
 
-from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
-
-DETECTED_ISSUES_KEYS = ("issues", "sourceType", "sourceFormat", "sourceList", "meta")
+from pythx.models.util import resolve_schema
 
 
 class DetectedIssuesResponse(BaseResponse):
+    with open(resolve_schema(__file__, "detected-issues.json")) as sf:
+        schema = json.load(sf)
+
     def __init__(
         self,
         issues: List[Issue],
@@ -22,21 +24,9 @@ class DetectedIssuesResponse(BaseResponse):
         self.source_list = source_list
         self.meta_data = meta_data
 
-    def validate(self) -> bool:
-        pass
-
     @classmethod
     def from_dict(cls, d):
-        if (
-            type(d) != list
-            or len(d) != 1
-            or not all(k in d[0] for k in DETECTED_ISSUES_KEYS)
-        ):
-            raise ResponseDecodeError(
-                "Not all required keys {} found in data {}".format(
-                    DETECTED_ISSUES_KEYS, d
-                )
-            )
+        cls.validate(d)
         d = d[0]
         return cls(
             issues=[Issue.from_dict(i) for i in d["issues"]],
@@ -47,7 +37,7 @@ class DetectedIssuesResponse(BaseResponse):
         )
 
     def to_dict(self):
-        return [
+        d = [
             {
                 "issues": [i.to_dict() for i in self.issues],
                 "sourceType": self.source_type,
@@ -56,3 +46,30 @@ class DetectedIssuesResponse(BaseResponse):
                 "meta": self.meta_data,
             }
         ]
+        self.validate(d)
+        return d
+
+    def __contains__(self, key: str):
+        if not type(key) == str:
+            raise ValueError(
+                "Expected SWC ID of type str but got {} of type {}".format(
+                    key, type(key)
+                )
+            )
+        return any(map(lambda i: i.swc_id == key, self.issues))
+
+    def __len__(self):
+        return len(self.issues)
+
+    def __iter__(self):
+        for issue in self.issues:
+            yield issue
+
+    def __getitem__(self, key):
+        return self.issues[key]
+
+    def __setitem__(self, key, value):
+        self.issues[key] = value
+
+    def __delitem__(self, key):
+        del self.issues[key]

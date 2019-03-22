@@ -2,22 +2,8 @@ from enum import Enum
 
 from inflection import underscore
 
-from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.base import BaseResponse
 from pythx.models.util import deserialize_api_timestamp, serialize_api_timestamp
-
-ANALYSIS_KEYS = (
-    "uuid",
-    "apiVersion",
-    "mythrilVersion",
-    "maestroVersion",
-    "harveyVersion",
-    "maruVersion",
-    "queueTime",
-    "status",
-    "submittedBy",
-    "submittedAt",
-)
 
 
 class AnalysisStatus(str, Enum):
@@ -56,17 +42,10 @@ class Analysis(BaseResponse):
         self.submitted_by = submitted_by
         self.error = error
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d):
-        if all(k in d for k in ANALYSIS_KEYS):
-            d = {underscore(k): v for k, v in d.items()}
-            return cls(**d)
-        raise ResponseDecodeError(
-            "Not all required keys {} found in data {}".format(ANALYSIS_KEYS, d)
-        )
+        d = {underscore(k): v for k, v in d.items()}
+        return cls(**d)
 
     def to_dict(self):
         d = {
@@ -86,3 +65,24 @@ class Analysis(BaseResponse):
             d.update({"error": self.error})
 
         return d
+
+    def __eq__(self, candidate):
+        return all(
+            (
+                self.uuid == candidate.uuid,
+                self.api_version == candidate.api_version,
+                self.mythril_version == candidate.mythril_version,
+                self.maestro_version == candidate.maestro_version,
+                self.harvey_version == candidate.harvey_version,
+                self.maru_version == candidate.maru_version,
+                self.queue_time == candidate.queue_time,
+                self.run_time == candidate.run_time,
+                self.status == candidate.status,
+                self.submitted_at == candidate.submitted_at,
+                self.submitted_by == candidate.submitted_by,
+                self.error == candidate.error,
+            )
+        )
+
+    def __repr__(self):
+        return "<Analysis uuid={} status={}>".format(self.uuid, self.status)

@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
-from pythx.models.exceptions import RequestDecodeError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import AuthRefreshRequest
+
+from . import common as testdata
 
 
 def assert_auth_refresh_request(req: AuthRefreshRequest):
@@ -22,7 +23,7 @@ def test_auth_refresh_request_from_valid_json():
 
 
 def test_auth_refresh_request_from_invalid_json():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AuthRefreshRequest.from_json("{}")
 
 
@@ -32,7 +33,7 @@ def test_auth_refresh_request_from_valid_dict():
 
 
 def test_auth_refresh_request_from_invalid_dict():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AuthRefreshRequest.from_dict({})
 
 
@@ -45,7 +46,3 @@ def test_auth_refresh_request_to_json():
 
 def test_auth_refresh_request_to_dict():
     assert testdata.REFRESH_REQUEST_OBJECT.to_dict() == testdata.REFRESH_REQUEST_DICT
-
-
-def test_validate():
-    testdata.REFRESH_REQUEST_OBJECT.validate()

@@ -4,13 +4,14 @@ from datetime import datetime
 import dateutil.parser
 import pytest
 
-from . import common as testdata
 from pythx import config
 from pythx.api.handler import APIHandler
 from pythx.middleware.base import BaseMiddleware
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
 from pythx.models.exceptions import PythXAPIError
+
+from . import common as testdata
 
 
 class TestMiddleware(BaseMiddleware):

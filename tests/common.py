@@ -1,35 +1,35 @@
 from datetime import datetime
+
 import dateutil.parser
 
 from pythx.models.request import (
-    VersionRequest,
-    OASRequest,
-    AuthLogoutRequest,
-    AuthRefreshRequest,
-    DetectedIssuesRequest,
-    AuthLoginRequest,
     AnalysisListRequest,
     AnalysisStatusRequest,
     AnalysisSubmissionRequest,
+    AuthLoginRequest,
+    AuthLogoutRequest,
+    AuthRefreshRequest,
+    DetectedIssuesRequest,
+    OASRequest,
+    VersionRequest,
 )
 from pythx.models.response import (
-    VersionResponse,
-    OASResponse,
+    Analysis,
+    AnalysisListResponse,
+    AnalysisStatusResponse,
+    AnalysisSubmissionResponse,
+    AuthLoginResponse,
+    AuthLogoutResponse,
+    AuthRefreshResponse,
+    DetectedIssuesResponse,
     Issue,
+    OASResponse,
     Severity,
     SourceFormat,
     SourceLocation,
     SourceType,
-    DetectedIssuesResponse,
-    AuthRefreshResponse,
-    AuthLogoutResponse,
-    AuthLoginResponse,
-    AnalysisSubmissionResponse,
-    Analysis,
-    AnalysisListResponse,
-    AnalysisStatusResponse,
+    VersionResponse,
 )
-
 
 # BASE DATA
 API_VERSION_1 = "v1.3.0"
@@ -108,7 +108,7 @@ SOURCE_LOCATION = {
     "sourceMap": SOURCE_MAP,
     "sourceType": SOURCE_TYPE,
     "sourceFormat": SOURCE_FORMAT,
-    "sourceList": [SOURCE_LIST],
+    "sourceList": SOURCE_LIST,
 }
 ISSUE_DICT = {
     "swcID": SWC_ID,
@@ -129,7 +129,7 @@ ISSUE_OBJECT = Issue(
             source_map=SOURCE_MAP,
             source_type=SourceType.RAW_BYTECODE,
             source_format=SourceFormat.EVM_BYZANTIUM_BYTECODE,
-            source_list=[SOURCE_LIST],
+            source_list=SOURCE_LIST,
         )
     ],
     extra={},
@@ -376,7 +376,7 @@ DETECTED_ISSUES_RESPONSE_DICT = [
                         "sourceMap": SOURCE_MAP,
                         "sourceType": SOURCE_TYPE,
                         "sourceFormat": SOURCE_FORMAT,
-                        "sourceList": [SOURCE_LIST],
+                        "sourceList": SOURCE_LIST,
                     }
                 ],
                 "extra": {},
@@ -384,7 +384,7 @@ DETECTED_ISSUES_RESPONSE_DICT = [
         ],
         "sourceType": SOURCE_TYPE,
         "sourceFormat": SOURCE_FORMAT,
-        "sourceList": [SOURCE_LIST],
+        "sourceList": SOURCE_LIST,
         "meta": {},
     }
 ]
@@ -392,6 +392,6 @@ DETECTED_ISSUES_RESPONSE_OBJECT = DetectedIssuesResponse(
     issues=[ISSUE_OBJECT],
     source_type=SourceType.RAW_BYTECODE,
     source_format=SourceFormat.EVM_BYZANTIUM_BYTECODE,
-    source_list=[SOURCE_LIST],
+    source_list=SOURCE_LIST,
     meta_data={},
 )

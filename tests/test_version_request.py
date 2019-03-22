@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from . import common as testdata
-from pythx.models.exceptions import RequestDecodeError
 from pythx.models.request import VersionRequest
+
+from . import common as testdata
 
 
 def assert_version_request(req):
@@ -31,7 +31,3 @@ def test_auth_logout_request_to_json():
 
 def test_auth_logout_request_to_dict():
     assert testdata.VERSION_REQUEST_OBJECT.to_dict() == {}
-
-
-def test_validate():
-    testdata.VERSION_REQUEST_OBJECT.validate()

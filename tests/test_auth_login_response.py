@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
-from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import AuthLoginResponse
+
+from . import common as testdata
 
 
 def assert_auth_login_response(resp: AuthLoginResponse):
@@ -18,7 +19,7 @@ def test_auth_login_response_from_valid_json():
 
 
 def test_auth_login_response_from_invalid_json():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AuthLoginResponse.from_json("{}")
 
 
@@ -28,7 +29,7 @@ def test_auth_login_response_from_valid_dict():
 
 
 def test_auth_login_response_from_invalid_dict():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         AuthLoginResponse.from_dict({})
 
 
@@ -41,7 +42,3 @@ def test_auth_login_response_to_json():
 
 def test_auth_login_response_to_dict():
     assert testdata.LOGIN_RESPONSE_OBJECT.to_dict() == testdata.LOGIN_RESPONSE_DICT
-
-
-def test_validate():
-    testdata.LOGIN_RESPONSE_OBJECT.validate()

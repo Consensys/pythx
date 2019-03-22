@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
-from pythx.models.exceptions import RequestDecodeError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import OASRequest
+
+from . import common as testdata
 
 
 def assert_version_request(req):
@@ -29,7 +30,7 @@ def test_oas_request_from_valid_dict():
 
 
 def test_invalid_format():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         OASRequest(mode="invalid")
 
 
@@ -39,7 +40,3 @@ def test_oas_request_to_json():
 
 def test_oas_request_to_dict():
     assert testdata.OPENAPI_REQUEST_OBJECT.to_dict() == {}
-
-
-def test_validate():
-    testdata.OPENAPI_REQUEST_OBJECT.validate()

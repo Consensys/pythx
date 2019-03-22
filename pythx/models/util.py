@@ -1,4 +1,5 @@
 from datetime import datetime
+from os import path
 from typing import Dict
 
 import dateutil.parser
@@ -21,3 +22,7 @@ def dict_delete_none_fields(d: Dict):
         elif isinstance(v, dict):
             dict_delete_none_fields(v)
     return d
+
+
+def resolve_schema(module_path, filename):
+    return path.join(path.dirname(module_path), "schema", filename)

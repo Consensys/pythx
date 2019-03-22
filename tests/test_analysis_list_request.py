@@ -3,9 +3,8 @@ import json
 import dateutil.parser
 import pytest
 
-from pythx.models.exceptions import RequestDecodeError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import AnalysisListRequest
-
 
 from . import common as testdata
 
@@ -26,7 +25,7 @@ def test_analysis_list_request_from_valid_json():
 
 
 def test_analysis_list_request_from_invalid_json():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AnalysisListRequest.from_json("{}")
 
 
@@ -36,7 +35,7 @@ def test_analysis_list_request_from_valid_dict():
 
 
 def test_analysis_list_request_from_invalid_dict():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AnalysisListRequest.from_dict({})
 
 
@@ -52,7 +51,3 @@ def test_analysis_list_request_to_dict():
         testdata.ANALYSIS_LIST_REQUEST_OBJECT.to_dict()
         == testdata.ANALYSIS_LIST_REQUEST_DICT
     )
-
-
-def test_validate():
-    testdata.ANALYSIS_LIST_REQUEST_OBJECT.validate()

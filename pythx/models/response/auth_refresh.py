@@ -1,26 +1,24 @@
+import json
 from typing import Dict
 
-from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.base import BaseResponse
-
-AUTH_LOGIN_KEYS = ("access", "refresh")
+from pythx.models.util import resolve_schema
 
 
 class AuthRefreshResponse(BaseResponse):
+    with open(resolve_schema(__file__, "auth-refresh.json")) as sf:
+        schema = json.load(sf)
+
     def __init__(self, access_token: str, refresh_token: str):
         self.access_token = access_token
         self.refresh_token = refresh_token
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d: Dict):
-        if not all(k in d for k in AUTH_LOGIN_KEYS):
-            raise ResponseDecodeError(
-                "Not all required keys {} found in data {}".format(AUTH_LOGIN_KEYS, d)
-            )
+        cls.validate(d)
         return cls(access_token=d["access"], refresh_token=d["refresh"])
 
     def to_dict(self):
-        return {"access": self.access_token, "refresh": self.refresh_token}
+        d = {"access": self.access_token, "refresh": self.refresh_token}
+        self.validate(d)
+        return d

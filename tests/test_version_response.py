@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
-from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import VersionResponse
+
+from . import common as testdata
 
 
 def assert_version_response(resp: VersionResponse):
@@ -27,12 +28,12 @@ def test_auth_logout_request_from_valid_dict():
 
 
 def test_auth_logout_request_from_invalid_dict():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         VersionResponse.from_dict({})
 
 
 def test_auth_logout_request_from_invalid_json():
-    with pytest.raises(ResponseDecodeError):
+    with pytest.raises(ResponseValidationError):
         VersionResponse.from_json("{}")
 
 
@@ -45,7 +46,3 @@ def test_auth_logout_request_to_json():
 
 def test_auth_logout_request_to_dict():
     assert testdata.VERSION_RESPONSE_OBJECT.to_dict() == testdata.VERSION_RESPONSE_DICT
-
-
-def test_validate():
-    testdata.VERSION_RESPONSE_OBJECT.validate()

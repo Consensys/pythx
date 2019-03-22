@@ -1,17 +1,19 @@
 import json
-import jwt
 from copy import copy
 from datetime import datetime, timedelta
+
+import jwt
+import pytest
 from dateutil.tz import tzutc
 
-import pytest
-from . import common as testdata
 import pythx.models.response as respmodels
 from pythx import config
 from pythx.api import APIHandler, Client
 from pythx.models.exceptions import PythXAPIError, RequestValidationError
 from pythx.models.response.analysis import AnalysisStatus
 from pythx.models.util import serialize_api_timestamp
+
+from . import common as testdata
 
 
 class MockAPIHandler(APIHandler):
@@ -164,7 +166,7 @@ def test_analyze_bytecode():
 
 def test_analyze_source_code():
     client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-    resp = client.analyze(sources={"foo.sol": "bar"})
+    resp = client.analyze(sources={"foo.sol": {"source": "bar"}})
 
     assert type(resp) == respmodels.AnalysisSubmissionResponse
     assert_analysis(resp.analysis)
@@ -172,7 +174,7 @@ def test_analyze_source_code():
 
 def test_analyze_source_and_bytecode():
     client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-    resp = client.analyze(sources={"foo.sol": "bar"}, bytecode="0xf00")
+    resp = client.analyze(sources={"foo.sol": {"source": "bar"}}, bytecode="0xf00")
     assert type(resp) == respmodels.AnalysisSubmissionResponse
     assert_analysis(resp.analysis)
 
@@ -233,7 +235,7 @@ def test_report():
     assert type(resp) == respmodels.DetectedIssuesResponse
     assert resp.source_type == testdata.SOURCE_TYPE
     assert resp.source_format == testdata.SOURCE_FORMAT
-    assert resp.source_list == [testdata.SOURCE_LIST]
+    assert resp.source_list == testdata.SOURCE_LIST
     assert resp.meta_data == {}
     assert len(resp.issues) == 1
     issue = resp.issues[0]
@@ -248,7 +250,7 @@ def test_report():
     assert location.source_map == testdata.SOURCE_MAP
     assert location.source_type == testdata.SOURCE_TYPE
     assert location.source_format == testdata.SOURCE_FORMAT
-    assert location.source_list == [testdata.SOURCE_LIST]
+    assert location.source_list == testdata.SOURCE_LIST
 
 
 def test_openapi():
@@ -278,3 +280,8 @@ def test_jwt_expiration():
     assert Client._get_jwt_expiration_ts(testdata.REFRESH_TOKEN_1) == datetime(
         2019, 3, 24, 16, 21, 19, 28000
     )
+
+
+def test_context_handler():
+    with get_client([testdata.LOGOUT_RESPONSE_DICT]) as c:
+        assert c is not None

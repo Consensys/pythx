@@ -1,12 +1,14 @@
+import json
 from typing import Dict
 
-from pythx.models.exceptions import ResponseDecodeError
 from pythx.models.response.base import BaseResponse
-
-VERSION_KEYS = ("api", "harvey", "mythril", "maestro", "maru", "hash")
+from pythx.models.util import resolve_schema
 
 
 class VersionResponse(BaseResponse):
+    with open(resolve_schema(__file__, "version.json")) as sf:
+        schema = json.load(sf)
+
     def __init__(
         self,
         api_version: str,
@@ -23,15 +25,9 @@ class VersionResponse(BaseResponse):
         self.harvey_version = harvey_version
         self.hashed_version = hashed_version
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d: Dict):
-        if not all(k in d for k in VERSION_KEYS):
-            raise ResponseDecodeError(
-                "Not all required keys {} found in data {}".format(VERSION_KEYS, d)
-            )
+        cls.validate(d)
         return cls(
             api_version=d["api"],
             maru_version=d["maru"],
@@ -42,7 +38,7 @@ class VersionResponse(BaseResponse):
         )
 
     def to_dict(self):
-        return {
+        d = {
             "api": self.api_version,
             "maru": self.maru_version,
             "mythril": self.mythril_version,
@@ -50,3 +46,5 @@ class VersionResponse(BaseResponse):
             "harvey": self.harvey_version,
             "hash": self.hashed_version,
         }
+        self.validate(d)
+        return d

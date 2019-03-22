@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
-from pythx.models.exceptions import RequestDecodeError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import AuthLogoutRequest
+
+from . import common as testdata
 
 
 def assert_logout_request(req):
@@ -21,7 +22,7 @@ def test_auth_logout_request_from_valid_json():
 
 
 def test_auth_logout_request_from_invalid_json():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AuthLogoutRequest.from_json("{}")
 
 
@@ -31,7 +32,7 @@ def test_auth_logout_request_from_valid_dict():
 
 
 def test_auth_logout_request_from_invalid_dict():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AuthLogoutRequest.from_dict({})
 
 
@@ -44,7 +45,3 @@ def test_auth_logout_request_to_json():
 
 def test_auth_logout_request_to_dict():
     assert testdata.LOGOUT_REQUEST_OBJECT.to_dict() == testdata.LOGOUT_REQUEST_DICT
-
-
-def test_validate():
-    testdata.LOGOUT_REQUEST_OBJECT.validate()

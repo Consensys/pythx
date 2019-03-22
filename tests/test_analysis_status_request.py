@@ -2,9 +2,10 @@ import json
 
 import pytest
 
-from . import common as testdata
-from pythx.models.exceptions import RequestDecodeError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import AnalysisStatusRequest
+
+from . import common as testdata
 
 
 def assert_status_request(req: AnalysisStatusRequest):
@@ -23,7 +24,7 @@ def test_analysis_status_request_from_valid_json():
 
 
 def test_analysis_status_request_from_invalid_json():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AnalysisStatusRequest.from_json("{}")
 
 
@@ -33,7 +34,7 @@ def test_analysis_status_request_from_valid_dict():
 
 
 def test_analysis_status_request_from_invalid_dict():
-    with pytest.raises(RequestDecodeError):
+    with pytest.raises(RequestValidationError):
         AnalysisStatusRequest.from_dict({})
 
 
@@ -49,7 +50,3 @@ def test_analysis_status_request_to_dict():
         testdata.ANALYSIS_STATUS_REQUEST_OBJECT.to_dict()
         == testdata.ANALYSIS_STATUS_REQUEST_DICT
     )
-
-
-def test_validate():
-    testdata.ANALYSIS_STATUS_REQUEST_OBJECT.validate()

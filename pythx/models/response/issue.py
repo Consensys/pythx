@@ -2,10 +2,6 @@ import json
 from enum import Enum
 from typing import Any, Dict, List
 
-from pythx.models.exceptions import ResponseDecodeError
-
-SOURCE_LOCATION_KEYS = ("sourceMap", "sourceType", "sourceFormat", "sourceList")
-
 
 class Severity(str, Enum):
     NONE = "None"
@@ -42,18 +38,8 @@ class SourceLocation:
         self.source_format = source_format
         self.source_list = source_list
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, d):
-        if not all(k in d for k in SOURCE_LOCATION_KEYS):
-            raise ResponseDecodeError(
-                "Not all required keys {} found in data {}".format(
-                    SOURCE_LOCATION_KEYS, d
-                )
-            )
-
         return cls(
             source_map=d["sourceMap"],
             source_type=SourceType(d["sourceType"]),
@@ -96,7 +82,6 @@ class Issue:
 
     @classmethod
     def from_dict(cls, d):
-        # TODO: validate
         locs = [
             SourceLocation(
                 source_map=loc.get("sourceMap"),

@@ -1,11 +1,11 @@
-from pythx.models.exceptions import RequestDecodeError
+from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.base import BaseRequest
 
 
 class OASRequest(BaseRequest):
     def __init__(self, mode="yaml"):
         if not mode in ("yaml", "html"):
-            raise RequestDecodeError("'mode' must be one of {html,yaml}")
+            raise RequestValidationError("'mode' must be one of {html,yaml}")
         self.mode = mode
 
     @property
@@ -27,9 +27,6 @@ class OASRequest(BaseRequest):
     @property
     def headers(self):
         return {}
-
-    def validate(self):
-        pass
 
     @classmethod
     def from_dict(cls, d):

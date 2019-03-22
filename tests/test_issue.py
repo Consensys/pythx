@@ -2,8 +2,7 @@ import json
 
 import pytest
 
-from . import common as testdata
-from pythx.models.exceptions import ResponseDecodeError
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import (
     Issue,
     Severity,
@@ -11,6 +10,8 @@ from pythx.models.response import (
     SourceLocation,
     SourceType,
 )
+
+from . import common as testdata
 
 
 def assert_issue(issue: Issue):
@@ -24,7 +25,7 @@ def assert_issue(issue: Issue):
     assert location.source_map == testdata.SOURCE_MAP
     assert location.source_format == SourceFormat.EVM_BYZANTIUM_BYTECODE
     assert location.source_type == SourceType.RAW_BYTECODE
-    assert location.source_list == [testdata.SOURCE_LIST]
+    assert location.source_list == testdata.SOURCE_LIST
 
 
 def test_issue_from_valid_json():
@@ -48,15 +49,6 @@ def test_issue_to_dict():
 def test_source_location_from_dict():
     sl = SourceLocation.from_dict(testdata.SOURCE_LOCATION)
     assert sl.source_format == testdata.SOURCE_FORMAT
-    assert sl.source_list == [testdata.SOURCE_LIST]
+    assert sl.source_list == testdata.SOURCE_LIST
     assert sl.source_map == testdata.SOURCE_MAP
     assert sl.source_type == testdata.SOURCE_TYPE
-
-
-def test_source_location_from_invalid_dict():
-    with pytest.raises(ResponseDecodeError):
-        SourceLocation.from_dict({})
-
-
-def test_source_location_validate():
-    SourceLocation.from_dict(testdata.SOURCE_LOCATION).validate()

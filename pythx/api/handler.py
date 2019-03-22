@@ -60,11 +60,13 @@ class APIHandler:
 
     def execute_request_middlewares(self, req):
         for mw in self.middlewares:
+            LOGGER.debug("Executing request middleware: %s", mw)
             req = mw.process_request(req)
         return req
 
     def execute_response_middlewares(self, resp):
         for mw in self.middlewares:
+            LOGGER.debug("Executing response middleware: %s", mw)
             resp = mw.process_response(resp)
         return resp
 
