@@ -40,10 +40,6 @@ setup(
     keywords="pythx",
     name="pythx",
     packages=find_packages(),
-    package_data={
-        "pythx.models.request": "pythx/models/request/schema/*.json",
-        "pythx.models.response": "pythx/models/response/schema/*.json"
-    },
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
