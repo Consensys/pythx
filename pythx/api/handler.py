@@ -10,6 +10,11 @@ from pythx.models.exceptions import PythXAPIError
 
 
 def print_request(req):
+    """
+
+    :param req:
+    :return:
+    """
     return "\nHTTP/1.1 {method} {url}\n{headers}\n\n{body}\n".format(
         method=req.method,
         url=req.url,
@@ -19,6 +24,11 @@ def print_request(req):
 
 
 def print_response(res):
+    """
+
+    :param res:
+    :return:
+    """
     return "\nHTTP/1.1 {status_code}\n{headers}\n\n{body}\n".format(
         status_code=res.status_code,
         headers="\n".join("{}: {}".format(k, v) for k, v in res.headers.items()),
@@ -30,6 +40,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 class APIHandler:
+    """
+
+    """
     def __init__(self, middlewares: List[BaseMiddleware] = None, staging: bool = False):
         middlewares = middlewares if middlewares is not None else []
         self.middlewares = middlewares
@@ -37,6 +50,12 @@ class APIHandler:
 
     @staticmethod
     def send_request(request_data: Dict, auth_header: Dict[str, str] = None):
+        """
+
+        :param request_data:
+        :param auth_header:
+        :return:
+        """
         if auth_header is None:
             auth_header = {}
         method = request_data["method"].upper()
@@ -59,22 +78,43 @@ class APIHandler:
         return response.text
 
     def execute_request_middlewares(self, req):
+        """
+
+        :param req:
+        :return:
+        """
         for mw in self.middlewares:
             LOGGER.debug("Executing request middleware: %s", mw)
             req = mw.process_request(req)
         return req
 
     def execute_response_middlewares(self, resp):
+        """
+
+        :param resp:
+        :return:
+        """
         for mw in self.middlewares:
             LOGGER.debug("Executing response middleware: %s", mw)
             resp = mw.process_response(resp)
         return resp
 
     def parse_response(self, resp: str, model):
+        """
+
+        :param resp:
+        :param model:
+        :return:
+        """
         m = model.from_json(resp)
         return self.execute_response_middlewares(m)
 
     def assemble_request(self, req):
+        """
+
+        :param req:
+        :return:
+        """
         url = urllib.parse.urljoin(config["endpoints"][self.mode], req.endpoint)
         base_request = {
             "method": req.method,

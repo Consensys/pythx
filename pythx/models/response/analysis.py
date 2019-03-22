@@ -14,6 +14,9 @@ class AnalysisStatus(str, Enum):
 
 
 class Analysis(BaseResponse):
+    """
+
+    """
     def __init__(
         self,
         uuid: str,
@@ -44,10 +47,19 @@ class Analysis(BaseResponse):
 
     @classmethod
     def from_dict(cls, d):
+        """
+
+        :param d:
+        :return:
+        """
         d = {underscore(k): v for k, v in d.items()}
         return cls(**d)
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         d = {
             "uuid": self.uuid,
             "apiVersion": self.api_version,

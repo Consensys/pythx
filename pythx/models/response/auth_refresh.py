@@ -6,6 +6,9 @@ from pythx.models.util import resolve_schema
 
 
 class AuthRefreshResponse(BaseResponse):
+    """
+
+    """
     with open(resolve_schema(__file__, "auth-refresh.json")) as sf:
         schema = json.load(sf)
 
@@ -15,10 +18,19 @@ class AuthRefreshResponse(BaseResponse):
 
     @classmethod
     def from_dict(cls, d: Dict):
+        """
+
+        :param d:
+        :return:
+        """
         cls.validate(d)
         return cls(access_token=d["access"], refresh_token=d["refresh"])
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         d = {"access": self.access_token, "refresh": self.refresh_token}
         self.validate(d)
         return d

@@ -9,6 +9,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 class AnalysisSubmissionRequest(BaseRequest):
+    """
+
+    """
     with open(resolve_schema(__file__, "analysis-submission.json")) as sf:
         schema = json.load(sf)
 
@@ -36,26 +39,51 @@ class AnalysisSubmissionRequest(BaseRequest):
 
     @property
     def endpoint(self):
+        """
+
+        :return:
+        """
         return "v1/analyses"
 
     @property
     def method(self):
+        """
+
+        :return:
+        """
         return "POST"
 
     @property
     def parameters(self):
+        """
+
+        :return:
+        """
         return {}
 
     @property
     def headers(self):
+        """
+
+        :return:
+        """
         return {}
 
     @property
     def payload(self):
+        """
+
+        :return:
+        """
         return {"data": self.to_dict()}
 
     @classmethod
     def from_dict(cls, d: Dict):
+        """
+
+        :param d:
+        :return:
+        """
         cls.validate(d)
         return cls(
             contract_name=d.get("contractName"),
@@ -70,6 +98,10 @@ class AnalysisSubmissionRequest(BaseRequest):
         )
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         base_dict = dict_delete_none_fields(
             {
                 "contractName": self.contract_name,

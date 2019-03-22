@@ -13,6 +13,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Client:
+    """
+
+    """
     def __init__(
         self,
         eth_address: str = None,
@@ -53,6 +56,10 @@ class Client:
         return datetime.utcfromtimestamp((jwt.decode(token, verify=False)["exp"]))
 
     def assert_authentication(self):
+        """
+
+        :return:
+        """
         if self.access_token is None or self.refresh_token is None:
             # We haven't authenticated yet
             self.login()
@@ -81,6 +88,10 @@ class Client:
             self.login()
 
     def login(self) -> respmodels.AuthLoginResponse:
+        """
+
+        :return:
+        """
         req = reqmodels.AuthLoginRequest(
             eth_address=self.eth_address, password=self.password
         )
@@ -95,6 +106,10 @@ class Client:
         return resp_model
 
     def logout(self) -> respmodels.AuthLogoutResponse:
+        """
+
+        :return:
+        """
         req = reqmodels.AuthLogoutRequest()
         resp_model = self._assemble_send_parse(req, respmodels.AuthLogoutResponse)
         self.access_token = None
@@ -102,6 +117,11 @@ class Client:
         return resp_model
 
     def refresh(self, assert_authentication=True) -> respmodels.AuthRefreshResponse:
+        """
+
+        :param assert_authentication:
+        :return:
+        """
         req = reqmodels.AuthRefreshRequest(
             access_token=self.access_token, refresh_token=self.refresh_token
         )
@@ -118,6 +138,13 @@ class Client:
     def analysis_list(
         self, date_from: datetime = None, date_to: datetime = None, offset: int = None
     ) -> respmodels.AnalysisListResponse:
+        """
+
+        :param date_from:
+        :param date_to:
+        :param offset:
+        :return:
+        """
         req = reqmodels.AnalysisListRequest(
             offset=offset, date_from=date_from, date_to=date_to
         )
@@ -135,6 +162,19 @@ class Client:
         solc_version: str = None,
         analysis_mode: str = "quick",
     ) -> respmodels.AnalysisSubmissionResponse:
+        """
+
+        :param contract_name:
+        :param bytecode:
+        :param source_map:
+        :param deployed_bytecode:
+        :param deployed_source_map:
+        :param sources:
+        :param source_list:
+        :param solc_version:
+        :param analysis_mode:
+        :return:
+        """
         req = reqmodels.AnalysisSubmissionRequest(
             contract_name=contract_name,
             bytecode=bytecode,
@@ -150,10 +190,20 @@ class Client:
         return self._assemble_send_parse(req, respmodels.AnalysisSubmissionResponse)
 
     def status(self, uuid: str) -> respmodels.AnalysisStatusResponse:
+        """
+
+        :param uuid:
+        :return:
+        """
         req = reqmodels.AnalysisStatusRequest(uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisStatusResponse)
 
     def analysis_ready(self, uuid: str) -> bool:
+        """
+
+        :param uuid:
+        :return:
+        """
         resp = self.status(uuid)
         return (
             resp.analysis.status == respmodels.AnalysisStatus.FINISHED
@@ -161,10 +211,20 @@ class Client:
         )
 
     def report(self, uuid: str) -> respmodels.DetectedIssuesResponse:
+        """
+
+        :param uuid:
+        :return:
+        """
         req = reqmodels.DetectedIssuesRequest(uuid)
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
     def openapi(self, mode="yaml") -> respmodels.OASResponse:
+        """
+
+        :param mode:
+        :return:
+        """
         req = reqmodels.OASRequest(mode=mode)
         return self._assemble_send_parse(
             req,
@@ -174,6 +234,10 @@ class Client:
         )
 
     def version(self) -> respmodels.VersionResponse:
+        """
+
+        :return:
+        """
         req = reqmodels.VersionRequest()
         return self._assemble_send_parse(
             req,

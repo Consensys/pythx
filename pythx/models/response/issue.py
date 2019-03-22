@@ -26,6 +26,9 @@ class SourceFormat(str, Enum):
 
 
 class SourceLocation:
+    """
+
+    """
     def __init__(
         self,
         source_map: str,
@@ -40,6 +43,11 @@ class SourceLocation:
 
     @classmethod
     def from_dict(cls, d):
+        """
+
+        :param d:
+        :return:
+        """
         return cls(
             source_map=d["sourceMap"],
             source_type=SourceType(d["sourceType"]),
@@ -48,6 +56,10 @@ class SourceLocation:
         )
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         return {
             "sourceMap": self.source_map,
             "sourceType": self.source_type,
@@ -57,6 +69,9 @@ class SourceLocation:
 
 
 class Issue:
+    """
+
+    """
     def __init__(
         self,
         swc_id: str,
@@ -77,11 +92,21 @@ class Issue:
 
     @classmethod
     def from_json(cls, json_data: str):
+        """
+
+        :param json_data:
+        :return:
+        """
         parsed = json.loads(json_data)
         return cls.from_dict(parsed)
 
     @classmethod
     def from_dict(cls, d):
+        """
+
+        :param d:
+        :return:
+        """
         locs = [
             SourceLocation(
                 source_map=loc.get("sourceMap"),
@@ -102,9 +127,17 @@ class Issue:
         )
 
     def to_json(self):
+        """
+
+        :return:
+        """
         return json.dumps(self.to_dict())
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         return {
             "swcID": self.swc_id,
             "swcTitle": self.swc_title,

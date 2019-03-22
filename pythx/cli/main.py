@@ -77,6 +77,12 @@ uuid_arg = click.argument("uuid", type=click.UUID)
 
 
 def parse_config(config_path, tokens_required=False):
+    """
+
+    :param config_path:
+    :param tokens_required:
+    :return:
+    """
     with open(config_path, "r") as config_f:
         config = json.load(config_f)
     keys_present = all(k in config for k in CONFIG_KEYS)
@@ -98,6 +104,11 @@ def parse_config(config_path, tokens_required=False):
 
 
 def update_config(config_path, client):
+    """
+
+    :param config_path:
+    :param client:
+    """
     with open(config_path, "w+") as config_f:
         json.dump(
             {
@@ -111,6 +122,13 @@ def update_config(config_path, client):
 
 
 def recover_client(config_path, staging=False, exit_on_missing=False):
+    """
+
+    :param config_path:
+    :param staging:
+    :param exit_on_missing:
+    :return:
+    """
     if not path.isfile(config_path):
         if exit_on_missing:
             return None
@@ -142,6 +160,13 @@ def recover_client(config_path, staging=False, exit_on_missing=False):
 
 
 def ps_core(config, staging, number):
+    """
+
+    :param config:
+    :param staging:
+    :param number:
+    :return:
+    """
     c = recover_client(config_path=config, staging=staging)
     if c.eth_address == "0x0000000000000000000000000000000000000000":
         click.echo(
@@ -161,6 +186,12 @@ def ps_core(config, staging, number):
 
 
 def get_source_location_by_offset(filename, offset):
+    """
+
+    :param filename:
+    :param offset:
+    :return:
+    """
     overall = 0
     line_ctr = 0
     with open(filename) as f:
@@ -176,6 +207,12 @@ def get_source_location_by_offset(filename, offset):
 
 
 def compile_from_source(source_path: str, solc_path: str = None):
+    """
+
+    :param source_path:
+    :param solc_path:
+    :return:
+    """
     solc_path = spawn.find_executable("solc") if solc_path is None else solc_path
     if solc_path is None:
         # user solc path invalid or no default "solc" command found
@@ -193,6 +230,9 @@ def compile_from_source(source_path: str, solc_path: str = None):
 
 @click.group()
 def cli():
+    """
+
+    """
     pass  # pragma: no cover
 
 
@@ -200,6 +240,11 @@ def cli():
 @staging_opt
 @config_opt
 def login(staging, config):
+    """
+
+    :param staging:
+    :param config:
+    """
     c = recover_client(config, staging)
     login_resp = c.login()
     LOGGER.debug(
@@ -215,6 +260,11 @@ def login(staging, config):
 @config_opt
 @staging_opt
 def logout(config, staging):
+    """
+
+    :param config:
+    :param staging:
+    """
     c = recover_client(config_path=config, staging=staging, exit_on_missing=True)
     if c is None:
         click.echo("You are already logged out.")
@@ -229,6 +279,11 @@ def logout(config, staging):
 @staging_opt
 @config_opt
 def refresh(staging, config):
+    """
+
+    :param staging:
+    :param config:
+    """
     c = recover_client(config, staging)
     login_resp = c.refresh()
     LOGGER.debug(
@@ -245,6 +300,11 @@ def refresh(staging, config):
 @html_opt
 @yaml_opt
 def openapi(staging, mode):
+    """
+
+    :param staging:
+    :param mode:
+    """
     c = Client()  # no auth required
     click.echo(c.openapi(mode).data)
 
@@ -252,6 +312,10 @@ def openapi(staging, mode):
 @cli.command(help="Print version information of PythX and the API")
 @staging_opt
 def version(staging):
+    """
+
+    :param staging:
+    """
     c = Client(staging=staging)  # no auth required
     resp = c.version().to_dict()
     data = ((k.title(), v) for k, v in resp.items())
@@ -263,6 +327,12 @@ def version(staging):
 @staging_opt
 @uuid_arg
 def status(config, staging, uuid):
+    """
+
+    :param config:
+    :param staging:
+    :param uuid:
+    """
     c = recover_client(config_path=config, staging=staging)
     resp = c.status(uuid).analysis.to_dict()
     data = ((k, v) for k, v in resp.items())
@@ -275,6 +345,12 @@ def status(config, staging, uuid):
 @staging_opt
 @number_opt
 def ps(config, staging, number):
+    """
+
+    :param config:
+    :param staging:
+    :param number:
+    """
     resp = ps_core(config, staging, number)
     data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
     click.echo(tabulate(data, tablefmt="fancy_grid"))
@@ -285,6 +361,12 @@ def ps(config, staging, number):
 @staging_opt
 @interval_opt
 def top(config, staging, interval):
+    """
+
+    :param config:
+    :param staging:
+    :param interval:
+    """
     while True:
         resp = ps_core(config, staging, 20)
         click.clear()
@@ -300,6 +382,14 @@ def top(config, staging, interval):
 @source_file_opt
 @solc_path_opt
 def check(config, staging, bytecode_file, source_file, solc_path):
+    """
+
+    :param config:
+    :param staging:
+    :param bytecode_file:
+    :param source_file:
+    :param solc_path:
+    """
     c = recover_client(config_path=config, staging=staging)
     if bytecode_file:
         with open(bytecode_file, "r") as bf:
@@ -347,6 +437,12 @@ def check(config, staging, bytecode_file, source_file, solc_path):
 @staging_opt
 @uuid_arg
 def report(config, staging, uuid):
+    """
+
+    :param config:
+    :param staging:
+    :param uuid:
+    """
     c = recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
 

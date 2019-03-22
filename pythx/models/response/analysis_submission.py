@@ -6,6 +6,9 @@ from pythx.models.util import resolve_schema
 
 
 class AnalysisSubmissionResponse(BaseResponse):
+    """
+
+    """
     with open(resolve_schema(__file__, "analysis-submission.json")) as sf:
         schema = json.load(sf)
 
@@ -14,10 +17,19 @@ class AnalysisSubmissionResponse(BaseResponse):
 
     @classmethod
     def from_dict(cls, d):
+        """
+
+        :param d:
+        :return:
+        """
         cls.validate(d)
         return cls(analysis=Analysis.from_dict(d))
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         d = self.analysis.to_dict()
         self.validate(d)
         return d

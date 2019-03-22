@@ -7,6 +7,9 @@ from pythx.models.util import resolve_schema
 
 
 class DetectedIssuesResponse(BaseResponse):
+    """
+
+    """
     with open(resolve_schema(__file__, "detected-issues.json")) as sf:
         schema = json.load(sf)
 
@@ -26,6 +29,11 @@ class DetectedIssuesResponse(BaseResponse):
 
     @classmethod
     def from_dict(cls, d):
+        """
+
+        :param d:
+        :return:
+        """
         cls.validate(d)
         d = d[0]
         return cls(
@@ -37,6 +45,10 @@ class DetectedIssuesResponse(BaseResponse):
         )
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         d = [
             {
                 "issues": [i.to_dict() for i in self.issues],

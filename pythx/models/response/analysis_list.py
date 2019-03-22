@@ -10,6 +10,9 @@ INDEX_ERROR_MSG = "Analysis at index {} was not fetched"
 
 
 class AnalysisListResponse(BaseResponse):
+    """
+
+    """
     with open(resolve_schema(__file__, "analysis-list.json")) as sf:
         schema = json.load(sf)
 
@@ -19,6 +22,10 @@ class AnalysisListResponse(BaseResponse):
 
     @classmethod
     def validate(cls, candidate):
+        """
+
+        :param candidate:
+        """
         super().validate(candidate)
         if not type(candidate) == dict:
             raise ResponseValidationError(
@@ -27,11 +34,20 @@ class AnalysisListResponse(BaseResponse):
 
     @classmethod
     def from_dict(cls, d: dict):
+        """
+
+        :param d:
+        :return:
+        """
         cls.validate(d)
         analyses = [Analysis.from_dict(a) for a in d["analyses"]]
         return cls(analyses=analyses, total=d["total"])
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         d = {
             "analyses": [a.to_dict() for a in self.analyses],
             "total": len(self.analyses),

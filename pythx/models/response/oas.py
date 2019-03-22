@@ -6,6 +6,9 @@ from pythx.models.util import resolve_schema
 
 
 class OASResponse(BaseResponse):
+    """
+
+    """
     with open(resolve_schema(__file__, "openapi.json")) as sf:
         schema = json.load(sf)
 
@@ -16,15 +19,29 @@ class OASResponse(BaseResponse):
 
     @classmethod
     def from_dict(cls, d: Dict):
+        """
+
+        :param d:
+        :return:
+        """
         cls.validate(d)
         return cls(data=d["data"])
 
     @classmethod
     def from_json(cls, json_str: str):
+        """
+
+        :param json_str:
+        :return:
+        """
         # overwrite from base response because the API doesn't actually deliver
         # JSON but raw YAML/HTML
         return cls.from_dict({"data": json_str})
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         d = {"data": self.data}
         return d

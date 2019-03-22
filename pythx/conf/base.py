@@ -1,4 +1,7 @@
 class PythXConfig(dict):
+    """
+
+    """
     def __init__(self):
         self["endpoints"] = {
             "production": "https://api.mythx.io/",

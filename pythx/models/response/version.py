@@ -6,6 +6,9 @@ from pythx.models.util import resolve_schema
 
 
 class VersionResponse(BaseResponse):
+    """
+
+    """
     with open(resolve_schema(__file__, "version.json")) as sf:
         schema = json.load(sf)
 
@@ -27,6 +30,11 @@ class VersionResponse(BaseResponse):
 
     @classmethod
     def from_dict(cls, d: Dict):
+        """
+
+        :param d:
+        :return:
+        """
         cls.validate(d)
         return cls(
             api_version=d["api"],
@@ -38,6 +46,10 @@ class VersionResponse(BaseResponse):
         )
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         d = {
             "api": self.api_version,
             "maru": self.maru_version,

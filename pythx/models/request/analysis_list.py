@@ -10,6 +10,9 @@ ANALYSIS_LIST_KEYS = ("offset", "dateFrom", "dateTo")
 
 
 class AnalysisListRequest(BaseRequest):
+    """
+
+    """
     def __init__(self, offset: int, date_from: datetime, date_to: datetime):
         self.offset = offset
         self.date_from = date_from
@@ -17,26 +20,51 @@ class AnalysisListRequest(BaseRequest):
 
     @property
     def endpoint(self):
+        """
+
+        :return:
+        """
         return "v1/analyses"
 
     @property
     def method(self):
+        """
+
+        :return:
+        """
         return "GET"
 
     @property
     def headers(self):
+        """
+
+        :return:
+        """
         return {}
 
     @property
     def parameters(self):
+        """
+
+        :return:
+        """
         return self.to_dict()
 
     @property
     def payload(self):
+        """
+
+        :return:
+        """
         return {}
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]):
+        """
+
+        :param d:
+        :return:
+        """
         if not all(k in d for k in ANALYSIS_LIST_KEYS):
             raise RequestValidationError(
                 "Not all required keys {} found in data {}".format(
@@ -52,6 +80,10 @@ class AnalysisListRequest(BaseRequest):
         return req
 
     def to_dict(self):
+        """
+
+        :return:
+        """
         return {
             "offset": self.offset,
             "dateFrom": self.date_from.isoformat() if self.date_from else None,
