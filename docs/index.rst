@@ -9,8 +9,8 @@ Welcome to the PythX docs!
     installation
     modules
     contributing
-    authors
     history
+    authors
 
 Indices and tables
 ==================

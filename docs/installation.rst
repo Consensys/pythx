@@ -30,7 +30,7 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/ConsenSys/pythx
+    $ git clone git://github.com/dmuhs/pythx
 
 Or download the `tarball`_:
 
