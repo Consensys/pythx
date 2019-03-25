@@ -8,12 +8,12 @@ after_success:
 - coveralls
 matrix:
   include:
-    - name: "3.5"
-      python: 3.5
-    - name: "3.6"
-      python: 3.6
-    - name: "3.7"
-      python: 3.7
+  - name: '3.5'
+    python: 3.5
+  - name: '3.6'
+    python: 3.6
+  - name: '3.7'
+    python: 3.7
 script: pytest --cov=pythx tests/
 deploy:
   provider: pypi
@@ -21,7 +21,7 @@ deploy:
   skip_cleanup: true
   user: dmuhs
   password:
-    secure: UopVhupXlS9gqYx55ZyanvYbqAK67OEM1fxRvmTns3joqQR1gJvYUPpsAZ3NiaKUkv+265PTr0aLi6NfSxka2iDzlyRiWK7FEnq+fgUmSyBxuSK7w747evzhBYS4h/Yht77AO7nO8QEXFiuQ9/Q0yhrlk9TCI/sVfIbLpLWMmfaWJOHCZMtHY98V5+IyPsysU2GATU6LHFBtUNyQEtggqYpeFS/h9up9PRr65e92r/qOB6xHaXE+3x/3bWaZr3GwRQULzUDbF4rgUbZ13O//aaEvOUniT/J0QZtBitoI26rVDCZRczfEWKJ5BlzTqSRM+oysaCFH2ePmDxlPnZKh60mwvESowew/5upL0GgUmPr6WwPhx3qvaqq43OZtA95zksUoxUyMHjHW2BAMdxu5811C5F0NCH8GiO8aYtJgA62jMqO37ZxIlDkCw5Xb/bZRklrLFl0qeD7Jm0yV1gddnzwL2yR4K46A2J7/6EDissXCKqganWe9iUcIjjD4s76olmyFdjVzMY9X6ZYFZ+CQcXdeApOzHJgwntZajchUmCTFR1L+lU7ZaweB+ZG9zSrvw4LwgwqOsRKGwzD4EAZHz5+5jfKxz0rtCZnIA5Y395oEnXZfwxGiNwF/z5jcEE7GKAdepX7BJpyJEy3IE+reqnameSoHkj0MKcL0GW7RWKA=
+    secure: V/pTTXghh3sf+7fnOM71alcW/zB2VSv4lpAVkpk4WLyN8UOal4ZtcRNsLTsqs8JwjpkR6GjsKTaiDR73YBAOgtjy8XuCrx6wy2yZXUUy2HA1aXW5PJ17uXU5ldpPBVskllrCL1Zfst+WS3r448efu6bxJwd5TyG5ah2G3XqGD2Yzrrjitglbypt7HyUD7oLPA6s+8K+nISjHNIxMW+nK7+ABn8xRwzqio+K8+RyPdVmb9tnDnu1qg6b0IuoGsdO/56Z5ujx5SgHTjqLjc0eHBDBtvy33JP7i3zjFX0K+hJ/ipeFymmeja6MtfoRmgMyZxJoIpF4HZEZFHK9TKM6ENll+J2KphYgZdS5ytcNdVu8fQmtNQjFZCAAXd7ONcwfxR5XfMeB1Khyp90wpbKBjmXDtaYCvAg9/8iiozXwjMHec0CpCIEqx4vPhJ7bEXgQTkwm0X686TByyCYJAsD+zXqQLpBXyXs9dUKLBOcd/TIykj6zubUCVVbx3utsN47PGE2STqzEiZMV7fDX5hMdZiz03z98M9kcsCcgbGLdu+UF6FRGwIbpLBSJxaxH7aSoBadzf2hi00STKarvTspZJmSl1pUdtGIBHzpSgX99jc9WsyZsWFl5Ss/DWA/wwnVA/09dstpUjiNa9P1Di150LookxrAP6igjCwoTM//PzeNE=
   on:
     tags: true
     repo: dmuhs/pythx
