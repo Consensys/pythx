@@ -1,8 +1,8 @@
 """This module contains a middleware to fill the :code:`clientToolName` field."""
 
 import logging
-from pythx.middleware.base import BaseMiddleware
 
+from pythx.middleware.base import BaseMiddleware
 
 LOGGER = logging.getLogger("ClientToolNameMiddleware")
 
@@ -13,6 +13,7 @@ class ClientToolNameMiddleware(BaseMiddleware):
     This means that only :code:`process_request` carries business logic, while
     :code:`process_response` returns the input response object right away without touching it.
     """
+
     def __init__(self, name="pythx"):
         LOGGER.debug("Initializing")
         self.name = name

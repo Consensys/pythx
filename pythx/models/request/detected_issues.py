@@ -1,9 +1,10 @@
 """This module contains the DetectedIssuesRequest domain model."""
 
-from pythx.models.request.analysis_status import AnalysisStatusRequest
-from pythx.models.util import resolve_schema
 import json
 from typing import Dict
+
+from pythx.models.request.analysis_status import AnalysisStatusRequest
+from pythx.models.util import resolve_schema
 
 
 class DetectedIssuesRequest(AnalysisStatusRequest):

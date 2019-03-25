@@ -8,12 +8,12 @@ import jsonschema
 
 from pythx.models.exceptions import ResponseValidationError
 
-
 LOGGER = logging.getLogger(__name__)
 
 
 class BaseResponse(abc.ABC):
     """An abstract object describing responses from the MythX API."""
+
     schema = None
 
     @classmethod

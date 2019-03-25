@@ -46,6 +46,7 @@ class APIHandler:
     endpoint, parsing the response into its respective domain model, as well as registering
     and executing request/response middlewares.
     """
+
     def __init__(self, middlewares: List[BaseMiddleware] = None, staging: bool = False):
         middlewares = middlewares if middlewares is not None else []
         self.middlewares = middlewares

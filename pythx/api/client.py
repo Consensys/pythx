@@ -38,8 +38,7 @@ class Client:
         self.eth_address = eth_address
         self.password = password
         self.handler = handler or APIHandler(
-            middlewares=[ClientToolNameMiddleware()],
-            staging=staging
+            middlewares=[ClientToolNameMiddleware()], staging=staging
         )
 
         self.access_token = access_token

@@ -24,6 +24,7 @@ class Analysis(BaseResponse):
     to analysis jobs. This makes the code more DRY, validation easier, and allows for recursive
     SerDe (e.g. mapping :code:`from_dict` to a deserialized JSON list of job objects.
     """
+
     def __init__(
         self,
         uuid: str,

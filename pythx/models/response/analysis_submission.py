@@ -1,6 +1,6 @@
-from pythx.models.response.analysis import Analysis
 import json
 
+from pythx.models.response.analysis import Analysis
 from pythx.models.response.base import BaseResponse
 from pythx.models.util import resolve_schema
 

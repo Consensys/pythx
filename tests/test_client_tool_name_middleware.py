@@ -1,8 +1,8 @@
 import pytest
 
-from . import common as testdata
 from pythx.middleware.toolname import ClientToolNameMiddleware
 
+from . import common as testdata
 
 DEFAULT_CTN_MIDDLEWARE = ClientToolNameMiddleware()
 CUSTOM_CTN_MIDDLEWARE = ClientToolNameMiddleware(name="test")
@@ -21,20 +21,76 @@ def generate_request_dict(req):
 @pytest.mark.parametrize(
     "middleware,request_dict,name_added",
     [
-        (DEFAULT_CTN_MIDDLEWARE, generate_request_dict(testdata.ANALYSIS_LIST_REQUEST_OBJECT), False),
-        (DEFAULT_CTN_MIDDLEWARE, generate_request_dict(testdata.DETECTED_ISSUES_REQUEST_OBJECT), False),
-        (DEFAULT_CTN_MIDDLEWARE, generate_request_dict(testdata.ANALYSIS_STATUS_REQUEST_OBJECT), False),
-        (DEFAULT_CTN_MIDDLEWARE, generate_request_dict(testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT), True),
-        (DEFAULT_CTN_MIDDLEWARE, generate_request_dict(testdata.LOGIN_REQUEST_OBJECT), False),
-        (DEFAULT_CTN_MIDDLEWARE, generate_request_dict(testdata.LOGOUT_REQUEST_OBJECT), False),
-        (DEFAULT_CTN_MIDDLEWARE, generate_request_dict(testdata.REFRESH_REQUEST_OBJECT), False),
-        (CUSTOM_CTN_MIDDLEWARE, generate_request_dict(testdata.ANALYSIS_LIST_REQUEST_OBJECT), False),
-        (CUSTOM_CTN_MIDDLEWARE, generate_request_dict(testdata.DETECTED_ISSUES_REQUEST_OBJECT), False),
-        (CUSTOM_CTN_MIDDLEWARE, generate_request_dict(testdata.ANALYSIS_STATUS_REQUEST_OBJECT), False),
-        (CUSTOM_CTN_MIDDLEWARE, generate_request_dict(testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT), True),
-        (CUSTOM_CTN_MIDDLEWARE, generate_request_dict(testdata.LOGIN_REQUEST_OBJECT), False),
-        (CUSTOM_CTN_MIDDLEWARE, generate_request_dict(testdata.LOGOUT_REQUEST_OBJECT), False),
-        (CUSTOM_CTN_MIDDLEWARE, generate_request_dict(testdata.REFRESH_REQUEST_OBJECT), False),
+        (
+            DEFAULT_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.ANALYSIS_LIST_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            DEFAULT_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.DETECTED_ISSUES_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            DEFAULT_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.ANALYSIS_STATUS_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            DEFAULT_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT),
+            True,
+        ),
+        (
+            DEFAULT_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.LOGIN_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            DEFAULT_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.LOGOUT_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            DEFAULT_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.REFRESH_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            CUSTOM_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.ANALYSIS_LIST_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            CUSTOM_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.DETECTED_ISSUES_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            CUSTOM_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.ANALYSIS_STATUS_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            CUSTOM_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT),
+            True,
+        ),
+        (
+            CUSTOM_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.LOGIN_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            CUSTOM_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.LOGOUT_REQUEST_OBJECT),
+            False,
+        ),
+        (
+            CUSTOM_CTN_MIDDLEWARE,
+            generate_request_dict(testdata.REFRESH_REQUEST_OBJECT),
+            False,
+        ),
     ],
 )
 def test_request_dicts(middleware, request_dict, name_added):

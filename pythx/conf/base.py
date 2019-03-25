@@ -12,6 +12,7 @@ class PythXConfig(dict):
     The config object is a subclass of a standard Python dictionary, so it can be used just like
     that by developers.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self["endpoints"] = {
