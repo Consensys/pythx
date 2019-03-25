@@ -3,7 +3,6 @@
 """The setup script."""
 
 from setuptools import find_packages, setup
-import pythx
 
 with open("README.rst") as readme_file:
     readme = readme_file.read()
@@ -44,6 +43,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/dmuhs/pythx",
-    version=pythx.__version__,
+    version="0.1.0",
     zip_safe=False,
 )
