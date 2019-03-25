@@ -2,7 +2,7 @@
 
 __author__ = """Dominik Muhs"""
 __email__ = "dominik.muhs@consensys.net"
-__version__ = "__version__ = '1.1.0'"
+__version__ = "__version__ = '1.1.1'"
 
 from pythx.conf import config
 from pythx.api.client import Client
