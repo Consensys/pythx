@@ -1,4 +1,8 @@
-"""Console script for pythx."""
+"""Console script for PythX.
+
+This script aims to be an example of how PythX can be used as a developer-friendly
+library around the MythX smart contract security analysis API.
+"""
 import json
 import logging
 import os
@@ -77,10 +81,13 @@ uuid_arg = click.argument("uuid", type=click.UUID)
 
 
 def parse_config(config_path, tokens_required=False):
-    """
+    """Recover the user configuration file.
 
-    :param config_path:
-    :param tokens_required:
+    This file holds their most recent access and refresh JWT tokens. It allows PythX to
+    restore the user's login state across executions.
+
+    :param config_path: The configuration file's path
+    :param tokens_required: Raise an error if the tokens are required but missing
     :return:
     """
     with open(config_path, "r") as config_f:
@@ -104,10 +111,13 @@ def parse_config(config_path, tokens_required=False):
 
 
 def update_config(config_path, client):
-    """
+    """Update the user configuration file with the latest login data.
 
-    :param config_path:
-    :param client:
+    The stored data encompasses the API password, the user's Ethereum address, and the
+    latest access and refresh tokens.
+
+    :param config_path: The configuration file's path
+    :param client: The client instance to get the latest information from
     """
     with open(config_path, "w+") as config_f:
         json.dump(
@@ -122,11 +132,11 @@ def update_config(config_path, client):
 
 
 def recover_client(config_path, staging=False, exit_on_missing=False):
-    """
+    """A simple helper method to recover a client instance based on a user config.
 
-    :param config_path:
-    :param staging:
-    :param exit_on_missing:
+    :param config_path: The configuration file's path
+    :param staging: A boolean to denote whether to use staging or not
+    :param exit_on_missing: Return if the file is missing
     :return:
     """
     if not path.isfile(config_path):
@@ -160,12 +170,15 @@ def recover_client(config_path, staging=False, exit_on_missing=False):
 
 
 def ps_core(config, staging, number):
-    """
+    """A helper method to retrieve data from the analysis list endpoint.
 
-    :param config:
-    :param staging:
-    :param number:
-    :return:
+    This functionality is used in the :code:`pythx ps`, as well as the :code:`pythx top`
+    subcommands.
+
+    :param config: The configuration file's path
+    :param staging: Boolean to denote whether to use the MythX staging deployment
+    :param number: The number of analyses to retrieve
+    :return: The API response as AnalysisList domain model
     """
     c = recover_client(config_path=config, staging=staging)
     if c.eth_address == "0x0000000000000000000000000000000000000000":
@@ -179,18 +192,18 @@ def ps_core(config, staging, number):
         )
         sys.exit(0)
     resp = c.analysis_list()
-    # todo: pagination if too few
+    # TODO: paginate if too few analyses
     resp.analyses = resp.analyses[: number + 1]
     update_config(config_path=config, client=c)
     return resp
 
 
 def get_source_location_by_offset(filename, offset):
-    """
+    """Retrieve the Solidity source file's location based on the source map offset.
 
-    :param filename:
-    :param offset:
-    :return:
+    :param filename: The Solidity file to analyze
+    :param offset: The source map's offset
+    :return: The line and column number
     """
     overall = 0
     line_ctr = 0
@@ -207,11 +220,11 @@ def get_source_location_by_offset(filename, offset):
 
 
 def compile_from_source(source_path: str, solc_path: str = None):
-    """
+    """A simple wrapper around solc to compile Solidity source code.
 
-    :param source_path:
-    :param solc_path:
-    :return:
+    :param source_path: The source file's path
+    :param solc_path: The path to the solc compiler
+    :return: The parsed solc compiler JSON output
     """
     solc_path = spawn.find_executable("solc") if solc_path is None else solc_path
     if solc_path is None:
@@ -230,9 +243,7 @@ def compile_from_source(source_path: str, solc_path: str = None):
 
 @click.group()
 def cli():
-    """
-
-    """
+    """The basic click CLI command group to register our subcommands under."""
     pass  # pragma: no cover
 
 
@@ -240,10 +251,10 @@ def cli():
 @staging_opt
 @config_opt
 def login(staging, config):
-    """
+    """Perform a login action on the API
 
-    :param staging:
-    :param config:
+    :param staging: Boolean whether to use the MythX staging deployment
+    :param config: The configuration file's path
     """
     c = recover_client(config, staging)
     login_resp = c.login()
@@ -260,10 +271,10 @@ def login(staging, config):
 @config_opt
 @staging_opt
 def logout(config, staging):
-    """
+    """Perform a logout action on the API.
 
-    :param config:
-    :param staging:
+    :param config: The configuration file's path
+    :param staging: Boolean whether to use the MythX staging deployment
     """
     c = recover_client(config_path=config, staging=staging, exit_on_missing=True)
     if c is None:
@@ -279,10 +290,10 @@ def logout(config, staging):
 @staging_opt
 @config_opt
 def refresh(staging, config):
-    """
+    """Perform a refresh action on the API.
 
-    :param staging:
-    :param config:
+    :param staging: Boolean whether to use the MythX staging deployment
+    :param config: The configuration file's path
     """
     c = recover_client(config, staging)
     login_resp = c.refresh()
@@ -300,10 +311,10 @@ def refresh(staging, config):
 @html_opt
 @yaml_opt
 def openapi(staging, mode):
-    """
+    """Return the API's OpenAPI spec data in HTML or YAML format.
 
-    :param staging:
-    :param mode:
+    :param staging: Boolean whether to use the MythX staging deployment
+    :param mode: The format to return the OpenAPI spec in (HTML or YAML)
     """
     c = Client()  # no auth required
     click.echo(c.openapi(mode).data)
@@ -312,9 +323,9 @@ def openapi(staging, mode):
 @cli.command(help="Print version information of PythX and the API")
 @staging_opt
 def version(staging):
-    """
+    """Return the API's version information as a pretty table.
 
-    :param staging:
+    :param staging: Boolean whether to use the MythX staging deployment
     """
     c = Client(staging=staging)  # no auth required
     resp = c.version().to_dict()
@@ -327,11 +338,11 @@ def version(staging):
 @staging_opt
 @uuid_arg
 def status(config, staging, uuid):
-    """
+    """Return the status of an analysis job as a pretty table.
 
-    :param config:
-    :param staging:
-    :param uuid:
+    :param config: The configuration file's path
+    :param staging: Boolean whether to use the MythX staging deployment
+    :param uuid: The analysis job's UUID
     """
     c = recover_client(config_path=config, staging=staging)
     resp = c.status(uuid).analysis.to_dict()
@@ -345,11 +356,11 @@ def status(config, staging, uuid):
 @staging_opt
 @number_opt
 def ps(config, staging, number):
-    """
+    """Return a list of the most recent analyses as a pretty table and exit.
 
-    :param config:
-    :param staging:
-    :param number:
+    :param config: The configuration file's path
+    :param staging: Boolean whether to use the MythX staging deployment
+    :param number: The number of analyses to return
     """
     resp = ps_core(config, staging, number)
     data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
@@ -361,11 +372,11 @@ def ps(config, staging, number):
 @staging_opt
 @interval_opt
 def top(config, staging, interval):
-    """
+    """Return a list of the most recent analyses as a pretty table and update it continuously.
 
-    :param config:
-    :param staging:
-    :param interval:
+    :param config: The configuration file's path
+    :param staging: Boolean whether to use the MythX staging deployment
+    :param interval: The refresh interval for table updates
     """
     while True:
         resp = ps_core(config, staging, 20)
@@ -384,11 +395,11 @@ def top(config, staging, interval):
 def check(config, staging, bytecode_file, source_file, solc_path):
     """
 
-    :param config:
-    :param staging:
-    :param bytecode_file:
-    :param source_file:
-    :param solc_path:
+    :param config: The configuration file's path
+    :param staging: Boolean whether to use the MythX staging deployment
+    :param bytecode_file: A file specifying the bytecode to analyse
+    :param source_file: A file specifying the source code to analyse
+    :param solc_path: The path to the solc compiler to compile the source code
     """
     c = recover_client(config_path=config, staging=staging)
     if bytecode_file:
@@ -437,11 +448,11 @@ def check(config, staging, bytecode_file, source_file, solc_path):
 @staging_opt
 @uuid_arg
 def report(config, staging, uuid):
-    """
+    """Retrieve the issue report and resolve the source maps to their file locations.
 
-    :param config:
-    :param staging:
-    :param uuid:
+    :param config: The configuration file's path
+    :param staging: Boolean whether to use the MythX staging deployment
+    :param uuid: The analysis job's UUID
     """
     c = recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
