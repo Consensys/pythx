@@ -1,3 +1,5 @@
+"""This module contains the PythX response domain models"""
+
 from pythx.models.response.analysis import Analysis, AnalysisStatus
 from pythx.models.response.issue import (
     Issue,

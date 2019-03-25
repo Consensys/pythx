@@ -1,9 +1,13 @@
+"""This module contains domain models regrading found issues."""
+
 import json
 from enum import Enum
 from typing import Any, Dict, List
 
 
 class Severity(str, Enum):
+    """An Enum holding the possible severities an issue can have."""
+
     NONE = "None"
     LOW = "Low"
     MEDIUM = "Medium"
@@ -11,6 +15,8 @@ class Severity(str, Enum):
 
 
 class SourceType(str, Enum):
+    """An Enum holding the possible source type values."""
+
     RAW_BYTECODE = "raw-bytecode"
     ETHEREUM_ADDRESS = "ethereum-address"
     SOLIDITY_CONTRACT = "solidity-contract"
@@ -18,6 +24,8 @@ class SourceType(str, Enum):
 
 
 class SourceFormat(str, Enum):
+    """An Enum holding the possible source format values."""
+
     TEXT = "text"
     SOLC_AST_LEGACY_JSON = "solc-ast-legacy-json"
     SOLC_AST_COMPACT_JSON = "solc-ast-compact-json"
@@ -26,9 +34,8 @@ class SourceFormat(str, Enum):
 
 
 class SourceLocation:
-    """
+    """The domain model for a source location in a detected issue."""
 
-    """
     def __init__(
         self,
         source_map: str,
@@ -43,10 +50,10 @@ class SourceLocation:
 
     @classmethod
     def from_dict(cls, d):
-        """
+        """Create the response domain model from a dict.
 
-        :param d:
-        :return:
+        :param d: The dict to deserialize from
+        :return: The domain model with the data from :code:`d` filled in
         """
         return cls(
             source_map=d["sourceMap"],
@@ -56,9 +63,9 @@ class SourceLocation:
         )
 
     def to_dict(self):
-        """
+        """Serialize the reponse model to a Python dict.
 
-        :return:
+        :return: A dict holding the request model data
         """
         return {
             "sourceMap": self.source_map,
@@ -69,9 +76,8 @@ class SourceLocation:
 
 
 class Issue:
-    """
+    """The API response domain model for a single issue object."""
 
-    """
     def __init__(
         self,
         swc_id: str,
@@ -102,10 +108,10 @@ class Issue:
 
     @classmethod
     def from_dict(cls, d):
-        """
+        """Create the response domain model from a dict.
 
-        :param d:
-        :return:
+        :param d: The dict to deserialize from
+        :return: The domain model with the data from :code:`d` filled in
         """
         locs = [
             SourceLocation(
@@ -127,16 +133,18 @@ class Issue:
         )
 
     def to_json(self):
-        """
+        """Serialize the model to JSON format.
 
-        :return:
+        Internally, this method is using the :code:`to_dict` method.
+
+        :return: A JSON string holding the model's data
         """
         return json.dumps(self.to_dict())
 
     def to_dict(self):
-        """
+        """Serialize the reponse model to a Python dict.
 
-        :return:
+        :return: A dict holding the request model data
         """
         return {
             "swcID": self.swc_id,

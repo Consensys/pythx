@@ -56,7 +56,7 @@ class BaseRequest(abc.ABC):
 
     @abc.abstractclassmethod
     def from_dict(cls, d: dict):
-        """An abstract method to construct the given domain model form a Python dict instance.
+        """An abstract method to construct the given domain model from a Python dict instance.
 
         :param d: The dict instance to deserialize
         """
