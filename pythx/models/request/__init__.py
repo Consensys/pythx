@@ -1,3 +1,5 @@
+"""This module contains the PythX request domain models"""
+
 from pythx.models.request.analysis_list import AnalysisListRequest
 from pythx.models.request.analysis_status import AnalysisStatusRequest
 from pythx.models.request.analysis_submission import AnalysisSubmissionRequest

@@ -1,60 +1,64 @@
+"""This module contains the AnalysisStatusRequest domain model."""
+
 from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.base import BaseRequest
 
 
 class AnalysisStatusRequest(BaseRequest):
-    """
+    """Perform an API request that gets the status of a previously submitted analysis job."""
 
-    """
     def __init__(self, uuid: str):
         self.uuid = uuid
 
     @property
     def method(self):
-        """
+        """The HTTP method to perform.
 
-        :return:
+        :return: The uppercase HTTP method, e.g. "POST"
         """
         return "GET"
 
     @property
     def endpoint(self):
-        """
+        """The API's analysis status endpoint.
 
-        :return:
+        :return: A string denoting the status endpoint without the host prefix
         """
         return "v1/analyses/{}".format(self.uuid)
 
     @property
     def headers(self):
-        """
+        """Additional request headers.
 
-        :return:
+        :return: A dict (str -> str) instance mapping header name to header content
         """
         return {}
 
     @property
     def parameters(self):
-        """
+        """Additional URL parameters
 
-        :return:
+        :return: A dict (str -> str) instance mapping parameter name to parameter content
         """
         return {}
 
     @property
     def payload(self):
-        """
+        """The request's payload data.
 
-        :return:
+        :return: A Python dict to be serialized into JSON format and submitted to the endpoint.
         """
         return {}
 
     @classmethod
     def from_dict(cls, d):
-        """
+        """Create the request domain model from a dict.
 
-        :param d:
-        :return:
+        This also validates the dict's schema and raises a :code:`RequestValidationError`
+        if any required keys are missing or the data is malformed.
+
+        :param d: The dict to deserialize from
+        :return: The domain model with the data from :code:`d` filled in
         """
         uuid = d.get("uuid")
         if uuid is None:
@@ -62,8 +66,8 @@ class AnalysisStatusRequest(BaseRequest):
         return cls(uuid=uuid)
 
     def to_dict(self):
-        """
+        """Serialize the request model to a Python dict.
 
-        :return:
+        :return: A dict holding the request model data
         """
         return {"uuid": self.uuid}
