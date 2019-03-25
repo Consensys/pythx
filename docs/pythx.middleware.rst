@@ -13,6 +13,15 @@ pythx.middleware.base module
     :show-inheritance:
 
 
+pythx.middleware.toolname module
+--------------------------------
+
+.. automodule:: pythx.middleware.toolname
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Module contents
 ---------------
 
