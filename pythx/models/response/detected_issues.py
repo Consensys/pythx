@@ -7,6 +7,8 @@ from pythx.models.util import resolve_schema
 
 
 class DetectedIssuesResponse(BaseResponse):
+    """The API response domain model for a report of the detected issues."""
+
     with open(resolve_schema(__file__, "detected-issues.json")) as sf:
         schema = json.load(sf)
 
@@ -26,6 +28,14 @@ class DetectedIssuesResponse(BaseResponse):
 
     @classmethod
     def from_dict(cls, d):
+        """Create the response domain model from a dict.
+
+        This also validates the dict's schema and raises a :code:`ResponseValidationError`
+        if any required keys are missing or the data is malformed.
+
+        :param d: The dict to deserialize from
+        :return: The domain model with the data from :code:`d` filled in
+        """
         cls.validate(d)
         d = d[0]
         return cls(
@@ -37,6 +47,10 @@ class DetectedIssuesResponse(BaseResponse):
         )
 
     def to_dict(self):
+        """Serialize the reponse model to a Python dict.
+
+        :return: A dict holding the request model data
+        """
         d = [
             {
                 "issues": [i.to_dict() for i in self.issues],

@@ -1,3 +1,5 @@
+"""This module contains the AnalysisSubmissionRequest domain model."""
+
 import json
 import logging
 from typing import Dict, List
@@ -9,6 +11,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class AnalysisSubmissionRequest(BaseRequest):
+    """Perform an API analysis job submission as a logged in user."""
+
     with open(resolve_schema(__file__, "analysis-submission.json")) as sf:
         schema = json.load(sf)
 
@@ -36,26 +40,54 @@ class AnalysisSubmissionRequest(BaseRequest):
 
     @property
     def endpoint(self):
+        """The API's analysis submission endpoint.
+
+        :return: A string denoting the submission endpoint without the host prefix
+        """
         return "v1/analyses"
 
     @property
     def method(self):
+        """The HTTP method to perform.
+
+        :return: The uppercase HTTP method, e.g. "POST"
+        """
         return "POST"
 
     @property
     def parameters(self):
+        """Additional URL parameters
+
+        :return: A dict (str -> str) instance mapping parameter name to parameter content
+        """
         return {}
 
     @property
     def headers(self):
+        """Additional request headers.
+
+        :return: A dict (str -> str) instance mapping header name to header content
+        """
         return {}
 
     @property
     def payload(self):
+        """The request's payload data.
+
+        :return: A Python dict to be serialized into JSON format and submitted to the endpoint.
+        """
         return {"data": self.to_dict()}
 
     @classmethod
     def from_dict(cls, d: Dict):
+        """Create the request domain model from a dict.
+
+        This also validates the dict's schema and raises a :code:`RequestValidationError`
+        if any required keys are missing or the data is malformed.
+
+        :param d: The dict to deserialize from
+        :return: The domain model with the data from :code:`d` filled in
+        """
         cls.validate(d)
         return cls(
             contract_name=d.get("contractName"),
@@ -70,6 +102,10 @@ class AnalysisSubmissionRequest(BaseRequest):
         )
 
     def to_dict(self):
+        """Serialize the request model to a Python dict.
+
+        :return: A dict holding the request model data
+        """
         base_dict = dict_delete_none_fields(
             {
                 "contractName": self.contract_name,

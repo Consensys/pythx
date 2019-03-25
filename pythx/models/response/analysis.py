@@ -1,3 +1,5 @@
+"""This module contains domain models regarding analysis jobs"""
+
 from enum import Enum
 
 from inflection import underscore
@@ -7,6 +9,8 @@ from pythx.models.util import deserialize_api_timestamp, serialize_api_timestamp
 
 
 class AnalysisStatus(str, Enum):
+    """An Enum describing the status an analysis job can be in."""
+
     QUEUED = "Queued"
     IN_PROGRESS = "In Progress"
     ERROR = "Error"
@@ -14,6 +18,12 @@ class AnalysisStatus(str, Enum):
 
 
 class Analysis(BaseResponse):
+    """An object describing an analysis job.
+
+    Such a model was built, because many other API responses deliver the same data when it comes
+    to analysis jobs. This makes the code more DRY, validation easier, and allows for recursive
+    SerDe (e.g. mapping :code:`from_dict` to a deserialized JSON list of job objects.
+    """
     def __init__(
         self,
         uuid: str,
@@ -44,10 +54,19 @@ class Analysis(BaseResponse):
 
     @classmethod
     def from_dict(cls, d):
+        """Create the response domain model from a dict.
+
+        :param d: The dict to deserialize from
+        :return: The domain model with the data from :code:`d` filled in
+        """
         d = {underscore(k): v for k, v in d.items()}
         return cls(**d)
 
     def to_dict(self):
+        """Serialize the reponse model to a Python dict.
+
+        :return: A dict holding the request model data
+        """
         d = {
             "uuid": self.uuid,
             "apiVersion": self.api_version,

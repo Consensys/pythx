@@ -8,7 +8,7 @@ Subpackages
 
     pythx.api
     pythx.cli
-    pythx.config
+    pythx.conf
     pythx.middleware
     pythx.models
 

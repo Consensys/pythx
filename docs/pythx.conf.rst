@@ -1,13 +1,13 @@
-pythx.config package
+pythx.conf package
 ====================
 
 Submodules
 ----------
 
-pythx.config.base module
+pythx.conf.base module
 ------------------------
 
-.. automodule:: pythx.config.base
+.. automodule:: pythx.conf.base
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,7 +16,7 @@ pythx.config.base module
 Module contents
 ---------------
 
-.. automodule:: pythx.config
+.. automodule:: pythx.conf
     :members:
     :undoc-members:
     :show-inheritance:
