@@ -20,10 +20,9 @@
 import os
 import sys
 
-import pythx
-
 sys.path.insert(0, os.path.abspath(".."))
 
+import pythx
 
 # -- General configuration ---------------------------------------------
 
