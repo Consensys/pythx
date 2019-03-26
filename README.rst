@@ -71,7 +71,7 @@ even complex use cases.
     c = Client(eth_address="0x0000000000000000000000000000000000000000", password="trial")
 
     # submit bytecode, source files, their AST and more!
-    resp = c.analyze(bytecode="0xfe")
+    report = c.analyze(bytecode="0xfe")
 
     # wait for the analysis to finish
     while not c.analysis_ready(resp.uuid):
