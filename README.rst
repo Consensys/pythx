@@ -71,14 +71,14 @@ even complex use cases.
     c = Client(eth_address="0x0000000000000000000000000000000000000000", password="trial")
 
     # submit bytecode, source files, their AST and more!
-    report = c.analyze(bytecode="0xfe")
+    resp = c.analyze(bytecode="0xfe")
 
     # wait for the analysis to finish
-    while not c.analysis_ready(report.uuid):
+    while not c.analysis_ready(resp.uuid):
         time.sleep(1)
 
     # have all your security report data at your fingertips
-    for issue in c.report(report.uuid):
+    for issue in c.report(resp.uuid):
         print(issue.swc_title or "Undefined", "-", issue.description_short)
 
     # Output:
