@@ -74,11 +74,11 @@ even complex use cases.
     report = c.analyze(bytecode="0xfe")
 
     # wait for the analysis to finish
-    while not c.analysis_ready(resp.uuid):
+    while not c.analysis_ready(report.uuid):
         time.sleep(1)
 
     # have all your security report data at your fingertips
-    for issue in report:
+    for issue in c.report(report.uuid):
         print(issue.swc_title or "Undefined", "-", issue.description_short)
 
     # Output:
