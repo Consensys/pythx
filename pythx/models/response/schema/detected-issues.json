@@ -48,27 +48,24 @@
                             }
                         },
                         "severity": {
-                            "type": "string"
+                            "type": ["string", "null"]
                         },
                         "locations": {
-                            "type": "array",
+                            "type": ["array", "null"],
                             "items": {
                                 "type": "object",
-                                "required": [
-                                    "sourceMap"
-                                ],
                                 "properties": {
                                     "sourceMap": {
-                                        "type": "string"
+                                        "type": ["string", "null"]
                                     },
                                     "sourceType": {
-                                        "type": "string"
+                                        "type": ["string", "null"]
                                     },
                                     "sourceFormat": {
-                                        "type": "string"
+                                        "type": ["string", "null"]
                                     },
                                     "sourceList": {
-                                        "type": "array",
+                                        "type": ["array", "null"],
                                         "items": {
                                             "type": "string"
                                         }
@@ -83,13 +80,13 @@
                 }
             },
             "sourceType": {
-                "type": "string"
+                "type": ["string", "null"]
             },
             "sourceFormat": {
-                "type": "string"
+                "type": ["string", "null"]
             },
             "sourceList": {
-                "type": "array",
+                "type": ["array", "null"],
                 "items": {
                     "type": "string"
                 }
