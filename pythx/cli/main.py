@@ -19,6 +19,8 @@ import click
 from tabulate import tabulate
 
 from pythx.api import Client
+from pythx.cli import opts
+
 
 if environ.get("PYTHX_DEBUG") is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -26,58 +28,8 @@ else:
     logging.basicConfig(level=logging.ERROR)
 
 LOGGER = logging.getLogger("pythx-cli")
-DEFAULT_STORAGE_PATH = path.join(tempfile.gettempdir(), ".pythx.json")
-CONFIG_KEYS = ("access", "refresh", "username", "password")
 
-staging_opt = click.option(
-    "--staging",
-    default=False,
-    is_flag=True,
-    envvar="PYTHX_STAGING",
-    help="Use the MythX staging environment",
-)
-config_opt = click.option(
-    "--config",
-    default=DEFAULT_STORAGE_PATH,
-    envvar="PYTHX_CONFIG",
-    help="Path to user credentials JSON file",
-)
-html_opt = click.option(
-    "--html", "mode", flag_value="html", help="Get the HTML OpenAPI spec"
-)
-yaml_opt = click.option(
-    "--yaml", "mode", flag_value="yaml", default=True, help="Get the YAML OpenAPI spec"
-)
-number_opt = click.option(
-    "--number",
-    default=20,
-    type=click.IntRange(min=1, max=100),
-    help="The number of most recent analysis jobs to display",
-)
-bytecode_file_opt = click.option(
-    "--bytecode-file",
-    "-bf",
-    type=click.Path(exists=True),
-    default=None,
-    help="Path to file containing creation bytecode",
-)
-source_file_opt = click.option(
-    "--source-file",
-    "-sf",
-    type=click.Path(exists=True),
-    default=None,
-    help="Path to file containing Solidity source code",
-)
-interval_opt = click.option(
-    "--interval", default=5, type=click.INT, help="Refresh interval"
-)
-solc_path_opt = click.option(
-    "--solc-path",
-    type=click.Path(exists=True),
-    default=None,
-    help="Path to the solc compiler",
-)
-uuid_arg = click.argument("uuid", type=click.UUID)
+CONFIG_KEYS = ("access", "refresh", "username", "password")
 
 
 def parse_config(config_path, tokens_required=False):
@@ -248,8 +200,8 @@ def cli():
 
 
 @cli.command(help="Login to your MythX account")
-@staging_opt
-@config_opt
+@opts.staging_opt
+@opts.config_opt
 def login(staging, config):
     """Perform a login action on the API
 
@@ -268,8 +220,8 @@ def login(staging, config):
 
 
 @cli.command(help="Log out of your MythX account")
-@config_opt
-@staging_opt
+@opts.config_opt
+@opts.staging_opt
 def logout(config, staging):
     """Perform a logout action on the API.
 
@@ -287,8 +239,8 @@ def logout(config, staging):
 
 
 @cli.command(help="Refresh your MythX API token")
-@staging_opt
-@config_opt
+@opts.staging_opt
+@opts.config_opt
 def refresh(staging, config):
     """Perform a refresh action on the API.
 
@@ -307,9 +259,9 @@ def refresh(staging, config):
 
 
 @cli.command(help="Get the OpenAPI spec in HTML or YAML format")
-@staging_opt
-@html_opt
-@yaml_opt
+@opts.staging_opt
+@opts.html_opt
+@opts.yaml_opt
 def openapi(staging, mode):
     """Return the API's OpenAPI spec data in HTML or YAML format.
 
@@ -321,7 +273,7 @@ def openapi(staging, mode):
 
 
 @cli.command(help="Print version information of PythX and the API")
-@staging_opt
+@opts.staging_opt
 def version(staging):
     """Return the API's version information as a pretty table.
 
@@ -334,9 +286,9 @@ def version(staging):
 
 
 @cli.command(help="Get the status of an analysis by its UUID")
-@config_opt
-@staging_opt
-@uuid_arg
+@opts.config_opt
+@opts.staging_opt
+@opts.uuid_arg
 def status(config, staging, uuid):
     """Return the status of an analysis job as a pretty table.
 
@@ -352,9 +304,9 @@ def status(config, staging, uuid):
 
 
 @cli.command(help="Get a greppable overview of submitted analyses")
-@config_opt
-@staging_opt
-@number_opt
+@opts.config_opt
+@opts.staging_opt
+@opts.number_opt
 def ps(config, staging, number):
     """Return a list of the most recent analyses as a pretty table and exit.
 
@@ -368,9 +320,9 @@ def ps(config, staging, number):
 
 
 @cli.command(help="Display the most recent analysis jobs and their status")
-@config_opt
-@staging_opt
-@interval_opt
+@opts.config_opt
+@opts.staging_opt
+@opts.interval_opt
 def top(config, staging, interval):
     """Return a list of the most recent analyses as a pretty table and update it continuously.
 
@@ -387,11 +339,11 @@ def top(config, staging, interval):
 
 
 @cli.command(help="Submit a new analysis job based on source code, byte code, or both")
-@config_opt
-@staging_opt
-@bytecode_file_opt
-@source_file_opt
-@solc_path_opt
+@opts.config_opt
+@opts.staging_opt
+@opts.bytecode_file_opt
+@opts.source_file_opt
+@opts.solc_path_opt
 def check(config, staging, bytecode_file, source_file, solc_path):
     """
 
@@ -444,9 +396,9 @@ def check(config, staging, bytecode_file, source_file, solc_path):
 
 
 @cli.command(help="Check the detected issues of a finished analysis job")
-@config_opt
-@staging_opt
-@uuid_arg
+@opts.config_opt
+@opts.staging_opt
+@opts.uuid_arg
 def report(config, staging, uuid):
     """Retrieve the issue report and resolve the source maps to their file locations.
 
