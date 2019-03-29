@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import Dict, List
 
 import jwt
-
 from pythx.api.handler import APIHandler
 from pythx.middleware.toolname import ClientToolNameMiddleware
 from pythx.models import request as reqmodels

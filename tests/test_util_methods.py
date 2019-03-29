@@ -2,7 +2,6 @@ from datetime import datetime
 
 import pytest
 from dateutil.tz import tzutc
-
 from pythx.models.util import (
     deserialize_api_timestamp,
     dict_delete_none_fields,

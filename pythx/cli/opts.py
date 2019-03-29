@@ -1,7 +1,9 @@
-import click
-from os import path
-import tempfile
+"""This module contains the CLI option and argument decorators."""
 
+import tempfile
+from os import path
+
+import click
 
 DEFAULT_STORAGE_PATH = path.join(tempfile.gettempdir(), ".pythx.json")
 

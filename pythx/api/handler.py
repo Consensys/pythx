@@ -3,7 +3,6 @@ import urllib.parse
 from typing import Dict, List
 
 import requests
-
 from pythx import config
 from pythx.middleware.base import BaseMiddleware
 from pythx.models.exceptions import PythXAPIError

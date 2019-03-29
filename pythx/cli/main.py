@@ -16,181 +16,10 @@ from os import environ, path
 from subprocess import check_output
 
 import click
-from tabulate import tabulate
-
 from pythx.api import Client
-from pythx.cli import opts
-
-
-if environ.get("PYTHX_DEBUG") is not None:
-    logging.basicConfig(level=logging.DEBUG)
-else:
-    logging.basicConfig(level=logging.ERROR)
-
-LOGGER = logging.getLogger("pythx-cli")
-
-CONFIG_KEYS = ("access", "refresh", "username", "password")
-
-
-def parse_config(config_path, tokens_required=False):
-    """Recover the user configuration file.
-
-    This file holds their most recent access and refresh JWT tokens. It allows PythX to
-    restore the user's login state across executions.
-
-    :param config_path: The configuration file's path
-    :param tokens_required: Raise an error if the tokens are required but missing
-    :return:
-    """
-    with open(config_path, "r") as config_f:
-        config = json.load(config_f)
-    keys_present = all(k in config for k in CONFIG_KEYS)
-    if not (type(config) == dict and keys_present):
-        click.echo(
-            "Malformed config file at {} doesn't contain required keys {}".format(
-                config_path, CONFIG_KEYS
-            )
-        )
-        sys.exit(1)
-    if tokens_required and not (config["access"] and config["refresh"]):
-        click.echo(
-            "Malformed config file at {} does not contain access and refresh token".format(
-                config_path
-            )
-        )
-        sys.exit(1)
-    return config
-
-
-def update_config(config_path, client):
-    """Update the user configuration file with the latest login data.
-
-    The stored data encompasses the API password, the user's Ethereum address, and the
-    latest access and refresh tokens.
-
-    :param config_path: The configuration file's path
-    :param client: The client instance to get the latest information from
-    """
-    with open(config_path, "w+") as config_f:
-        json.dump(
-            {
-                "username": client.eth_address,
-                "password": client.password,
-                "access": client.access_token,
-                "refresh": client.refresh_token,
-            },
-            config_f,
-        )
-
-
-def recover_client(config_path, staging=False, exit_on_missing=False):
-    """A simple helper method to recover a client instance based on a user config.
-
-    :param config_path: The configuration file's path
-    :param staging: A boolean to denote whether to use staging or not
-    :param exit_on_missing: Return if the file is missing
-    :return:
-    """
-    if not path.isfile(config_path):
-        if exit_on_missing:
-            return None
-        # config doesn't exist - assume first use
-        eth_address = environ.get("PYTHX_USERNAME") or click.prompt(
-            "Please enter your Ethereum address",
-            type=click.STRING,
-            default="0x0000000000000000000000000000000000000000",
-        )
-        password = environ.get("PYTHX_PASSWORD") or click.prompt(
-            "Please enter your MythX password",
-            type=click.STRING,
-            hide_input=True,
-            default="trial",
-        )
-        c = Client(eth_address=eth_address, password=password, staging=staging)
-        c.login()
-        update_config(config_path=config_path, client=c)
-    else:
-        config = parse_config(config_path, tokens_required=True)
-        c = Client(
-            eth_address=config["username"],
-            password=config["password"],
-            access_token=config["access"],
-            refresh_token=config["refresh"],
-            staging=staging,
-        )
-    return c
-
-
-def ps_core(config, staging, number):
-    """A helper method to retrieve data from the analysis list endpoint.
-
-    This functionality is used in the :code:`pythx ps`, as well as the :code:`pythx top`
-    subcommands.
-
-    :param config: The configuration file's path
-    :param staging: Boolean to denote whether to use the MythX staging deployment
-    :param number: The number of analyses to retrieve
-    :return: The API response as AnalysisList domain model
-    """
-    c = recover_client(config_path=config, staging=staging)
-    if c.eth_address == "0x0000000000000000000000000000000000000000":
-        click.echo(
-            (
-                "This functionality is only available to registered users. "
-                "Head over to https://mythx.io/ and register a free account to "
-                "list your past analyses. Alternatively, you can look up the "
-                "status of a specific job by calling 'pythx status <uuid>'."
-            )
-        )
-        sys.exit(0)
-    resp = c.analysis_list()
-    # TODO: paginate if too few analyses
-    resp.analyses = resp.analyses[: number + 1]
-    update_config(config_path=config, client=c)
-    return resp
-
-
-def get_source_location_by_offset(filename, offset):
-    """Retrieve the Solidity source file's location based on the source map offset.
-
-    :param filename: The Solidity file to analyze
-    :param offset: The source map's offset
-    :return: The line and column number
-    """
-    overall = 0
-    line_ctr = 0
-    with open(filename) as f:
-        for line in f:
-            line_ctr += 1
-            overall += len(line)
-            if overall >= offset:
-                return line_ctr, overall - offset
-    LOGGER.error(
-        "Error finding the source location in {} for offset {}".format(filename, offset)
-    )
-    sys.exit(1)
-
-
-def compile_from_source(source_path: str, solc_path: str = None):
-    """A simple wrapper around solc to compile Solidity source code.
-
-    :param source_path: The source file's path
-    :param solc_path: The path to the solc compiler
-    :return: The parsed solc compiler JSON output
-    """
-    solc_path = spawn.find_executable("solc") if solc_path is None else solc_path
-    if solc_path is None:
-        # user solc path invalid or no default "solc" command found
-        click.echo("Invalid solc path. Please make sure solc is on your PATH.")
-        sys.exit(1)
-    solc_command = [
-        solc_path,
-        "--combined-json",
-        "ast,bin,bin-runtime,srcmap,srcmap-runtime",
-        source_path,
-    ]
-    output = check_output(solc_command)
-    return json.loads(output)
+from pythx.cli import opts, utils
+from pythx.cli.logger import LOGGER
+from tabulate import tabulate
 
 
 @click.group()
@@ -208,7 +37,7 @@ def login(staging, config):
     :param staging: Boolean whether to use the MythX staging deployment
     :param config: The configuration file's path
     """
-    c = recover_client(config, staging)
+    c = utils.recover_client(config, staging)
     login_resp = c.login()
     LOGGER.debug(
         "Access token %s\nRefresh token: %s",
@@ -216,7 +45,7 @@ def login(staging, config):
         login_resp.refresh_token,
     )
     click.echo("Successfully logged in as {}".format(c.eth_address))
-    update_config(config_path=config, client=c)
+    utils.update_config(config_path=config, client=c)
 
 
 @cli.command(help="Log out of your MythX account")
@@ -228,7 +57,7 @@ def logout(config, staging):
     :param config: The configuration file's path
     :param staging: Boolean whether to use the MythX staging deployment
     """
-    c = recover_client(config_path=config, staging=staging, exit_on_missing=True)
+    c = utils.recover_client(config_path=config, staging=staging, exit_on_missing=True)
     if c is None:
         click.echo("You are already logged out.")
         sys.exit(0)
@@ -247,7 +76,7 @@ def refresh(staging, config):
     :param staging: Boolean whether to use the MythX staging deployment
     :param config: The configuration file's path
     """
-    c = recover_client(config, staging)
+    c = utils.recover_client(config, staging)
     login_resp = c.refresh()
     LOGGER.debug(
         "Access token %s\nRefresh token: %s",
@@ -255,7 +84,7 @@ def refresh(staging, config):
         login_resp.refresh_token,
     )
     click.echo("Successfully refreshed tokens for {}".format(c.eth_address))
-    update_config(config_path=config, client=c)
+    utils.update_config(config_path=config, client=c)
 
 
 @cli.command(help="Get the OpenAPI spec in HTML or YAML format")
@@ -296,11 +125,11 @@ def status(config, staging, uuid):
     :param staging: Boolean whether to use the MythX staging deployment
     :param uuid: The analysis job's UUID
     """
-    c = recover_client(config_path=config, staging=staging)
+    c = utils.recover_client(config_path=config, staging=staging)
     resp = c.status(uuid).analysis.to_dict()
     data = ((k, v) for k, v in resp.items())
     click.echo(tabulate(data, tablefmt="fancy_grid"))
-    update_config(config_path=config, client=c)
+    utils.update_config(config_path=config, client=c)
 
 
 @cli.command(help="Get a greppable overview of submitted analyses")
@@ -314,7 +143,7 @@ def ps(config, staging, number):
     :param staging: Boolean whether to use the MythX staging deployment
     :param number: The number of analyses to return
     """
-    resp = ps_core(config, staging, number)
+    resp = utils.ps_core(config, staging, number)
     data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
     click.echo(tabulate(data, tablefmt="fancy_grid"))
 
@@ -331,7 +160,7 @@ def top(config, staging, interval):
     :param interval: The refresh interval for table updates
     """
     while True:
-        resp = ps_core(config, staging, 20)
+        resp = utils.ps_core(config, staging, 20)
         click.clear()
         data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
         click.echo(tabulate(data, tablefmt="fancy_grid"))
@@ -345,7 +174,7 @@ def top(config, staging, interval):
 @opts.source_file_opt
 @opts.solc_path_opt
 def check(config, staging, bytecode_file, source_file, solc_path):
-    """
+    """Submit a new analysis job based on source code, byte code, or both.
 
     :param config: The configuration file's path
     :param staging: Boolean whether to use the MythX staging deployment
@@ -353,7 +182,7 @@ def check(config, staging, bytecode_file, source_file, solc_path):
     :param source_file: A file specifying the source code to analyse
     :param solc_path: The path to the solc compiler to compile the source code
     """
-    c = recover_client(config_path=config, staging=staging)
+    c = utils.recover_client(config_path=config, staging=staging)
     if bytecode_file:
         with open(bytecode_file, "r") as bf:
             bytecode_f = bf.read().strip()
@@ -362,7 +191,7 @@ def check(config, staging, bytecode_file, source_file, solc_path):
     elif source_file:
         with open(source_file, "r") as source_f:
             source_content = source_f.read().strip()
-        compiled = compile_from_source(source_file, solc_path=solc_path)
+        compiled = utils.compile_from_source(source_file, solc_path=solc_path)
         if len(compiled["contracts"]) > 1:
             click.echo(
                 (
@@ -392,7 +221,7 @@ def check(config, staging, bytecode_file, source_file, solc_path):
         sys.exit(1)
 
     click.echo("Analysis submitted as job {}".format(resp.analysis.uuid))
-    update_config(config_path=config, client=c)
+    utils.update_config(config_path=config, client=c)
 
 
 @cli.command(help="Check the detected issues of a finished analysis job")
@@ -406,7 +235,7 @@ def report(config, staging, uuid):
     :param staging: Boolean whether to use the MythX staging deployment
     :param uuid: The analysis job's UUID
     """
-    c = recover_client(config_path=config, staging=staging)
+    c = utils.recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
 
     file_to_issue = defaultdict(list)
@@ -417,7 +246,9 @@ def report(config, staging, uuid):
         for offset, _, file_idx in source_locs:
             if resp.source_list and file_idx > 0:
                 filename = resp.source_list[file_idx]
-                line, column = get_source_location_by_offset(filename, int(offset))
+                line, column = utils.get_source_location_by_offset(
+                    filename, int(offset)
+                )
             else:
                 filename = "Unknown"
                 line, column = 0, 0
@@ -441,4 +272,4 @@ def report(config, staging, uuid):
             )
         )
 
-    update_config(config_path=config, client=c)
+    utils.update_config(config_path=config, client=c)
