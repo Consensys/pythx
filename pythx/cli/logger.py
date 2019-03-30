@@ -1,3 +1,5 @@
+"""This module contains the CLI logger."""
+
 import logging
 from os import environ
 

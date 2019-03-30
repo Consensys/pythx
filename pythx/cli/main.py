@@ -3,17 +3,11 @@
 This script aims to be an example of how PythX can be used as a developer-friendly
 library around the MythX smart contract security analysis API.
 """
-import json
-import logging
 import os
 import sys
-import tempfile
 import time
 from collections import defaultdict
 from copy import copy
-from distutils import spawn
-from os import environ, path
-from subprocess import check_output
 
 import click
 from pythx.api import Client
@@ -97,7 +91,7 @@ def openapi(staging, mode):
     :param staging: Boolean whether to use the MythX staging deployment
     :param mode: The format to return the OpenAPI spec in (HTML or YAML)
     """
-    c = Client()  # no auth required
+    c = Client(staging=staging)  # no auth required
     click.echo(c.openapi(mode).data)
 
 

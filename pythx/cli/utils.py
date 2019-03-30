@@ -3,6 +3,9 @@
 import json
 import sys
 from os import environ, path
+from distutils import spawn
+from subprocess import check_output
+
 
 import click
 from pythx.api import Client
