@@ -57,3 +57,9 @@ solc_path_opt = click.option(
     help="Path to the solc compiler",
 )
 uuid_arg = click.argument("uuid", type=click.UUID)
+no_cache_opt = click.option(
+    "--no-cache",
+    type=bool,
+    default=False,
+    help="Disable the API's request cache"
+)

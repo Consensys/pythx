@@ -167,7 +167,8 @@ def top(config, staging, interval):
 @opts.bytecode_file_opt
 @opts.source_file_opt
 @opts.solc_path_opt
-def check(config, staging, bytecode_file, source_file, solc_path):
+@opts.no_cache_opt
+def check(config, staging, bytecode_file, source_file, solc_path, no_cache):
     """Submit a new analysis job based on source code, byte code, or both.
 
     :param config: The configuration file's path
@@ -209,6 +210,7 @@ def check(config, staging, bytecode_file, source_file, solc_path):
             source_list=compiled["sourceList"],
             sources=sources_dict,
             solc_version=compiled["version"],
+            no_cache=no_cache,
         )
     else:
         click.echo("Please pass a bytecode or a source code file")
