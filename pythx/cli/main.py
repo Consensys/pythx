@@ -3,16 +3,20 @@
 This script aims to be an example of how PythX can be used as a developer-friendly
 library around the MythX smart contract security analysis API.
 """
+import json
 import os
+from os import path
 import sys
 import time
 from collections import defaultdict
 from copy import copy
+from typing import List
 
 import click
 from pythx.api import Client
 from pythx.cli import opts, utils
 from pythx.cli.logger import LOGGER
+from pythx.cli.truffle import find_artifacts
 from tabulate import tabulate
 
 
@@ -31,7 +35,7 @@ def login(staging, config):
     :param staging: Boolean whether to use the MythX staging deployment
     :param config: The configuration file's path
     """
-    c = utils.recover_client(config, staging)
+    c = utils.recover_client(config_path=config, staging=staging)
     login_resp = c.login()
     LOGGER.debug(
         "Access token %s\nRefresh token: %s",
@@ -70,7 +74,7 @@ def refresh(staging, config):
     :param staging: Boolean whether to use the MythX staging deployment
     :param config: The configuration file's path
     """
-    c = utils.recover_client(config, staging)
+    c = utils.recover_client(config_path=config, staging=staging)
     login_resp = c.refresh()
     LOGGER.debug(
         "Access token %s\nRefresh token: %s",
@@ -177,7 +181,7 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache):
     :param source_file: A file specifying the source code to analyse
     :param solc_path: The path to the solc compiler to compile the source code
     """
-    c = utils.recover_client(config_path=config, staging=staging)
+    c = utils.recover_client(config_path=config, staging=staging, no_cache=no_cache)
     if bytecode_file:
         with open(bytecode_file, "r") as bf:
             bytecode_f = bf.read().strip()
@@ -210,7 +214,6 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache):
             source_list=compiled["sourceList"],
             sources=sources_dict,
             solc_version=compiled["version"],
-            no_cache=no_cache,
         )
     else:
         click.echo("Please pass a bytecode or a source code file")
@@ -234,38 +237,78 @@ def report(config, staging, uuid):
     c = utils.recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
 
-    file_to_issue = defaultdict(list)
-
-    for issue in resp.issues:
-        source_locs = [loc.source_map.split(":") for loc in issue.locations]
-        source_locs = [(int(o), int(l), int(i)) for o, l, i in source_locs]
-        for offset, _, file_idx in source_locs:
-            if resp.source_list and file_idx > 0:
-                filename = resp.source_list[file_idx]
-                line, column = utils.get_source_location_by_offset(
-                    filename, int(offset)
-                )
-            else:
-                filename = "Unknown"
-                line, column = 0, 0
-            file_to_issue[filename].append(
-                (line, column, issue.swc_title, issue.severity, issue.description_short)
-            )
-
-    for filename, data in file_to_issue.items():
-        click.echo("Report for {}".format(filename))
-        click.echo(
-            tabulate(
-                data,
-                tablefmt="fancy_grid",
-                headers=(
-                    "Line",
-                    "Column",
-                    "SWC Title",
-                    "Severity",
-                    "Short Description",
-                ),
-            )
-        )
+    utils.echo_report_as_table(resp)
 
     utils.update_config(config_path=config, client=c)
+
+
+@cli.command(help="Submit a Truffle project to MythX")
+@opts.config_opt
+@opts.staging_opt
+@opts.no_cache_opt
+def truffle(config, staging, no_cache):
+    """Send a compiled truffle project to the API and display the reports.
+
+    This assembles multiple analysis requests based on the built truffle compile artifacts,
+    sends them to the API, polls until they are done, and displays the report results.
+    """
+    c = utils.recover_client(config_path=config, staging=staging, no_cache=no_cache)
+
+    jobs = []
+    for artifact_file in find_artifacts(os.getcwd()):
+        LOGGER.debug(f"Processing {artifact_file}")
+        with open(artifact_file) as af:
+            artifact = json.load(af)
+
+        contract_name = artifact.get("contractName")
+        bytecode = artifact.get("bytecode")
+        deployed_bytecode = artifact.get("deployedBytecode")
+        source_map = artifact.get("sourceMap")
+        deyployed_source_map = artifact.get("deployedSourceMap")
+        resp = c.analyze(
+            contract_name=contract_name,
+            bytecode=bytecode if bytecode != "0x" else None,
+            deployed_bytecode=deployed_bytecode if deployed_bytecode != "0x" else None,
+            source_map=zero_srcmap_indices(source_map) if source_map else None,
+            deployed_source_map=zero_srcmap_indices(deyployed_source_map) if deyployed_source_map else None,
+            sources={
+                path.basename(artifact.get("sourcePath")): {
+                    "source": artifact.get("source"),
+                    "ast": artifact.get("ast"),
+                    "legacyAST": artifact.get("legacyAST")
+                }
+            },
+            source_list=[artifact.get("sourcePath")],
+            solc_version=artifact["compiler"]["version"]
+        )
+        jobs.append(resp.uuid)
+        click.echo(f"Submitted contract {contract_name} as job {resp.uuid}")
+
+    for uuid in jobs:
+        click.echo(f"Waiting for job {uuid} to finish")
+        while not c.analysis_ready(uuid):
+            time.sleep(3)
+        click.echo(f"Analysis {uuid} done")
+
+    for uuid in jobs:
+        # print the results
+        click.echo(c.status(uuid).to_dict())
+        # utils.echo_report_as_table(c.report(uuid))
+        time.sleep(3)
+
+    utils.update_config(config_path=config, client=c)
+
+def execute_after(n, f, *args, **kwargs):
+    time.sleep(n)
+    return f(*args, **kwargs)
+
+def zero_srcmap_indices(src_map):
+    entries = src_map.split(";")
+    new_entries = copy(entries)
+    for i, entry in enumerate(entries):
+        fields = entry.split(":")
+        if len(fields) > 2 and fields[2] not in ("-1", ""):
+            # file index is in entry, needs fixing
+            fields[2] = "0"
+            new_entries[i] = ":".join(fields)
+    return ";".join(new_entries)

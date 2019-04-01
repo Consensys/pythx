@@ -5,6 +5,8 @@ import sys
 from os import environ, path
 from distutils import spawn
 from subprocess import check_output
+from collections import defaultdict
+from tabulate import tabulate
 
 
 import click
@@ -65,7 +67,7 @@ def update_config(config_path, client):
         )
 
 
-def recover_client(config_path, staging=False, exit_on_missing=False):
+def recover_client(config_path, staging=False, exit_on_missing=False, no_cache=False):
     """A simple helper method to recover a client instance based on a user config.
 
     :param config_path: The configuration file's path
@@ -88,7 +90,7 @@ def recover_client(config_path, staging=False, exit_on_missing=False):
             hide_input=True,
             default="trial",
         )
-        c = Client(eth_address=eth_address, password=password, staging=staging)
+        c = Client(eth_address=eth_address, password=password, staging=staging, no_cache=no_cache)
         c.login()
         update_config(config_path=config_path, client=c)
     else:
@@ -99,6 +101,7 @@ def recover_client(config_path, staging=False, exit_on_missing=False):
             access_token=config["access"],
             refresh_token=config["refresh"],
             staging=staging,
+            no_cache=no_cache,
         )
     return c
 
@@ -141,6 +144,9 @@ def get_source_location_by_offset(filename, offset):
     """
     overall = 0
     line_ctr = 0
+    if not path.exists(filename):
+        LOGGER.warning(f"Could not find file {filename}")
+        return 0, 0
     with open(filename) as f:
         for line in f:
             line_ctr += 1
@@ -173,3 +179,45 @@ def compile_from_source(source_path: str, solc_path: str = None):
     ]
     output = check_output(solc_command)
     return json.loads(output)
+
+
+def echo_report_as_table(resp):
+    """Pretty print an issue report as an ascii table to the shell.
+
+    :param resp: The DetectedIssuesResponse object
+    :return: None
+    """
+
+    file_to_issue = defaultdict(list)
+
+    for issue in resp.issues:
+        source_locs = [loc.source_map.split(":") for loc in issue.locations]
+        source_locs = [(int(o), int(l), int(i)) for o, l, i in source_locs]
+        for offset, _, file_idx in source_locs:
+            if resp.source_list and file_idx >= 0:
+                filename = resp.source_list[file_idx]
+                line, column = get_source_location_by_offset(
+                    filename, int(offset)
+                )
+            else:
+                filename = "Unknown"
+                line, column = 0, 0
+            file_to_issue[filename].append(
+                (line, column, issue.swc_title, issue.severity, issue.description_short)
+            )
+
+    for filename, data in file_to_issue.items():
+        click.echo("Report for {}".format(filename))
+        click.echo(
+            tabulate(
+                data,
+                tablefmt="fancy_grid",
+                headers=(
+                    "Line",
+                    "Column",
+                    "SWC Title",
+                    "Severity",
+                    "Short Description",
+                ),
+            )
+        )

@@ -38,15 +38,7 @@
                         {
                             "required": ["ast"]
                         }
-                    ],
-                    "properties": {
-                        "source": {
-                            "type": "string"
-                        },
-                        "ast": {
-                            "type": "string"
-                        }
-                    }
+                    ]
                 }
             },
             "additionalProperties": false

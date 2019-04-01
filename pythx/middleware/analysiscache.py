@@ -14,8 +14,8 @@ class AnalysisCacheMiddleware(BaseMiddleware):
     :code:`process_response` returns the input response object right away without touching it.
     """
 
-    def __init__(self, no_cache):
-        LOGGER.debug("Initializing")
+    def __init__(self, no_cache=False):
+        LOGGER.debug(f"Initializing with no_cache={no_cache}")
         self.no_cache = no_cache
 
     def process_request(self, req):

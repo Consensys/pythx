@@ -59,7 +59,7 @@ solc_path_opt = click.option(
 uuid_arg = click.argument("uuid", type=click.UUID)
 no_cache_opt = click.option(
     "--no-cache",
-    type=bool,
+    is_flag=True,
     default=False,
     help="Disable the API's request cache"
 )
