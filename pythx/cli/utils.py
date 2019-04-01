@@ -145,7 +145,7 @@ def get_source_location_by_offset(filename, offset):
     overall = 0
     line_ctr = 0
     if not path.exists(filename):
-        LOGGER.warning(f"Could not find file {filename}")
+        LOGGER.warning("Could not find file %s", filename)
         return 0, 0
     with open(filename) as f:
         for line in f:

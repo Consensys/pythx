@@ -256,7 +256,7 @@ def truffle(config, staging, no_cache):
 
     jobs = []
     for artifact_file in find_artifacts(os.getcwd()):
-        LOGGER.debug(f"Processing {artifact_file}")
+        LOGGER.debug("Processing %s", artifact_file)
         with open(artifact_file) as af:
             artifact = json.load(af)
 
@@ -282,13 +282,13 @@ def truffle(config, staging, no_cache):
             solc_version=artifact["compiler"]["version"]
         )
         jobs.append(resp.uuid)
-        click.echo(f"Submitted contract {contract_name} as job {resp.uuid}")
+        click.echo("Submitted contract {} as job {}".format(contract_name, resp.uuid))
 
     for uuid in jobs:
-        click.echo(f"Waiting for job {uuid} to finish")
+        click.echo("Waiting for job {} to finish".format(uuid))
         while not c.analysis_ready(uuid):
             time.sleep(3)
-        click.echo(f"Analysis {uuid} done")
+        click.echo("Analysis {} done".format(uuid))
 
     for uuid in jobs:
         # print the results

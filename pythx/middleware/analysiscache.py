@@ -15,7 +15,7 @@ class AnalysisCacheMiddleware(BaseMiddleware):
     """
 
     def __init__(self, no_cache=False):
-        LOGGER.debug(f"Initializing with no_cache={no_cache}")
+        LOGGER.debug("Initializing with no_cache=%s", no_cache)
         self.no_cache = no_cache
 
     def process_request(self, req):
@@ -31,7 +31,7 @@ class AnalysisCacheMiddleware(BaseMiddleware):
         :return: The request's data dictionary, with the :code:`noCacheLookup` field filled in
         """
         if req["method"] == "POST" and req["url"].endswith("/analyses"):
-            LOGGER.debug(f"Adding noCacheLookup={self.no_cache}")
+            LOGGER.debug("Adding noCacheLookup=%s", self.no_cache)
             req["payload"]["noCacheLookup"] = self.no_cache
         return req
 
