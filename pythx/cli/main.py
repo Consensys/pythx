@@ -270,8 +270,8 @@ def truffle(config, staging, no_cache):
             contract_name=contract_name,
             bytecode=bytecode if bytecode != "0x" else None,
             deployed_bytecode=deployed_bytecode if deployed_bytecode != "0x" else None,
-            source_map=zero_srcmap_indices(source_map) if source_map else None,
-            deployed_source_map=zero_srcmap_indices(deyployed_source_map) if deyployed_source_map else None,
+            source_map=utils.zero_srcmap_indices(source_map) if source_map else None,
+            deployed_source_map=utils.zero_srcmap_indices(deyployed_source_map) if deyployed_source_map else None,
             sources={
                 path.basename(artifact.get("sourcePath")): {
                     "source": artifact.get("source"),
@@ -293,23 +293,7 @@ def truffle(config, staging, no_cache):
 
     for uuid in jobs:
         # print the results
-        click.echo(c.status(uuid).to_dict())
-        # utils.echo_report_as_table(c.report(uuid))
+        utils.echo_report_as_table(c.report(uuid))
         time.sleep(3)
 
     utils.update_config(config_path=config, client=c)
-
-def execute_after(n, f, *args, **kwargs):
-    time.sleep(n)
-    return f(*args, **kwargs)
-
-def zero_srcmap_indices(src_map):
-    entries = src_map.split(";")
-    new_entries = copy(entries)
-    for i, entry in enumerate(entries):
-        fields = entry.split(":")
-        if len(fields) > 2 and fields[2] not in ("-1", ""):
-            # file index is in entry, needs fixing
-            fields[2] = "0"
-            new_entries[i] = ":".join(fields)
-    return ";".join(new_entries)

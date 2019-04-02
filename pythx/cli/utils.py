@@ -3,6 +3,7 @@
 import json
 import sys
 from os import environ, path
+from copy import copy
 from distutils import spawn
 from subprocess import check_output
 from collections import defaultdict
@@ -222,3 +223,20 @@ def echo_report_as_table(resp):
                 ),
             )
         )
+
+
+def zero_srcmap_indices(src_map: str) -> str:
+    """Zero the source map file index entries.
+
+    :param src_map: The source map string to process
+    :return: The processed source map string
+    """
+    entries = src_map.split(";")
+    new_entries = copy(entries)
+    for i, entry in enumerate(entries):
+        fields = entry.split(":")
+        if len(fields) > 2 and fields[2] not in ("-1", ""):
+            # file index is in entry, needs fixing
+            fields[2] = "0"
+            new_entries[i] = ":".join(fields)
+    return ";".join(new_entries)
