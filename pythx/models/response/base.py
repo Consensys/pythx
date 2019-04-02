@@ -52,7 +52,8 @@ class BaseResponse(abc.ABC):
         parsed = json.loads(json_str)
         return cls.from_dict(parsed)
 
-    @abc.abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def from_dict(cls, d: dict):
         """An abstract method to construct the given domain model from a Python dict instance.
 
