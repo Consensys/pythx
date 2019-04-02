@@ -5,19 +5,18 @@ library around the MythX smart contract security analysis API.
 """
 import json
 import os
-from os import path
 import sys
 import time
-from collections import defaultdict
 from copy import copy
-from typing import List
+from os import path
 
 import click
+from tabulate import tabulate
+
 from pythx.api import Client
 from pythx.cli import opts, utils
 from pythx.cli.logger import LOGGER
 from pythx.cli.truffle import find_artifacts
-from tabulate import tabulate
 
 
 @click.group()
