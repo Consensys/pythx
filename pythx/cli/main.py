@@ -175,6 +175,7 @@ def top(config, staging, interval):
 def check(config, staging, bytecode_file, source_file, solc_path, no_cache):
     """Submit a new analysis job based on source code, byte code, or both.
 
+    :param no_cache: Disable the API's result cache
     :param config: The configuration file's path
     :param staging: Boolean whether to use the MythX staging deployment
     :param bytecode_file: A file specifying the bytecode to analyse

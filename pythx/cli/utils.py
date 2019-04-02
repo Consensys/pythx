@@ -73,6 +73,7 @@ def recover_client(config_path, staging=False, exit_on_missing=False, no_cache=F
     :param config_path: The configuration file's path
     :param staging: A boolean to denote whether to use staging or not
     :param exit_on_missing: Return if the file is missing
+    :param no_cache: Disable the API result cache
     :return:
     """
     if not path.isfile(config_path):
