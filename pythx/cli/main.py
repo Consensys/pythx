@@ -255,6 +255,7 @@ def truffle(config, staging, no_cache):
     c = utils.recover_client(config_path=config, staging=staging, no_cache=no_cache)
 
     jobs = []
+    job_to_name = {}
     for artifact_file in find_artifacts(os.getcwd()):
         LOGGER.debug("Processing %s", artifact_file)
         with open(artifact_file) as af:
@@ -282,17 +283,19 @@ def truffle(config, staging, no_cache):
             solc_version=artifact["compiler"]["version"]
         )
         jobs.append(resp.uuid)
-        click.echo("Submitted contract {} as job {}".format(contract_name, resp.uuid))
+        job_to_name[resp.uuid] = contract_name
+        click.echo("Submitted: {} ({})".format(resp.uuid, contract_name))
 
     for uuid in jobs:
-        click.echo("Waiting for job {} to finish".format(uuid))
+        click.echo("Waiting: {} ({})".format(uuid, job_to_name[uuid]))
         while not c.analysis_ready(uuid):
             time.sleep(3)
-        click.echo("Analysis {} done".format(uuid))
+        click.echo("Done: {} ({})".format(uuid, job_to_name[uuid]))
 
     for uuid in jobs:
         # print the results
         utils.echo_report_as_table(c.report(uuid))
+        click.echo()
         time.sleep(3)
 
     utils.update_config(config_path=config, client=c)

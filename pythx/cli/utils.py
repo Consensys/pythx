@@ -142,19 +142,19 @@ def get_source_location_by_offset(filename, offset):
 
     :param filename: The Solidity file to analyze
     :param offset: The source map's offset
-    :return: The line and column number
+    :return: The line number
     """
     overall = 0
     line_ctr = 0
     if not path.exists(filename):
         LOGGER.warning("Could not find file %s", filename)
-        return 0, 0
+        return 0
     with open(filename) as f:
         for line in f:
             line_ctr += 1
             overall += len(line)
             if overall >= offset:
-                return line_ctr, overall - offset
+                return line_ctr
     LOGGER.error(
         "Error finding the source location in {} for offset {}".format(filename, offset)
     )
@@ -198,14 +198,14 @@ def echo_report_as_table(resp):
         for offset, _, file_idx in source_locs:
             if resp.source_list and file_idx >= 0:
                 filename = resp.source_list[file_idx]
-                line, column = get_source_location_by_offset(
+                line = get_source_location_by_offset(
                     filename, int(offset)
                 )
             else:
                 filename = "Unknown"
-                line, column = 0, 0
+                line = "Unknown"
             file_to_issue[filename].append(
-                (line, column, issue.swc_title, issue.severity, issue.description_short)
+                (line, issue.swc_title, issue.severity, issue.description_short)
             )
 
     for filename, data in file_to_issue.items():
@@ -216,7 +216,6 @@ def echo_report_as_table(resp):
                 tablefmt="fancy_grid",
                 headers=(
                     "Line",
-                    "Column",
                     "SWC Title",
                     "Severity",
                     "Short Description",
