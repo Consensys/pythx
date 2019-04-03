@@ -256,7 +256,11 @@ def truffle(config, staging, no_cache):
 
     jobs = []
     job_to_name = {}
-    for artifact_file in find_artifacts(os.getcwd()):
+    artifact_files = find_artifacts(os.getcwd())
+    if artifact_files is None:
+        click.echo("Could not find any artifact files. Did you run truffle compile?")
+        sys.exit(1)
+    for artifact_file in artifact_files:
         LOGGER.debug("Processing %s", artifact_file)
         with open(artifact_file) as af:
             artifact = json.load(af)
