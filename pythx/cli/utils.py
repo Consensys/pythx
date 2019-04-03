@@ -2,17 +2,16 @@
 
 import json
 import sys
-from os import environ, path
+from collections import defaultdict
 from copy import copy
 from distutils import spawn
+from os import environ, path
 from subprocess import check_output
-from collections import defaultdict
-from tabulate import tabulate
-
 
 import click
 from pythx.api import Client
 from pythx.cli.logger import LOGGER
+from tabulate import tabulate
 
 CONFIG_KEYS = ("access", "refresh", "username", "password")
 
@@ -92,7 +91,12 @@ def recover_client(config_path, staging=False, exit_on_missing=False, no_cache=F
             hide_input=True,
             default="trial",
         )
-        c = Client(eth_address=eth_address, password=password, staging=staging, no_cache=no_cache)
+        c = Client(
+            eth_address=eth_address,
+            password=password,
+            staging=staging,
+            no_cache=no_cache,
+        )
         c.login()
         update_config(config_path=config_path, client=c)
     else:
@@ -198,9 +202,7 @@ def echo_report_as_table(resp):
         for offset, _, file_idx in source_locs:
             if resp.source_list and file_idx >= 0:
                 filename = resp.source_list[file_idx]
-                line = get_source_location_by_offset(
-                    filename, int(offset)
-                )
+                line = get_source_location_by_offset(filename, int(offset))
             else:
                 filename = "Unknown"
                 line = "Unknown"
@@ -214,12 +216,7 @@ def echo_report_as_table(resp):
             tabulate(
                 data,
                 tablefmt="fancy_grid",
-                headers=(
-                    "Line",
-                    "SWC Title",
-                    "Severity",
-                    "Short Description",
-                ),
+                headers=("Line", "SWC Title", "Severity", "Short Description"),
             )
         )
 

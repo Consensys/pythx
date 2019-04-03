@@ -11,12 +11,11 @@ from copy import copy
 from os import path
 
 import click
-from tabulate import tabulate
-
 from pythx.api import Client
 from pythx.cli import opts, utils
 from pythx.cli.logger import LOGGER
 from pythx.cli.truffle import find_artifacts
+from tabulate import tabulate
 
 
 @click.group()
@@ -275,16 +274,18 @@ def truffle(config, staging, no_cache):
             bytecode=bytecode if bytecode != "0x" else None,
             deployed_bytecode=deployed_bytecode if deployed_bytecode != "0x" else None,
             source_map=utils.zero_srcmap_indices(source_map) if source_map else None,
-            deployed_source_map=utils.zero_srcmap_indices(deyployed_source_map) if deyployed_source_map else None,
+            deployed_source_map=utils.zero_srcmap_indices(deyployed_source_map)
+            if deyployed_source_map
+            else None,
             sources={
                 path.basename(artifact.get("sourcePath")): {
                     "source": artifact.get("source"),
                     "ast": artifact.get("ast"),
-                    "legacyAST": artifact.get("legacyAST")
+                    "legacyAST": artifact.get("legacyAST"),
                 }
             },
             source_list=[artifact.get("sourcePath")],
-            solc_version=artifact["compiler"]["version"]
+            solc_version=artifact["compiler"]["version"],
         )
         jobs.append(resp.uuid)
         job_to_name[resp.uuid] = contract_name
