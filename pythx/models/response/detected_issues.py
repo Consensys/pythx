@@ -5,12 +5,8 @@ from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
 from pythx.models.util import resolve_schema
 
-
-class DetectedIssuesResponse(BaseResponse):
-    """The API response domain model for a report of the detected issues."""
-
-    with open(resolve_schema(__file__, "detected-issues.json")) as sf:
-        schema = json.load(sf)
+class IssueReport:
+    """The API response domain model for a tool issues report."""
 
     def __init__(
         self,
@@ -36,8 +32,7 @@ class DetectedIssuesResponse(BaseResponse):
         :param d: The dict to deserialize from
         :return: The domain model with the data from :code:`d` filled in
         """
-        cls.validate(d)
-        d = d[0]
+        # cls.validate(d)
         return cls(
             issues=[Issue.from_dict(i) for i in d["issues"]],
             source_type=SourceType(d["sourceType"]),
@@ -51,15 +46,13 @@ class DetectedIssuesResponse(BaseResponse):
 
         :return: A dict holding the request model data
         """
-        d = [
-            {
-                "issues": [i.to_dict() for i in self.issues],
-                "sourceType": self.source_type,
-                "sourceFormat": self.source_format,
-                "sourceList": self.source_list,
-                "meta": self.meta_data,
-            }
-        ]
+        d = {
+            "issues": [i.to_dict() for i in self.issues],
+            "sourceType": self.source_type,
+            "sourceFormat": self.source_format,
+            "sourceList": self.source_list,
+            "meta": self.meta_data,
+        }
         self.validate(d)
         return d
 
@@ -87,3 +80,33 @@ class DetectedIssuesResponse(BaseResponse):
 
     def __delitem__(self, key):
         del self.issues[key]
+
+class DetectedIssuesResponse(BaseResponse):
+    """The API response domain model for a report of the detected issues."""
+
+    with open(resolve_schema(__file__, "detected-issues.json")) as sf:
+        schema = json.load(sf)
+
+    def __init__(self, issue_reports: List[IssueReport]) -> None:
+        self.issue_reports = issue_reports
+
+    @classmethod 
+    def from_dict(cls, issue_reports: List[Dict]):
+        return [IssueReport.from_dict(report) for report in issue_reports]
+
+    def to_dict(self):
+        return [report.to_dict() for report in self.issue_reports],
+
+    def __iter__(self):
+        for report in issue_reports:
+            yield report
+
+    def __getitem__(self, key):
+        return self.issue_reports[key]
+    
+    def __setitem__(self, key, value):
+        self.isssue_reports[key] = value
+
+    def __delitem__(self, key):
+        del self.issue_reports[key]
+
