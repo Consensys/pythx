@@ -5,6 +5,7 @@ from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
 from pythx.models.util import resolve_schema
 
+
 class IssueReport:
     """The API response domain model for a tool issues report."""
 
@@ -57,12 +58,6 @@ class IssueReport:
         return d
 
     def __contains__(self, key: str):
-        if not type(key) == str:
-            raise ValueError(
-                "Expected SWC ID of type str but got {} of type {}".format(
-                    key, type(key)
-                )
-            )
         return any(map(lambda i: i.swc_id == key, self.issues))
 
     def __len__(self):
@@ -81,6 +76,7 @@ class IssueReport:
     def __delitem__(self, key):
         del self.issues[key]
 
+
 class DetectedIssuesResponse(BaseResponse):
     """The API response domain model for a report of the detected issues."""
 
@@ -97,16 +93,31 @@ class DetectedIssuesResponse(BaseResponse):
     def to_dict(self):
         return [report.to_dict() for report in self.issue_reports],
 
+    def __contains__(self, key: str):
+        if not type(key) == str:
+            raise ValueError(
+                "Expected SWC ID of type str but got {} of type {}".format(
+                    key, type(key)
+                )
+            )
+        for report in self.issue_reports:
+            if key in report: return True
+        return False
+
     def __iter__(self):
         for report in issue_reports:
             yield report
 
-    def __getitem__(self, key):
+    def __len__(self):
+        issues = 0
+        for report in self.issue_reports: issues += len(report)
+        return issues
+
+    def __getitem__(self, key: int):
         return self.issue_reports[key]
     
-    def __setitem__(self, key, value):
-        self.isssue_reports[key] = value
+    def __setitem__(self, key: int, value: IssueReport):
+        self.issue_reports[key] = value
 
     def __delitem__(self, key):
         del self.issue_reports[key]
-
