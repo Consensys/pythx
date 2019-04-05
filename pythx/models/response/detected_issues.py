@@ -7,7 +7,7 @@ from pythx.models.util import resolve_schema
 
 
 class IssueReport:
-    """The API response domain model for a tool issues report."""
+    """The API response domain model for a issues report object."""
 
     def __init__(
         self,
@@ -27,13 +27,10 @@ class IssueReport:
     def from_dict(cls, d):
         """Create the response domain model from a dict.
 
-        This also validates the dict's schema and raises a :code:`ResponseValidationError`
-        if any required keys are missing or the data is malformed.
-
         :param d: The dict to deserialize from
         :return: The domain model with the data from :code:`d` filled in
         """
-        # cls.validate(d)
+        assert type(d) == dict
         return cls(
             issues=[Issue.from_dict(i) for i in d["issues"]],
             source_type=SourceType(d["sourceType"]),
@@ -41,6 +38,16 @@ class IssueReport:
             source_list=d["sourceList"],
             meta_data=d["meta"],
         )
+
+    # @classmethod
+    # def from_json(cls, json_data: str):
+    #     """
+
+    #     :param json_data:
+    #     :return:
+    #     """
+    #     parsed = json.loads(json_data)
+    #     return cls.from_dict(parsed)
 
     def to_dict(self):
         """Serialize the reponse model to a Python dict.
@@ -54,8 +61,17 @@ class IssueReport:
             "sourceList": self.source_list,
             "meta": self.meta_data,
         }
-        self.validate(d)
         return d
+
+    # def to_json(self):
+    #     """Serialize the model to JSON format.
+
+    #     Internally, this method is using the :code:`to_dict` method.
+
+    #     :return: A JSON string holding the model's data
+    #     """
+    #     return json.dumps(self.to_dict())
+
 
     def __contains__(self, key: str):
         return any(map(lambda i: i.swc_id == key, self.issues))
@@ -87,11 +103,46 @@ class DetectedIssuesResponse(BaseResponse):
         self.issue_reports = issue_reports
 
     @classmethod 
-    def from_dict(cls, issue_reports: List[Dict]):
-        return [IssueReport.from_dict(report) for report in issue_reports]
+    def from_dict(cls, d: Dict):
+        """Create the response domain model from a dict.
+
+        This also validates the dict's schema and raises a :code:`ResponseValidationError`
+        if any required keys are missing or the data is malformed.
+
+        :param d: The List to deserialize from
+        :return: The domain model with the data from :code:`d` filled in
+        """
+
+        cls.validate(d["issueReports"])
+        return cls(
+            issue_reports=[IssueReport.from_dict(i) for i in d["issueReports"]]
+        )
+
+    @classmethod 
+    def from_json(cls, json_data: str):
+        """
+
+        :param json_data:
+        :return:
+        """
+        parsed = json.loads(json_data)
+        return cls.from_dict(parsed)
 
     def to_dict(self):
-        return [report.to_dict() for report in self.issue_reports],
+        d = {
+            "issueReports": [report.to_dict() for report in self.issue_reports]
+        }
+        self.validate(d)
+        return d
+
+    def to_json(self):
+        """Serialize the model to JSON format.
+
+        Internally, this method is using the :code:`to_dict` method.
+
+        :return: A JSON string holding the model's data
+        """
+        return json.dumps([report.to_dict() for report in self.issue_reports])
 
     def __contains__(self, key: str):
         if not type(key) == str:
@@ -105,13 +156,14 @@ class DetectedIssuesResponse(BaseResponse):
         return False
 
     def __iter__(self):
-        for report in issue_reports:
+        for report in self.issue_reports:
             yield report
 
     def __len__(self):
-        issues = 0
-        for report in self.issue_reports: issues += len(report)
-        return issues
+        total_detected_issues = 0
+        for report in self.issue_reports:
+            total_detected_issues += len(report)
+        return total_detected_issues
 
     def __getitem__(self, key: int):
         return self.issue_reports[key]
@@ -119,5 +171,5 @@ class DetectedIssuesResponse(BaseResponse):
     def __setitem__(self, key: int, value: IssueReport):
         self.issue_reports[key] = value
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: int):
         del self.issue_reports[key]

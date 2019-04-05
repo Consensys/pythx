@@ -233,12 +233,12 @@ def test_report():
     client = get_client([testdata.DETECTED_ISSUES_RESPONSE_DICT])
     resp = client.report(uuid=testdata.UUID_1)
     assert type(resp) == respmodels.DetectedIssuesResponse
-    assert resp.source_type == testdata.SOURCE_TYPE
-    assert resp.source_format == testdata.SOURCE_FORMAT
-    assert resp.source_list == testdata.SOURCE_LIST
-    assert resp.meta_data == {}
-    assert len(resp.issues) == 1
-    issue = resp.issues[0]
+    assert resp.issue_reports[0].source_type == testdata.SOURCE_TYPE
+    assert resp.issue_reports[0].source_format == testdata.SOURCE_FORMAT
+    assert resp.issue_reports[0].source_list == testdata.SOURCE_LIST
+    assert resp.issue_reports[0].meta_data == {}
+    assert len(resp) == 1
+    issue = resp.issue_reports[0].issues[0]
     assert issue.swc_id == testdata.SWC_ID
     assert issue.swc_title == testdata.SWC_TITLE
     assert issue.description_short == testdata.DESCRIPTION_HEAD
