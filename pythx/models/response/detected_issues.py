@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
 from pythx.models.util import resolve_schema
+from pythx.models.exceptions import ResponseValidationError
 
 
 class IssueReport:
@@ -30,7 +31,6 @@ class IssueReport:
         :param d: The dict to deserialize from
         :return: The domain model with the data from :code:`d` filled in
         """
-        assert type(d) == dict
         return cls(
             issues=[Issue.from_dict(i) for i in d["issues"]],
             source_type=SourceType(d["sourceType"]),
@@ -38,16 +38,6 @@ class IssueReport:
             source_list=d["sourceList"],
             meta_data=d["meta"],
         )
-
-    # @classmethod
-    # def from_json(cls, json_data: str):
-    #     """
-
-    #     :param json_data:
-    #     :return:
-    #     """
-    #     parsed = json.loads(json_data)
-    #     return cls.from_dict(parsed)
 
     def to_dict(self):
         """Serialize the reponse model to a Python dict.
@@ -62,16 +52,6 @@ class IssueReport:
             "meta": self.meta_data,
         }
         return d
-
-    # def to_json(self):
-    #     """Serialize the model to JSON format.
-
-    #     Internally, this method is using the :code:`to_dict` method.
-
-    #     :return: A JSON string holding the model's data
-    #     """
-    #     return json.dumps(self.to_dict())
-
 
     def __contains__(self, key: str):
         return any(map(lambda i: i.swc_id == key, self.issues))
@@ -113,7 +93,14 @@ class DetectedIssuesResponse(BaseResponse):
         :return: The domain model with the data from :code:`d` filled in
         """
 
-        cls.validate(d["issueReports"])
+        if type(d) == list and len(d) != 0:
+            d = {
+                "issueReports": d
+            }
+
+        try: d["issueReports"]
+        except: raise ResponseValidationError(f"Cannot create DetectedIssuesResponse object from invalid dictionary d: {d}")
+
         return cls(
             issue_reports=[IssueReport.from_dict(i) for i in d["issueReports"]]
         )
@@ -132,7 +119,7 @@ class DetectedIssuesResponse(BaseResponse):
         d = {
             "issueReports": [report.to_dict() for report in self.issue_reports]
         }
-        self.validate(d)
+        self.validate(d["issueReports"])
         return d
 
     def to_json(self):

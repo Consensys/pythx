@@ -43,9 +43,9 @@ def test_detected_issues_from_valid_json():
     assert_detected_issues(resp)
 
 
-# def test_detected_issues_from_invalid_json():
-#     with pytest.raises(ResponseValidationError):
-#         DetectedIssuesResponse.from_json("[]")
+def test_detected_issues_from_invalid_json():
+    with pytest.raises(ResponseValidationError):
+        DetectedIssuesResponse.from_json("[]")
 
 
 def test_detected_issues_from_dict():
@@ -53,24 +53,24 @@ def test_detected_issues_from_dict():
     assert_detected_issues(resp)
 
 
-# def test_detected_issues_from_invalid_list():
-#     with pytest.raises(ResponseValidationError):
-#         DetectedIssuesResponse.from_dict([])
+def test_detected_issues_from_invalid_list():
+    with pytest.raises(ResponseValidationError):
+        DetectedIssuesResponse.from_dict([])
 
 
-# def test_detected_issues_from_invalid_dict():
-#     with pytest.raises(ResponseValidationError):
-#         DetectedIssuesResponse.from_dict({})
+def test_detected_issues_from_invalid_dict():
+    with pytest.raises(ResponseValidationError):
+        DetectedIssuesResponse.from_dict({})
 
 
-# def test_detected_issues_to_json():
-#     json_str = testdata.DETECTED_ISSUES_RESPONSE_OBJECT.to_json()
-#     assert json.loads(json_str) == testdata.DETECTED_ISSUES_RESPONSE_DICT
+def test_detected_issues_to_json():
+    json_str = testdata.DETECTED_ISSUES_RESPONSE_OBJECT.to_json()
+    assert json.loads(json_str) == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"]
 
 
-# def test_detected_issues_to_dict():
-#     resp = testdata.DETECTED_ISSUES_RESPONSE_OBJECT.to_dict()
-#     assert testdata.DETECTED_ISSUES_RESPONSE_DICT == resp
+def test_detected_issues_to_dict():
+    resp = testdata.DETECTED_ISSUES_RESPONSE_OBJECT.to_dict()
+    assert testdata.DETECTED_ISSUES_RESPONSE_DICT == resp
 
 
 def test_valid_swc_id_contains():
