@@ -99,7 +99,9 @@ class DetectedIssuesResponse(BaseResponse):
             }
 
         try: d["issueReports"]
-        except: raise ResponseValidationError(f"Cannot create DetectedIssuesResponse object from invalid dictionary d: {d}")
+        except: raise ResponseValidationError(
+            "Cannot create DetectedIssuesResponse object from invalid dictionary d: {}".format(d)
+        )
 
         return cls(
             issue_reports=[IssueReport.from_dict(i) for i in d["issueReports"]]
