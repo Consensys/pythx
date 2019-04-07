@@ -394,3 +394,12 @@ DETECTED_ISSUES_RESPONSE_OBJECT = DetectedIssuesResponse(
     source_list=SOURCE_LIST,
     meta_data={},
 )
+
+def generate_request_dict(req):
+    return {
+        "method": req.method,
+        "payload": req.payload,
+        "params": req.parameters,
+        "headers": req.headers,
+        "url": "https://test.com/" + req.endpoint,
+    }
