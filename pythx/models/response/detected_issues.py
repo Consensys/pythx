@@ -153,7 +153,8 @@ class DetectedIssuesResponse(BaseResponse):
 
     def __iter__(self):
         for report in self.issue_reports:
-            yield report
+            for issue in report:
+                yield issue
 
     def __len__(self):
         total_detected_issues = 0

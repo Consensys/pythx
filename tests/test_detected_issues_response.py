@@ -98,9 +98,7 @@ def test_invalid_key_contains():
 
 def test_response_length():
     resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
-    total_report_issues = 0
-    for report in resp:
-        total_report_issues += len(report)
+    total_report_issues = len(resp)
     assert len(resp) == total_report_issues
     resp.issue_reports.append(
         IssueReport(
@@ -111,7 +109,7 @@ def test_response_length():
             meta_data={},
         )
     )
-    assert len(resp) == len(resp)
+    assert len(resp) == total_report_issues + 2
 
 
 def test_issue_iterator():
@@ -120,9 +118,9 @@ def test_issue_iterator():
 
 
 def test_report_iterator():
-    for report in testdata.DETECTED_ISSUES_RESPONSE_OBJECT:
-        for i, issue in enumerate(report):
-            assert issue == report.issues[i]
+    report = testdata.DETECTED_ISSUES_RESPONSE_OBJECT
+    for i, issue in enumerate(report):
+        assert issue == report.issue_reports[0][i]
 
 
 def test_issue_valid_getitem():
@@ -133,9 +131,9 @@ def test_issue_valid_getitem():
 
 
 def test_report_getitem():
-    for report in testdata.DETECTED_ISSUES_RESPONSE_OBJECT:
-        for i, issue in enumerate(report.issues):
-            assert issue == report[i]
+    report = testdata.DETECTED_ISSUES_RESPONSE_OBJECT
+    for i, issue in enumerate(report):
+        assert issue == report.issue_reports[0][i]
 
 
 def test_invalid_getitem():
