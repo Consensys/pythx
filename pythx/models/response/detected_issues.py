@@ -93,15 +93,22 @@ class DetectedIssuesResponse(BaseResponse):
         :return: The domain model with the data from :code:`d` filled in
         """
 
-        if type(d) == list and len(d) != 0:
+        if type(d) == list:
+            cls.validate(d)
             d = {
                 "issueReports": d
             }
+        elif type(d) == dict:
+            if d.get("issueReports") is None:
+                raise ResponseValidationError(
+                    "Cannot create DetectedIssuesResponse object from invalid dictionary d: {}".format(d)
+                )
 
-        try: d["issueReports"]
-        except: raise ResponseValidationError(
-            "Cannot create DetectedIssuesResponse object from invalid dictionary d: {}".format(d)
-        )
+            cls.validate(d["issueReports"])
+        else:
+            raise ResponseValidationError("Expected list or dict but got {} of type {}".format(
+                d, type(d)
+            ))
 
         return cls(
             issue_reports=[IssueReport.from_dict(i) for i in d["issueReports"]]

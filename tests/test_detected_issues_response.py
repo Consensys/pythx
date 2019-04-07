@@ -58,6 +58,11 @@ def test_detected_issues_from_list():
     assert_detected_issues(resp)
 
 
+def test_detected_issues_from_invalid_type():
+    with pytest.raises(ResponseValidationError):
+        DetectedIssuesResponse.from_dict("foo")
+
+
 def test_detected_issues_from_invalid_list():
     with pytest.raises(ResponseValidationError):
         DetectedIssuesResponse.from_dict([])
