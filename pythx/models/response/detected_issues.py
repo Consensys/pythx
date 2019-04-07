@@ -1,10 +1,10 @@
 import json
 from typing import Any, Dict, List
 
+from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response.base import BaseResponse
 from pythx.models.response.issue import Issue, SourceFormat, SourceType
 from pythx.models.util import resolve_schema
-from pythx.models.exceptions import ResponseValidationError
 
 
 class IssueReport:
@@ -29,7 +29,7 @@ class IssueReport:
         """Create the response domain model from a dict.
 
         :param d: The dict to deserialize from
-        :return: The domain model with the data from :code:`d` filled in
+        :return: The domain model with  the data from :code:`d` filled in
         """
         return cls(
             issues=[Issue.from_dict(i) for i in d["issues"]],
@@ -95,24 +95,22 @@ class DetectedIssuesResponse(BaseResponse):
 
         if type(d) == list:
             cls.validate(d)
-            d = {
-                "issueReports": d
-            }
+            d = {"issueReports": d}
         elif type(d) == dict:
             if d.get("issueReports") is None:
                 raise ResponseValidationError(
-                    "Cannot create DetectedIssuesResponse object from invalid dictionary d: {}".format(d)
+                    "Cannot create DetectedIssuesResponse object from invalid dictionary d: {}".format(
+                        d
+                    )
                 )
 
             cls.validate(d["issueReports"])
         else:
-            raise ResponseValidationError("Expected list or dict but got {} of type {}".format(
-                d, type(d)
-            ))
+            raise ResponseValidationError(
+                "Expected list or dict but got {} of type {}".format(d, type(d))
+            )
 
-        return cls(
-            issue_reports=[IssueReport.from_dict(i) for i in d["issueReports"]]
-        )
+        return cls(issue_reports=[IssueReport.from_dict(i) for i in d["issueReports"]])
 
     @classmethod
     def from_json(cls, json_data: str):
@@ -125,9 +123,7 @@ class DetectedIssuesResponse(BaseResponse):
         return cls.from_dict(parsed)
 
     def to_dict(self):
-        d = {
-            "issueReports": [report.to_dict() for report in self.issue_reports]
-        }
+        d = {"issueReports": [report.to_dict() for report in self.issue_reports]}
         self.validate(d["issueReports"])
         return d
 
@@ -148,7 +144,8 @@ class DetectedIssuesResponse(BaseResponse):
                 )
             )
         for report in self.issue_reports:
-            if key in report: return True
+            if key in report:
+                return True
         return False
 
     def __iter__(self):

@@ -470,7 +470,13 @@ def report(config, staging, uuid):
                     filename = "Unknown"
                     line, column = 0, 0
                 file_to_issue[filename].append(
-                    (line, column, issue.swc_title, issue.severity, issue.description_short)
+                    (
+                        line,
+                        column,
+                        issue.swc_title,
+                        issue.severity,
+                        issue.description_short,
+                    )
                 )
 
         for filename, data in file_to_issue.items():

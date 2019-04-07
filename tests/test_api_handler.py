@@ -164,12 +164,22 @@ def test_parse_detected_issues_response():
         model.issue_reports[0].issues[0].to_dict()
         == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["issues"][0]
     )
-    assert model.issue_reports[0].source_type == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["sourceType"]
     assert (
-        model.issue_reports[0].source_format == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["sourceFormat"]
+        model.issue_reports[0].source_type
+        == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["sourceType"]
     )
-    assert model.issue_reports[0].source_list == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["sourceList"]
-    assert model.issue_reports[0].meta_data == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["meta"]
+    assert (
+        model.issue_reports[0].source_format
+        == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["sourceFormat"]
+    )
+    assert (
+        model.issue_reports[0].source_list
+        == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["sourceList"]
+    )
+    assert (
+        model.issue_reports[0].meta_data
+        == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["meta"]
+    )
 
 
 def test_parse_login_response():

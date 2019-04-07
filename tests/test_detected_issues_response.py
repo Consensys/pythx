@@ -75,7 +75,9 @@ def test_detected_issues_from_invalid_dict():
 
 def test_detected_issues_to_json():
     json_str = testdata.DETECTED_ISSUES_RESPONSE_OBJECT.to_json()
-    assert json.loads(json_str) == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"]
+    assert (
+        json.loads(json_str) == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"]
+    )
 
 
 def test_detected_issues_to_dict():
