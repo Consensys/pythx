@@ -458,40 +458,44 @@ def report(config, staging, uuid):
     resp = c.report(uuid)
 
     file_to_issue = defaultdict(list)
-    for issue in resp:
-        source_locs = [loc.source_map.split(":") for loc in issue.locations]
-        source_locs = [(int(o), int(l), int(i)) for o, l, i in source_locs]
-        for offset, _, file_idx in source_locs:
-            if report.source_list and file_idx > 0:
-                filename = report.source_list[file_idx]
-                line, column = get_source_location_by_offset(filename, int(offset))
-            else:
-                filename = "Unknown"
-                line, column = 0, 0
-            file_to_issue[filename].append(
-                (
-                    line,
-                    column,
-                    issue.swc_title,
-                    issue.severity,
-                    issue.description_short,
+    for rep in resp.issue_reports:
+        for issue in rep.issues:
+            source_locs = [loc.source_map.split(":") for loc in issue.locations]
+            source_locs = [(int(o), int(l), int(i)) for o, l, i in source_locs]
+            for offset, _, file_idx in source_locs:
+                if rep.source_list and file_idx >= 0:
+                    filename = rep.source_list[file_idx]
+                    try:
+                        line, column = get_source_location_by_offset(filename, int(offset))
+                    except FileNotFoundError:
+                        line, column = 0, 0
+                else:
+                    filename = "Unknown"
+                    line, column = 0, 0
+                file_to_issue[filename].append(
+                    (
+                        line,
+                        column,
+                        issue.swc_title,
+                        issue.severity,
+                        issue.description_short,
+                    )
                 )
-            )
 
-        for filename, data in file_to_issue.items():
-            click.echo("Report for {}".format(filename))
-            click.echo(
-                tabulate(
-                    data,
-                    tablefmt="fancy_grid",
-                    headers=(
-                        "Line",
-                        "Column",
-                        "SWC Title",
-                        "Severity",
-                        "Short Description",
-                    ),
-                )
+    for filename, data in file_to_issue.items():
+        click.echo("Report for {}".format(filename))
+        click.echo(
+            tabulate(
+                data,
+                tablefmt="fancy_grid",
+                headers=(
+                    "Line",
+                    "Column",
+                    "SWC Title",
+                    "Severity",
+                    "Short Description",
+                ),
             )
+        )
 
     update_config(config_path=config, client=c)
