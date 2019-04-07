@@ -400,5 +400,4 @@ DETECTED_ISSUES_RESPONSE_DICT = {
     "issueReports": [ISSUE_REPORT_DICT]
 }
 
-
 DETECTED_ISSUES_RESPONSE_OBJECT = DetectedIssuesResponse(issue_reports=[ISSUE_REPORT_OBJECT])

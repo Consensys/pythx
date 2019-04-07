@@ -8,7 +8,7 @@ from pythx.models.exceptions import ResponseValidationError
 
 
 class IssueReport:
-    """The API response domain model for a issues report object."""
+    """The API response domain model for an issues report object."""
 
     def __init__(
         self,
@@ -82,7 +82,7 @@ class DetectedIssuesResponse(BaseResponse):
     def __init__(self, issue_reports: List[IssueReport]) -> None:
         self.issue_reports = issue_reports
 
-    @classmethod 
+    @classmethod
     def from_dict(cls, d: Dict):
         """Create the response domain model from a dict.
 
@@ -107,7 +107,7 @@ class DetectedIssuesResponse(BaseResponse):
             issue_reports=[IssueReport.from_dict(i) for i in d["issueReports"]]
         )
 
-    @classmethod 
+    @classmethod
     def from_json(cls, json_data: str):
         """
 
@@ -156,7 +156,7 @@ class DetectedIssuesResponse(BaseResponse):
 
     def __getitem__(self, key: int):
         return self.issue_reports[key]
-    
+
     def __setitem__(self, key: int, value: IssueReport):
         self.issue_reports[key] = value
 

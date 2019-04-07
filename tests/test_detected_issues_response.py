@@ -53,6 +53,11 @@ def test_detected_issues_from_dict():
     assert_detected_issues(resp)
 
 
+def test_detected_issues_from_list():
+    resp = DetectedIssuesResponse.from_dict([testdata.ISSUE_REPORT_DICT])
+    assert_detected_issues(resp)
+
+
 def test_detected_issues_from_invalid_list():
     with pytest.raises(ResponseValidationError):
         DetectedIssuesResponse.from_dict([])
@@ -109,6 +114,12 @@ def test_issue_iterator():
         assert testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issue_reports[i] == report
 
 
+def test_report_iterator():
+    for report in testdata.DETECTED_ISSUES_RESPONSE_OBJECT:
+        for i, issue in enumerate(report):
+            assert issue == report.issues[i]
+
+
 def test_issue_valid_getitem():
     assert (
         testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issue_reports[0]
@@ -116,15 +127,27 @@ def test_issue_valid_getitem():
     )
 
 
+def test_report_getitem():
+    for report in testdata.DETECTED_ISSUES_RESPONSE_OBJECT:
+        for i, issue in enumerate(report.issues):
+            assert issue == report[i]
+
+
 def test_invalid_getitem():
     with pytest.raises(IndexError):
-        testdata.DETECTED_ISSUES_RESPONSE_OBJECT[1337]
+        test = testdata.DETECTED_ISSUES_RESPONSE_OBJECT[1337]
 
 
 def test_valid_setitem():
     resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
-    resp.issue_reports[0] = "foo"
+    resp[0] = "foo"
     assert resp.issue_reports[0] == "foo"
+
+
+def test_report_valid_setitem():
+    resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
+    resp.issue_reports[0][0] = "foo"
+    assert resp.issue_reports[0][0] == "foo"
 
 
 def test_invalid_setitem():
@@ -133,12 +156,29 @@ def test_invalid_setitem():
         testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issue_reports["foo"] = "bar"
 
 
+def test_report_invalid_setitem():
+    with pytest.raises(TypeError):
+        # string key on list access
+        testdata.DETECTED_ISSUES_RESPONSE_OBJECT.issue_reports[0]["foo"] = "bar"
+
+
 def test_valid_delete():
     resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
     del resp[0]
     assert resp.issue_reports == []
 
 
+def test_valid_report_delete():
+    resp = deepcopy(testdata.DETECTED_ISSUES_RESPONSE_OBJECT)
+    del resp[0][0]
+    assert resp.issue_reports[0].issues == []
+
+
 def test_invalid_delete():
     with pytest.raises(IndexError):
         del testdata.DETECTED_ISSUES_RESPONSE_OBJECT[1337]
+
+
+def test_invalid_report_delete():
+    with pytest.raises(IndexError):
+        del testdata.DETECTED_ISSUES_RESPONSE_OBJECT[0][100]
