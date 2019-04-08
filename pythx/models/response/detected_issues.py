@@ -1,3 +1,4 @@
+"""This module contains the response models for the detected issues endpoint and a report helper."""
 import json
 from typing import Any, Dict, List
 
