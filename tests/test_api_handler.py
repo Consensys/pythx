@@ -177,8 +177,8 @@ def test_parse_login_response():
         json.dumps(testdata.LOGIN_RESPONSE_DICT), respmodels.AuthLoginResponse
     )
     assert_response_middleware_hook(model)
-    assert model.access_token == testdata.LOGIN_RESPONSE_DICT["access"]
-    assert model.refresh_token == testdata.LOGIN_RESPONSE_DICT["refresh"]
+    assert model.access_token == testdata.ACCESS_TOKEN_1
+    assert model.refresh_token == testdata.REFRESH_TOKEN_1
 
 
 def test_parse_refresh_response():
@@ -186,8 +186,8 @@ def test_parse_refresh_response():
         json.dumps(testdata.LOGIN_RESPONSE_DICT), respmodels.AuthRefreshResponse
     )
     assert_response_middleware_hook(model)
-    assert model.access_token == testdata.LOGIN_RESPONSE_DICT["access"]
-    assert model.refresh_token == testdata.LOGIN_RESPONSE_DICT["refresh"]
+    assert model.access_token == testdata.ACCESS_TOKEN_1
+    assert model.refresh_token == testdata.REFRESH_TOKEN_1
 
 
 def test_parse_logout_response():

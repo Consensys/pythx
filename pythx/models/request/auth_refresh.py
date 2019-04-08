@@ -55,7 +55,7 @@ class AuthRefreshRequest(BaseRequest):
 
         :return: A Python dict to be serialized into JSON format and submitted to the endpoint.
         """
-        return {"accessToken": self.access_token, "refreshToken": self.refresh_token}
+        return {"jwtTokens": {"access": self.access_token, "refresh": self.refresh_token}}
 
     @classmethod
     def from_dict(cls, d: Dict):
@@ -68,13 +68,13 @@ class AuthRefreshRequest(BaseRequest):
         :return: The domain model with the data from :code:`d` filled in
         """
         cls.validate(d)
-        return cls(access_token=d["access"], refresh_token=d["refresh"])
+        return cls(access_token=d["jwtTokens"]["access"], refresh_token=d["jwtTokens"]["refresh"])
 
     def to_dict(self):
         """Serialize the request model to a Python dict.
 
         :return: A dict holding the request model data
         """
-        d = {"access": self.access_token, "refresh": self.refresh_token}
+        d = {"jwtTokens": {"access": self.access_token, "refresh": self.refresh_token}}
         self.validate(d)
         return d
