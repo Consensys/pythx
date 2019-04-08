@@ -143,7 +143,6 @@ def ps_core(config, staging, number):
 
 def get_source_location_by_offset(filename, offset):
     """Retrieve the Solidity source file's location based on the source map offset.
-
     :param filename: The Solidity file to analyze
     :param offset: The source map's offset
     :return: The line number
@@ -196,19 +195,29 @@ def echo_report_as_table(resp):
 
     file_to_issue = defaultdict(list)
 
-    for issue in resp.issues:
-        source_locs = [loc.source_map.split(":") for loc in issue.locations]
-        source_locs = [(int(o), int(l), int(i)) for o, l, i in source_locs]
-        for offset, _, file_idx in source_locs:
-            if resp.source_list and file_idx >= 0:
-                filename = resp.source_list[file_idx]
-                line = get_source_location_by_offset(filename, int(offset))
-            else:
-                filename = "Unknown"
-                line = "Unknown"
-            file_to_issue[filename].append(
-                (line, issue.swc_title, issue.severity, issue.description_short)
-            )
+    file_to_issue = defaultdict(list)
+    for rep in resp.issue_reports:
+        for issue in rep.issues:
+            source_locs = [loc.source_map.split(":") for loc in issue.locations]
+            source_locs = [(int(o), int(l), int(i)) for o, l, i in source_locs]
+            for offset, _, file_idx in source_locs:
+                if rep.source_list and file_idx >= 0:
+                    filename = rep.source_list[file_idx]
+                    try:
+                        line = get_source_location_by_offset(filename, int(offset))
+                    except FileNotFoundError:
+                        line = "Unknown"
+                else:
+                    filename = "Unknown"
+                    line = "Unknown"
+                file_to_issue[filename].append(
+                    (
+                        line,
+                        issue.swc_title,
+                        issue.severity,
+                        issue.description_short,
+                    )
+                )
 
     for filename, data in file_to_issue.items():
         click.echo("Report for {}".format(filename))

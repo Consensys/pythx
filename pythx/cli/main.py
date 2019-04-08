@@ -235,9 +235,7 @@ def report(config, staging, uuid):
     """
     c = utils.recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
-
     utils.echo_report_as_table(resp)
-
     utils.update_config(config_path=config, client=c)
 
 
