@@ -23,6 +23,7 @@ from pythx.models.response import (
     AuthRefreshResponse,
     DetectedIssuesResponse,
     Issue,
+    IssueReport,
     OASResponse,
     Severity,
     SourceFormat,
@@ -363,35 +364,40 @@ ANALYSIS_LIST_RESPONSE_OBJECT = AnalysisListResponse(
 # DETECTED ISSUES
 DETECTED_ISSUES_REQUEST_DICT = {"uuid": UUID_1}
 DETECTED_ISSUES_REQUEST_OBJECT = DetectedIssuesRequest(uuid=UUID_1)
-DETECTED_ISSUES_RESPONSE_DICT = [
-    {
-        "issues": [
-            {
-                "swcID": SWC_ID,
-                "swcTitle": SWC_TITLE,
-                "description": {"head": DESCRIPTION_HEAD, "tail": DESCRIPTION_TAIL},
-                "severity": SEVERITY,
-                "locations": [
-                    {
-                        "sourceMap": SOURCE_MAP,
-                        "sourceType": SOURCE_TYPE,
-                        "sourceFormat": SOURCE_FORMAT,
-                        "sourceList": SOURCE_LIST,
-                    }
-                ],
-                "extra": {},
-            }
-        ],
-        "sourceType": SOURCE_TYPE,
-        "sourceFormat": SOURCE_FORMAT,
-        "sourceList": SOURCE_LIST,
-        "meta": {},
-    }
-]
-DETECTED_ISSUES_RESPONSE_OBJECT = DetectedIssuesResponse(
+ISSUE_REPORT_DICT = {
+    "issues": [
+        {
+            "swcID": SWC_ID,
+            "swcTitle": SWC_TITLE,
+            "description": {"head": DESCRIPTION_HEAD, "tail": DESCRIPTION_TAIL},
+            "severity": SEVERITY,
+            "locations": [
+                {
+                    "sourceMap": SOURCE_MAP,
+                    "sourceType": SOURCE_TYPE,
+                    "sourceFormat": SOURCE_FORMAT,
+                    "sourceList": SOURCE_LIST,
+                }
+            ],
+            "extra": {},
+        }
+    ],
+    "sourceType": SOURCE_TYPE,
+    "sourceFormat": SOURCE_FORMAT,
+    "sourceList": SOURCE_LIST,
+    "meta": {},
+}
+
+ISSUE_REPORT_OBJECT = IssueReport(
     issues=[ISSUE_OBJECT],
     source_type=SourceType.RAW_BYTECODE,
     source_format=SourceFormat.EVM_BYZANTIUM_BYTECODE,
     source_list=SOURCE_LIST,
     meta_data={},
+)
+
+DETECTED_ISSUES_RESPONSE_DICT = {"issueReports": [ISSUE_REPORT_DICT]}
+
+DETECTED_ISSUES_RESPONSE_OBJECT = DetectedIssuesResponse(
+    issue_reports=[ISSUE_REPORT_OBJECT]
 )
