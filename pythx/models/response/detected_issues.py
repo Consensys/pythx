@@ -26,7 +26,7 @@ class IssueReport:
 
     @classmethod
     def from_dict(cls, d):
-        """Create the response domain model from a dict.
+        """Create the issue report domain model from a dict.
 
         :param d: The dict to deserialize from
         :return: The domain model with  the data from :code:`d` filled in
@@ -40,7 +40,7 @@ class IssueReport:
         )
 
     def to_dict(self):
-        """Serialize the reponse model to a Python dict.
+        """Serialize the issue report domain model to a Python dict.
 
         :return: A dict holding the request model data
         """
@@ -112,17 +112,11 @@ class DetectedIssuesResponse(BaseResponse):
 
         return cls(issue_reports=[IssueReport.from_dict(i) for i in d["issueReports"]])
 
-    @classmethod
-    def from_json(cls, json_data: str):
-        """
-
-        :param json_data:
-        :return:
-        """
-        parsed = json.loads(json_data)
-        return cls.from_dict(parsed)
-
     def to_dict(self):
+        """Serialize the reponse model to a Python dict.
+
+        :return: A dict holding the request model data
+        """
         d = {"issueReports": [report.to_dict() for report in self.issue_reports]}
         self.validate(d["issueReports"])
         return d
