@@ -3,7 +3,6 @@ from datetime import datetime
 
 import dateutil.parser
 import pytest
-
 from pythx import config
 from pythx.api.handler import APIHandler
 from pythx.middleware.base import BaseMiddleware

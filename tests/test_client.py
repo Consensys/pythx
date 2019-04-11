@@ -4,9 +4,8 @@ from datetime import datetime, timedelta
 
 import jwt
 import pytest
-from dateutil.tz import tzutc
-
 import pythx.models.response as respmodels
+from dateutil.tz import tzutc
 from pythx import config
 from pythx.api import APIHandler, Client
 from pythx.models.exceptions import PythXAPIError, RequestValidationError

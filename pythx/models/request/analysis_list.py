@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import Any, Dict
 
 import dateutil.parser
-
 from pythx.models.exceptions import RequestValidationError
 from pythx.models.request.base import BaseRequest
 
