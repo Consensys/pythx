@@ -1,7 +1,6 @@
 import json
 
 import pytest
-
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import VersionResponse
 

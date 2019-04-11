@@ -3,7 +3,6 @@ import urllib.parse
 from typing import Dict, List
 
 import requests
-
 from pythx import config
 from pythx.middleware.base import BaseMiddleware
 from pythx.models.exceptions import PythXAPIError
@@ -67,7 +66,7 @@ class APIHandler:
 
             {
                 "method": "GET",
-                "headers": {}
+                "headers": {},
                 "url": "https://api.mythx.io/v1/analyses/6b9e4a52-f061-4960-8246-e1560627336a/issues",
                 "payload": "",
                 "params": {}

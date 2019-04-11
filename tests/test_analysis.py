@@ -3,7 +3,6 @@ from copy import copy
 
 import dateutil.parser
 import pytest
-
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import Analysis, AnalysisStatus
 from pythx.models.util import deserialize_api_timestamp, serialize_api_timestamp

@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import dateutil.parser
-
 from pythx.models.request import (
     AnalysisListRequest,
     AnalysisStatusRequest,
@@ -404,3 +403,13 @@ DETECTED_ISSUES_RESPONSE_DICT = {"issueReports": [ISSUE_REPORT_DICT]}
 DETECTED_ISSUES_RESPONSE_OBJECT = DetectedIssuesResponse(
     issue_reports=[ISSUE_REPORT_OBJECT]
 )
+
+
+def generate_request_dict(req):
+    return {
+        "method": req.method,
+        "payload": req.payload,
+        "params": req.parameters,
+        "headers": req.headers,
+        "url": "https://test.com/" + req.endpoint,
+    }
