@@ -23,6 +23,7 @@ class AnalysisSubmissionRequest(BaseRequest):
         source_map: str = None,
         deployed_bytecode: str = None,
         deployed_source_map: str = None,
+        main_source: str = None,
         sources: Dict[str, Dict[str, str]] = None,
         source_list: List[str] = None,
         solc_version: str = None,
@@ -33,6 +34,7 @@ class AnalysisSubmissionRequest(BaseRequest):
         self.source_map = source_map
         self.deployed_bytecode = deployed_bytecode
         self.deployed_source_map = deployed_source_map
+        self.main_source = main_source
         self.sources = sources
         self.source_list = source_list
         self.solc_version = solc_version
@@ -95,6 +97,7 @@ class AnalysisSubmissionRequest(BaseRequest):
             source_map=d.get("sourceMap"),
             deployed_bytecode=d.get("deployedBytecode"),
             deployed_source_map=d.get("deployedSourceMap"),
+            main_source=d.get("mainSource"),
             sources=d.get("sources"),
             source_list=d.get("sourceList"),
             solc_version=d.get("version"),
@@ -113,6 +116,7 @@ class AnalysisSubmissionRequest(BaseRequest):
                 "sourceMap": self.source_map,
                 "deployedBytecode": self.deployed_bytecode,
                 "deployedSourceMap": self.deployed_source_map,
+                "mainSource": self.main_source,
                 "sources": self.sources if self.sources else None,
                 "sourceList": self.source_list if self.source_list else None,
                 "version": self.solc_version,

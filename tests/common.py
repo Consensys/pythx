@@ -88,6 +88,7 @@ BYTECODE = "60806040526020604051908101604052806000600102815250600090600161002892
 SOURCE_MAP = "25:75:0:-;;;59:38;;;;;;;;;94:1;86:10;;59:38;;;;;;;;;;;:::i;:::-;;25:75;8:9:-1;5:2;;;30:1;27;20:12;5:2;25:75:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o;:::-;;;;;;;"
 DEPLOYED_BYTECODE = "608060405260043610603f576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff168063017a9105146044575b600080fd5b348015604f57600080fd5b50607960048036036020811015606457600080fd5b8101908080359060200190929190505050608f565b6040518082815260200191505060405180910390f35b600081815481101515609d57fe5b90600052602060002001600091509050548156fea165627a7a72305820477e0888fcd92cabf059fb331003e0f0bc4dc7d0617752544f0c9a0fc80970aa0029"
 DEPLOYED_SOURCE_MAP = "25:75:0:-;;;;;;;;;;;;;;;;;;;;;;;;59:38;;8:9:-1;5:2;;;30:1;27;20:12;5:2;59:38:0;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;59:38:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o"
+MAIN_SOURCE = "PublicStorageArray.sol"
 SOURCES = {
     "PublicStorageArray.sol": {
         "source": "pragma solidity ^0.5.0;\n\ncontract PublicStorageArray {\n    bytes32[] public states = [bytes32(0)];\n}",
@@ -222,6 +223,7 @@ ANALYSIS_SUBMISSION_REQUEST_DICT = {
     "sourceMap": SOURCE_MAP,
     "deployedBytecode": DEPLOYED_BYTECODE,
     "deployedSourceMap": DEPLOYED_SOURCE_MAP,
+    "mainSource": MAIN_SOURCE,
     "sources": SOURCES,
     "sourceList": SOURCE_LIST,
     "version": SOLC_VERSION,
@@ -233,6 +235,7 @@ ANALYSIS_SUBMISSION_REQUEST_OBJECT = AnalysisSubmissionRequest(
     source_map=SOURCE_MAP,
     deployed_bytecode=DEPLOYED_BYTECODE,
     deployed_source_map=DEPLOYED_SOURCE_MAP,
+    main_source=MAIN_SOURCE,
     sources=SOURCES,
     source_list=SOURCE_LIST,
     solc_version=SOLC_VERSION,
