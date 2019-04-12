@@ -10,6 +10,7 @@ from . import common as testdata
 def assert_submission_request(req: AnalysisSubmissionRequest):
     assert req.contract_name == testdata.CONTRACT_NAME
     assert req.bytecode == testdata.BYTECODE
+    assert req.main_source == testdata.MAIN_SOURCE
     assert req.source_map == testdata.SOURCE_MAP
     assert req.deployed_bytecode == testdata.DEPLOYED_BYTECODE
     assert req.deployed_source_map == testdata.DEPLOYED_SOURCE_MAP
