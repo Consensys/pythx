@@ -51,12 +51,12 @@ class Client:
         self.eth_address = eth_address
         self.password = password
 
-        if middlewares is None:
-            # initialize with no custom middlewares
+        if not middlewares:
+            # initialize without custom middlewares
             middlewares = [ClientToolNameMiddleware(), AnalysisCacheMiddleware(no_cache)]
         else:
             # add tool name and analysis cache middleware
-            type_list = map(type, middlewares)
+            type_list = [type(m) for m in middlewares]
             if ClientToolNameMiddleware not in type_list:
                 middlewares.append(ClientToolNameMiddleware())
             if AnalysisCacheMiddleware not in type_list:
