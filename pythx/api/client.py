@@ -5,6 +5,7 @@ from typing import Dict, List
 import jwt
 from pythx.api.handler import APIHandler
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
+from pythx.middleware.base import BaseMiddleware
 from pythx.middleware.toolname import ClientToolNameMiddleware
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
@@ -24,6 +25,16 @@ class Client:
     Furthermore, the client class supports various actions for high-level usage to easily submit
     new analysis jobs, check their status, get notified whether they are ready, and fetch analysis
     job report data.
+
+    A user can inject custom middlewares. There are two required internal ones:
+
+        1. :code:`ClientToolNameMiddleware` Fills in the :code:`clientToolName` field for new analysis submissions
+        2. :code:`AnalysisCacheMiddleware` Sets the :code:`noCacheLookup` field in new analysis submissions
+
+    These middlewares can also be overwritten by the user (even though using the Client parameters is
+    recommended!). If any of these middleware instances are missing in the user-defined list, e.g.
+    because they simply add their own ones, the Client constructor will automatically add them with their
+    default or parameter-defined values (if given).
     """
 
     def __init__(
@@ -35,11 +46,24 @@ class Client:
         handler: APIHandler = None,
         staging: bool = False,
         no_cache: bool = False,
+        middlewares: List[BaseMiddleware] = None,
     ):
         self.eth_address = eth_address
         self.password = password
+
+        if middlewares is None:
+            # initialize with no custom middlewares
+            middlewares = [ClientToolNameMiddleware(), AnalysisCacheMiddleware(no_cache)]
+        else:
+            # add tool name and analysis cache middleware
+            type_list = map(type, middlewares)
+            if ClientToolNameMiddleware not in type_list:
+                middlewares.append(ClientToolNameMiddleware())
+            if AnalysisCacheMiddleware not in type_list:
+                middlewares.append(AnalysisCacheMiddleware(no_cache))
+
         self.handler = handler or APIHandler(
-            middlewares=[ClientToolNameMiddleware(), AnalysisCacheMiddleware(no_cache)],
+            middlewares=middlewares,
             staging=staging,
         )
 
