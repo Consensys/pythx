@@ -1,6 +1,7 @@
 import json
 
 import pytest
+
 from pythx.models.request import VersionRequest
 
 from . import common as testdata

@@ -1,4 +1,5 @@
 import pytest
+
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
 from pythx.models.exceptions import RequestValidationError, ResponseValidationError

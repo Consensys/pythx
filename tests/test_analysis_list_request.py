@@ -2,6 +2,7 @@ import json
 
 import dateutil.parser
 import pytest
+
 from pythx.models.exceptions import RequestValidationError
 from pythx.models.request import AnalysisListRequest
 

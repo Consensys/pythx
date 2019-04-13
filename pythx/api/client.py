@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Dict, List
 
 import jwt
+
 from pythx.api.handler import APIHandler
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
 from pythx.middleware.base import BaseMiddleware
@@ -53,7 +54,10 @@ class Client:
 
         if not middlewares:
             # initialize without custom middlewares
-            middlewares = [ClientToolNameMiddleware(), AnalysisCacheMiddleware(no_cache)]
+            middlewares = [
+                ClientToolNameMiddleware(),
+                AnalysisCacheMiddleware(no_cache),
+            ]
         else:
             # add tool name and analysis cache middleware
             type_list = [type(m) for m in middlewares]
@@ -62,10 +66,7 @@ class Client:
             if AnalysisCacheMiddleware not in type_list:
                 middlewares.append(AnalysisCacheMiddleware(no_cache))
 
-        self.handler = handler or APIHandler(
-            middlewares=middlewares,
-            staging=staging,
-        )
+        self.handler = handler or APIHandler(middlewares=middlewares, staging=staging)
 
         self.access_token = access_token
         self.refresh_token = refresh_token

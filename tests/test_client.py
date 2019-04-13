@@ -4,14 +4,15 @@ from datetime import datetime, timedelta
 
 import jwt
 import pytest
-import pythx.models.response as respmodels
 from dateutil.tz import tzutc
+
+import pythx.models.response as respmodels
 from pythx import config
 from pythx.api import APIHandler, Client
-from pythx.models.exceptions import PythXAPIError, RequestValidationError
-from pythx.models.response.analysis import AnalysisStatus
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
 from pythx.middleware.toolname import ClientToolNameMiddleware
+from pythx.models.exceptions import PythXAPIError, RequestValidationError
+from pythx.models.response.analysis import AnalysisStatus
 from pythx.models.util import serialize_api_timestamp
 
 from . import common as testdata
@@ -301,4 +302,6 @@ def test_custom_middlewares():
     assert_middlewares(Client(middlewares=[]))
     assert_middlewares(Client(middlewares=[AnalysisCacheMiddleware()]))
     assert_middlewares(Client(middlewares=[ClientToolNameMiddleware()]))
-    assert_middlewares(Client(middlewares=[AnalysisCacheMiddleware(), ClientToolNameMiddleware()]))
+    assert_middlewares(
+        Client(middlewares=[AnalysisCacheMiddleware(), ClientToolNameMiddleware()])
+    )

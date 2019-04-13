@@ -2,6 +2,7 @@ import json
 from copy import deepcopy
 
 import pytest
+
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import (
     DetectedIssuesResponse,

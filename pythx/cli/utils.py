@@ -9,9 +9,10 @@ from os import environ, path
 from subprocess import check_output
 
 import click
+from tabulate import tabulate
+
 from pythx.api import Client
 from pythx.cli.logger import LOGGER
-from tabulate import tabulate
 
 CONFIG_KEYS = ("access", "refresh", "username", "password")
 
@@ -210,12 +211,7 @@ def echo_report_as_table(resp):
                     filename = "Unknown"
                     line = "Unknown"
                 file_to_issue[filename].append(
-                    (
-                        line,
-                        issue.swc_title,
-                        issue.severity,
-                        issue.description_short,
-                    )
+                    (line, issue.swc_title, issue.severity, issue.description_short)
                 )
 
     for filename, data in file_to_issue.items():

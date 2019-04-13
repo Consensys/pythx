@@ -5,6 +5,7 @@ import json
 import logging
 
 import jsonschema
+
 from pythx.models.exceptions import ResponseValidationError
 
 LOGGER = logging.getLogger(__name__)

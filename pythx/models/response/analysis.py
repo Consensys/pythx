@@ -3,6 +3,7 @@
 from enum import Enum
 
 from inflection import underscore
+
 from pythx.models.response.base import BaseResponse
 from pythx.models.util import deserialize_api_timestamp, serialize_api_timestamp
 
