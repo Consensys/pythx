@@ -1,6 +1,7 @@
 import pytest
-from pythx.middleware.toolname import ClientToolNameMiddleware
+
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
+from pythx.middleware.toolname import ClientToolNameMiddleware
 
 from . import common as testdata
 

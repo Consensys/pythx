@@ -4,10 +4,13 @@ from datetime import datetime, timedelta
 
 import jwt
 import pytest
-import pythx.models.response as respmodels
 from dateutil.tz import tzutc
+
+import pythx.models.response as respmodels
 from pythx import config
 from pythx.api import APIHandler, Client
+from pythx.middleware.analysiscache import AnalysisCacheMiddleware
+from pythx.middleware.toolname import ClientToolNameMiddleware
 from pythx.models.exceptions import PythXAPIError, RequestValidationError
 from pythx.models.response.analysis import AnalysisStatus
 from pythx.models.util import serialize_api_timestamp
@@ -50,6 +53,13 @@ def get_client(resp_data, logged_in=True, access_expired=False, refresh_expired=
         )
 
     return client
+
+
+def assert_middlewares(client: Client):
+    type_list = [type(x) for x in client.handler.middlewares]
+    assert ClientToolNameMiddleware in type_list
+    assert AnalysisCacheMiddleware in type_list
+    assert len(type_list) == 2
 
 
 def test_login():
@@ -284,3 +294,14 @@ def test_jwt_expiration():
 def test_context_handler():
     with get_client([testdata.LOGOUT_RESPONSE_DICT]) as c:
         assert c is not None
+
+
+def test_custom_middlewares():
+    assert_middlewares(Client())
+    assert_middlewares(Client(middlewares=None))
+    assert_middlewares(Client(middlewares=[]))
+    assert_middlewares(Client(middlewares=[AnalysisCacheMiddleware()]))
+    assert_middlewares(Client(middlewares=[ClientToolNameMiddleware()]))
+    assert_middlewares(
+        Client(middlewares=[AnalysisCacheMiddleware(), ClientToolNameMiddleware()])
+    )

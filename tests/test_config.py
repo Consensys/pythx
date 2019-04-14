@@ -1,4 +1,5 @@
 import pytest
+
 from pythx import config
 from pythx.conf.base import PythXConfig
 

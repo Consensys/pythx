@@ -11,11 +11,12 @@ from copy import copy
 from os import path
 
 import click
+from tabulate import tabulate
+
 from pythx.api import Client
 from pythx.cli import opts, utils
 from pythx.cli.logger import LOGGER
 from pythx.cli.truffle import find_artifacts
-from tabulate import tabulate
 
 
 @click.group()

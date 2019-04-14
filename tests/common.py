@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import dateutil.parser
+
 from pythx.models.request import (
     AnalysisListRequest,
     AnalysisStatusRequest,

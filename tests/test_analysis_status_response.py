@@ -1,6 +1,7 @@
 import json
 
 import pytest
+
 from pythx.models.exceptions import ResponseValidationError
 from pythx.models.response import Analysis, AnalysisStatusResponse
 from pythx.models.util import serialize_api_timestamp

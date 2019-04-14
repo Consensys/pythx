@@ -1,9 +1,9 @@
 import pytest
-from pythx.middleware.toolname import ClientToolNameMiddleware
+
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
+from pythx.middleware.toolname import ClientToolNameMiddleware
 
 from . import common as testdata
-
 
 FALSE_CACHE_MIDDLEWARE = AnalysisCacheMiddleware(no_cache=False)
 TRUE_CACHE_MIDDLEWARE = AnalysisCacheMiddleware(no_cache=True)
@@ -16,43 +16,43 @@ TRUE_CACHE_MIDDLEWARE = AnalysisCacheMiddleware(no_cache=True)
             TRUE_CACHE_MIDDLEWARE,
             testdata.generate_request_dict(testdata.ANALYSIS_LIST_REQUEST_OBJECT),
             False,
-            True
+            True,
         ),
         (
             TRUE_CACHE_MIDDLEWARE,
             testdata.generate_request_dict(testdata.DETECTED_ISSUES_REQUEST_OBJECT),
             False,
-            True
+            True,
         ),
         (
             TRUE_CACHE_MIDDLEWARE,
             testdata.generate_request_dict(testdata.ANALYSIS_STATUS_REQUEST_OBJECT),
             False,
-            True
+            True,
         ),
         (
             TRUE_CACHE_MIDDLEWARE,
             testdata.generate_request_dict(testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT),
             True,
-            True
+            True,
         ),
         (
             TRUE_CACHE_MIDDLEWARE,
             testdata.generate_request_dict(testdata.LOGIN_REQUEST_OBJECT),
             False,
-            True
+            True,
         ),
         (
             TRUE_CACHE_MIDDLEWARE,
             testdata.generate_request_dict(testdata.LOGOUT_REQUEST_OBJECT),
             False,
-            True
+            True,
         ),
         (
             TRUE_CACHE_MIDDLEWARE,
             testdata.generate_request_dict(testdata.REFRESH_REQUEST_OBJECT),
             False,
-            True
+            True,
         ),
         (
             FALSE_CACHE_MIDDLEWARE,

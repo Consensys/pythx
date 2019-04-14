@@ -98,20 +98,24 @@ job, and get report data on the found issues.
     $ pythx
     Usage: pythx [OPTIONS] COMMAND [ARGS]...
 
+        The basic click CLI command group to register our subcommands under.
+
     Options:
-    --help  Show this message and exit.
+        --help  Show this message and exit.
 
     Commands:
-    check    Submit a new analysis job based on source code, byte code, or...
-    login    Login to your MythX account
-    logout   Log out of your MythX account
-    openapi  Get the OpenAPI spec in HTML or YAML format
-    ps       Get a greppable overview of submitted analyses
-    refresh  Refresh your MythX API token
-    report   Check the detected issues of a finished analysis job
-    status   Get the status of an analysis by its UUID
-    top      Display the most recent analysis jobs and their status
-    version  Print version information of PythX and the API
+        check    Submit a new analysis job based on source code, byte code, or...
+        login    Login to your MythX account
+        logout   Log out of your MythX account
+        openapi  Get the OpenAPI spec in HTML or YAML format
+        ps       Get a greppable overview of submitted analyses
+        refresh  Refresh your MythX API token
+        report   Check the detected issues of a finished analysis job
+        status   Get the status of an analysis by its UUID
+        top      Display the most recent analysis jobs and their status
+        truffle  Submit a Truffle project to MythX
+        version  Print version information of PythX and the API
+
 
 
 By default, PythX comes with a pre-enabled trial user. To get started right
@@ -172,15 +176,15 @@ a bit buggy, sorry. :)
 
     $ pythx report df137587-7fc1-466a-a4b2-d63392099682
     Report for Unknown
-    ╒════════╤══════════╤══════════════════╤════════════╤═══════════════════════════════════╕
-    │   Line │   Column │ SWC Title        │ Severity   │ Short Description                 │
-    ╞════════╪══════════╪══════════════════╪════════════╪═══════════════════════════════════╡
-    │      0 │        0 │ Reentrancy       │ High       │ persistent state read after call  │
-    ├────────┼──────────┼──────────────────┼────────────┼───────────────────────────────────┤
-    │      0 │        0 │ Reentrancy       │ High       │ persistent state write after call │
-    ├────────┼──────────┼──────────────────┼────────────┼───────────────────────────────────┤
-    │      0 │        0 │ Assert Violation │ Medium     │ assertion violation               │
-    ╘════════╧══════════╧══════════════════╧════════════╧═══════════════════════════════════╛
+    ╒════════╤══════════════════╤════════════╤═══════════════════════════════════╕
+    │   Line │ SWC Title        │ Severity   │ Short Description                 │
+    ╞════════╪══════════════════╪════════════╪═══════════════════════════════════╡
+    │      0 │ Reentrancy       │ High       │ persistent state read after call  │
+    ├────────┼──────────────────┼────────────┼───────────────────────────────────┤
+    │      0 │ Reentrancy       │ High       │ persistent state write after call │
+    ├────────┼──────────────────┼────────────┼───────────────────────────────────┤
+    │      0 │ Assert Violation │ Medium     │ assertion violation               │
+    ╘════════╧══════════════════╧════════════╧═══════════════════════════════════╛
 
 
 .. _MythX: https://mythx.io/
