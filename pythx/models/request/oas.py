@@ -8,7 +8,7 @@ class OASRequest(BaseRequest):
     """Perform an API request that gets the OpenAPI spec."""
 
     def __init__(self, mode="yaml"):
-        if not mode in ("yaml", "html"):
+        if mode not in ("yaml", "html"):
             raise RequestValidationError("'mode' must be one of {html,yaml}")
         self.mode = mode
 

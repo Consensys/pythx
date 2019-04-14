@@ -3,8 +3,8 @@ from datetime import datetime
 from typing import Dict, List
 
 import jwt
-
 from pythx.api.handler import APIHandler
+from pythx.middleware.analysiscache import AnalysisCacheMiddleware
 from pythx.middleware.toolname import ClientToolNameMiddleware
 from pythx.models import request as reqmodels
 from pythx.models import response as respmodels
@@ -34,11 +34,13 @@ class Client:
         refresh_token: str = None,
         handler: APIHandler = None,
         staging: bool = False,
+        no_cache: bool = False,
     ):
         self.eth_address = eth_address
         self.password = password
         self.handler = handler or APIHandler(
-            middlewares=[ClientToolNameMiddleware()], staging=staging
+            middlewares=[ClientToolNameMiddleware(), AnalysisCacheMiddleware(no_cache)],
+            staging=staging,
         )
 
         self.access_token = access_token
@@ -53,7 +55,7 @@ class Client:
         auth_header = (
             {"Authorization": "Bearer {}".format(self.access_token)}
             if include_auth_header
-            else {}
+            else None
         )
         req_dict = self.handler.assemble_request(req_obj)
         LOGGER.debug("Sending request")
@@ -95,7 +97,7 @@ class Client:
                     access_expiration, now, refresh_expiration
                 )
             )
-            self.refresh(assert_authentication=False)
+            self.refresh()
         else:
             # refresh token has also expired - let's login again
             LOGGER.debug("Access and refresh token have expired - logging in again")
@@ -130,10 +132,9 @@ class Client:
         self.refresh_token = None
         return resp_model
 
-    def refresh(self, assert_authentication=True) -> respmodels.AuthRefreshResponse:
+    def refresh(self) -> respmodels.AuthRefreshResponse:
         """Perform a JWT refresh on the API and return the response.
 
-        :param assert_authentication:
         :return: AuthRefreshResponse
         """
         req = reqmodels.AuthRefreshRequest(
@@ -171,6 +172,7 @@ class Client:
         source_map: str = None,
         deployed_bytecode: str = None,
         deployed_source_map: str = None,
+        main_source: str = None,
         sources: Dict[str, Dict[str, str]] = None,
         source_list: List[str] = None,
         solc_version: str = None,
@@ -198,6 +200,7 @@ class Client:
             source_map=source_map,
             deployed_bytecode=deployed_bytecode,
             deployed_source_map=deployed_source_map,
+            main_source=main_source,
             sources=sources,
             source_list=source_list,
             solc_version=solc_version,

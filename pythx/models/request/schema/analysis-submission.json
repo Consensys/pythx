@@ -27,6 +27,9 @@
         "deployedSourceMap": {
             "type": "string"
         },
+        "mainSource": {
+            "type": "string"
+        },
         "sources": {
             "type": "object",
             "patternProperties": {
@@ -38,15 +41,7 @@
                         {
                             "required": ["ast"]
                         }
-                    ],
-                    "properties": {
-                        "source": {
-                            "type": "string"
-                        },
-                        "ast": {
-                            "type": "string"
-                        }
-                    }
+                    ]
                 }
             },
             "additionalProperties": false

@@ -5,7 +5,6 @@ import json
 import logging
 
 import jsonschema
-
 from pythx.models.exceptions import RequestValidationError
 
 LOGGER = logging.getLogger(__name__)
@@ -53,7 +52,8 @@ class BaseRequest(abc.ABC):
         parsed = json.loads(json_str)
         return cls.from_dict(parsed)
 
-    @abc.abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def from_dict(cls, d: dict):
         """An abstract method to construct the given domain model from a Python dict instance.
 
@@ -78,7 +78,8 @@ class BaseRequest(abc.ABC):
         """
         pass
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def payload(self):
         """An abstract property returning the request's payload data.
 
@@ -86,7 +87,8 @@ class BaseRequest(abc.ABC):
         """
         pass
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def headers(self):
         """An abstract property returning additional request headers.
 
@@ -94,7 +96,8 @@ class BaseRequest(abc.ABC):
         """
         pass
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def parameters(self):
         """An abstract property returning additional URL parameters
 
@@ -102,7 +105,8 @@ class BaseRequest(abc.ABC):
         """
         pass
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def method(self):
         """An abstract property returning the HTTP method to perform.
 
