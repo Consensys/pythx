@@ -8,7 +8,7 @@ from pythx.models.util import resolve_schema
 class AuthRefreshResponse(BaseResponse):
     """The API response domain model for a successful authentication refresh."""
 
-    with open(resolve_schema(__file__, "auth-refresh.json")) as sf:
+    with open(resolve_schema(__file__, "auth.json")) as sf:
         schema = json.load(sf)
 
     def __init__(self, access_token: str, refresh_token: str):
@@ -26,13 +26,13 @@ class AuthRefreshResponse(BaseResponse):
         :return: The domain model with the data from :code:`d` filled in
         """
         cls.validate(d)
-        return cls(access_token=d["access"], refresh_token=d["refresh"])
+        return cls(access_token=d["jwtTokens"]["access"], refresh_token=d["jwtTokens"]["refresh"])
 
     def to_dict(self):
         """Serialize the reponse model to a Python dict.
 
         :return: A dict holding the request model data
         """
-        d = {"access": self.access_token, "refresh": self.refresh_token}
+        d = {"jwtTokens": {"access": self.access_token, "refresh": self.refresh_token}}
         self.validate(d)
         return d

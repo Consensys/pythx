@@ -166,7 +166,7 @@ ANALYSIS_OBJECT = Analysis(
 # LOGIN
 LOGIN_REQUEST_DICT = {"ethAddress": ETH_ADDRESS, "password": PASSWORD}
 LOGIN_REQUEST_OBJECT = AuthLoginRequest(eth_address=ETH_ADDRESS, password=PASSWORD)
-LOGIN_RESPONSE_DICT = {"access": ACCESS_TOKEN_1, "refresh": REFRESH_TOKEN_1}
+LOGIN_RESPONSE_DICT = {"jwtTokens": {"access": ACCESS_TOKEN_1, "refresh": REFRESH_TOKEN_1}}
 LOGIN_RESPONSE_OBJECT = AuthLoginResponse(
     access_token=ACCESS_TOKEN_1, refresh_token=REFRESH_TOKEN_1
 )
@@ -178,10 +178,7 @@ LOGOUT_RESPONSE_DICT = {}
 LOGOUT_RESPONSE_OBJECT = AuthLogoutResponse()
 
 # REFRESH
-REFRESH_REQUEST_PAYLOAD_DICT = {
-    "accessToken": ACCESS_TOKEN_1,
-    "refreshToken": REFRESH_TOKEN_1,
-}
+REFRESH_REQUEST_PAYLOAD_DICT = {"jwtTokens": {"access": ACCESS_TOKEN_1, "refresh": REFRESH_TOKEN_1}}
 REFRESH_REQUEST_DICT = LOGIN_RESPONSE_DICT
 REFRESH_REQUEST_OBJECT = AuthRefreshRequest(
     access_token=ACCESS_TOKEN_1, refresh_token=REFRESH_TOKEN_1
