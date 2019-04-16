@@ -171,7 +171,8 @@ def top(config, staging, interval):
 @opts.source_file_opt
 @opts.solc_path_opt
 @opts.no_cache_opt
-def check(config, staging, bytecode_file, source_file, solc_path, no_cache):
+@opts.entrypoint_opt
+def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entrypoint):
     """Submit a new analysis job based on source code, byte code, or both.
 
     :param no_cache: Disable the API's result cache
@@ -180,6 +181,7 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache):
     :param bytecode_file: A file specifying the bytecode to analyse
     :param source_file: A file specifying the source code to analyse
     :param solc_path: The path to the solc compiler to compile the source code
+    :param entrypoint: The main Solidity file (e.g. passed to solc)
     """
     c = utils.recover_client(config_path=config, staging=staging, no_cache=no_cache)
     if bytecode_file:
@@ -191,6 +193,14 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache):
         with open(source_file, "r") as source_f:
             source_content = source_f.read().strip()
         compiled = utils.compile_from_source(source_file, solc_path=solc_path)
+        # try to get main source file
+        if entrypoint is None:
+            if len(compiled["sourceList"]) == 1:
+                entrypoint = compiled["sourceList"][0]
+            else:
+                click.echo("Please provide an entrypoint with --entrypoint/-e")
+                sys.exit(1)
+
         if len(compiled["contracts"]) > 1:
             click.echo(
                 (
@@ -214,6 +224,7 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache):
             source_list=compiled["sourceList"],
             sources=sources_dict,
             solc_version=compiled["version"],
+            main_source=entrypoint,
         )
     else:
         click.echo("Please pass a bytecode or a source code file")
@@ -284,6 +295,7 @@ def truffle(config, staging, no_cache):
                 }
             },
             source_list=[artifact.get("sourcePath")],
+            main_source=artifact.get("sourcePath"),
             solc_version=artifact["compiler"]["version"],
         )
         jobs.append(resp.uuid)

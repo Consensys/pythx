@@ -60,3 +60,9 @@ uuid_arg = click.argument("uuid", type=click.UUID)
 no_cache_opt = click.option(
     "--no-cache", is_flag=True, default=False, help="Disable the API's request cache"
 )
+entrypoint_opt = click.option(
+    "--entrypoint",
+    "-e",
+    type=click.Path(exists=True, readable=True),
+    help="The main Solidity file called by the user"
+)
