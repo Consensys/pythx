@@ -182,8 +182,14 @@ def compile_from_source(source_path: str, solc_path: str = None):
         "ast,bin,bin-runtime,srcmap,srcmap-runtime",
         source_path,
     ]
-    output = check_output(solc_command)
-    return json.loads(output)
+    output = json.loads(check_output(solc_command))
+
+    # we need the AST key to be lowercase
+    for fname, content in output["sources"].items():
+        content["ast"] = content["AST"]
+        del content["AST"]
+
+    return output
 
 
 def echo_report_as_table(resp):
