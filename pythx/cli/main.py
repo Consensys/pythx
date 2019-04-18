@@ -193,6 +193,7 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entr
         with open(source_file, "r") as source_f:
             source_content = source_f.read().strip()
         compiled = utils.compile_from_source(source_file, solc_path=solc_path)
+
         # try to get main source file
         if entrypoint is None:
             if len(compiled["sourceList"]) == 1:
@@ -201,7 +202,7 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entr
                 click.echo("Please provide an entrypoint with --entrypoint/-e")
                 sys.exit(1)
 
-        if len(compiled["contracts"]) > 1:
+        if len(compiled["contracts"]) != 1:
             click.echo(
                 (
                     "The PythX CLI currently does not support sending multiple contracts. "
@@ -212,15 +213,20 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entr
             )
             sys.exit(1)
 
-        for _, contract_data in compiled["contracts"].items():
-            bytecode = contract_data["bin"]
-            source_map = contract_data["srcmap"]
+        _, contract_data = compiled["contracts"].popitem()
+        bytecode = contract_data["bin"]
+        deployed_bytecode = contract_data["bin-runtime"]
+        source_map = contract_data["srcmap"]
+        deployed_source_map = contract_data["srcmap-runtime"]
 
         sources_dict = copy(compiled["sources"])
+
         sources_dict[source_file]["source"] = source_content
         resp = c.analyze(
             bytecode=bytecode,
+            deployed_bytecode=deployed_bytecode,
             source_map=source_map,
+            deployed_source_map=deployed_source_map,
             source_list=compiled["sourceList"],
             sources=sources_dict,
             solc_version=compiled["version"],
