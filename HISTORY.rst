@@ -2,6 +2,14 @@
 History
 =======
 
+1.1.6 [2019-04-19]
+------------------
+
+- Add :code:`mainSource` support to CLI
+- Fix bug where submission object was malformed ("AST" -> "ast")
+- Upgrade pytest dependency
+
+
 1.1.5 [2019-04-16]
 ------------------
 
@@ -17,7 +25,7 @@ History
 ------------------
 
 - Fix issue in schema detection
-- upgrade Sphinx dependency
+- Upgrade Sphinx dependency
 
 
 1.1.3 [2019-03-25]
