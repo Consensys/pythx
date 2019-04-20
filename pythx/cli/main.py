@@ -21,7 +21,7 @@ from pythx.cli.truffle import find_artifacts
 
 @click.group()
 def cli():
-    """The basic click CLI command group to register our subcommands under."""
+    """PythX is a CLI/library for the MythX smart contract security analysis API."""
     pass  # pragma: no cover
 
 
