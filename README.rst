@@ -98,23 +98,24 @@ job, and get report data on the found issues.
     $ pythx
     Usage: pythx [OPTIONS] COMMAND [ARGS]...
 
-        The basic click CLI command group to register our subcommands under.
+      PythX is a CLI/library for the MythX smart contract security analysis API.
 
     Options:
-        --help  Show this message and exit.
+      --help  Show this message and exit.
 
     Commands:
-        check    Submit a new analysis job based on source code, byte code, or...
-        login    Login to your MythX account
-        logout   Log out of your MythX account
-        openapi  Get the OpenAPI spec in HTML or YAML format
-        ps       Get a greppable overview of submitted analyses
-        refresh  Refresh your MythX API token
-        report   Check the detected issues of a finished analysis job
-        status   Get the status of an analysis by its UUID
-        top      Display the most recent analysis jobs and their status
-        truffle  Submit a Truffle project to MythX
-        version  Print version information of PythX and the API
+      check    Submit a new analysis job based on source code, byte code, or...
+      login    Login to your MythX account
+      logout   Log out of your MythX account
+      openapi  Get the OpenAPI spec in HTML or YAML format
+      ps       Get a greppable overview of submitted analyses
+      refresh  Refresh your MythX API token
+      report   Check the detected issues of a finished analysis job
+      status   Get the status of an analysis by its UUID
+      top      Display the most recent analysis jobs and their status
+      truffle  Submit a Truffle project to MythX
+      version  Print version information of PythX and the API
+
 
 
 
