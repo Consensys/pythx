@@ -28,12 +28,15 @@ def cli():
 @cli.command(help="Login to your MythX account")
 @opts.staging_opt
 @opts.config_opt
-def login(staging, config):
+@opts.debug_opt
+def login(staging, config, debug):
     """Perform a login action on the API
 
     :param staging: Boolean whether to use the MythX staging deployment
     :param config: The configuration file's path
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging)
     login_resp = c.login()
     LOGGER.debug(
@@ -48,12 +51,15 @@ def login(staging, config):
 @cli.command(help="Log out of your MythX account")
 @opts.config_opt
 @opts.staging_opt
-def logout(config, staging):
+@opts.debug_opt
+def logout(config, staging, debug):
     """Perform a logout action on the API.
 
     :param config: The configuration file's path
     :param staging: Boolean whether to use the MythX staging deployment
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging, exit_on_missing=True)
     if c is None:
         click.echo("You are already logged out.")
@@ -67,12 +73,15 @@ def logout(config, staging):
 @cli.command(help="Refresh your MythX API token")
 @opts.staging_opt
 @opts.config_opt
-def refresh(staging, config):
+@opts.debug_opt
+def refresh(staging, config, debug):
     """Perform a refresh action on the API.
 
     :param staging: Boolean whether to use the MythX staging deployment
     :param config: The configuration file's path
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging)
     login_resp = c.refresh()
     LOGGER.debug(
@@ -88,23 +97,29 @@ def refresh(staging, config):
 @opts.staging_opt
 @opts.html_opt
 @opts.yaml_opt
-def openapi(staging, mode):
+@opts.debug_opt
+def openapi(staging, mode, debug):
     """Return the API's OpenAPI spec data in HTML or YAML format.
 
     :param staging: Boolean whether to use the MythX staging deployment
     :param mode: The format to return the OpenAPI spec in (HTML or YAML)
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     c = Client(staging=staging)  # no auth required
     click.echo(c.openapi(mode).data)
 
 
 @cli.command(help="Print version information of PythX and the API")
 @opts.staging_opt
-def version(staging):
+@opt.debug_opt
+def version(staging, debug):
     """Return the API's version information as a pretty table.
 
     :param staging: Boolean whether to use the MythX staging deployment
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     c = Client(staging=staging)  # no auth required
     resp = c.version().to_dict()
     data = ((k.title(), v) for k, v in resp.items())
@@ -115,13 +130,16 @@ def version(staging):
 @opts.config_opt
 @opts.staging_opt
 @opts.uuid_arg
-def status(config, staging, uuid):
+@opts.debug_opt
+def status(config, staging, uuid, debug):
     """Return the status of an analysis job as a pretty table.
 
     :param config: The configuration file's path
     :param staging: Boolean whether to use the MythX staging deployment
     :param uuid: The analysis job's UUID
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging)
     resp = c.status(uuid).analysis.to_dict()
     data = ((k, v) for k, v in resp.items())
@@ -133,13 +151,16 @@ def status(config, staging, uuid):
 @opts.config_opt
 @opts.staging_opt
 @opts.number_opt
-def ps(config, staging, number):
+@opts.debug_opt
+def ps(config, staging, number, debug):
     """Return a list of the most recent analyses as a pretty table and exit.
 
     :param config: The configuration file's path
     :param staging: Boolean whether to use the MythX staging deployment
     :param number: The number of analyses to return
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     resp = utils.ps_core(config, staging, number)
     data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
     click.echo(tabulate(data, tablefmt="fancy_grid"))
@@ -149,13 +170,16 @@ def ps(config, staging, number):
 @opts.config_opt
 @opts.staging_opt
 @opts.interval_opt
-def top(config, staging, interval):
+@opts.debug_opt
+def top(config, staging, interval, debug):
     """Return a list of the most recent analyses as a pretty table and update it continuously.
 
     :param config: The configuration file's path
     :param staging: Boolean whether to use the MythX staging deployment
     :param interval: The refresh interval for table updates
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     while True:
         resp = utils.ps_core(config, staging, 20)
         click.clear()
@@ -172,7 +196,8 @@ def top(config, staging, interval):
 @opts.solc_path_opt
 @opts.no_cache_opt
 @opts.entrypoint_opt
-def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entrypoint):
+@opts.debug_opt
+def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entrypoint, debug):
     """Submit a new analysis job based on source code, byte code, or both.
 
     :param no_cache: Disable the API's result cache
@@ -182,7 +207,9 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entr
     :param source_file: A file specifying the source code to analyse
     :param solc_path: The path to the solc compiler to compile the source code
     :param entrypoint: The main Solidity file (e.g. passed to solc)
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging, no_cache=no_cache)
     if bytecode_file:
         with open(bytecode_file, "r") as bf:
@@ -244,29 +271,38 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entr
 @opts.config_opt
 @opts.staging_opt
 @opts.uuid_arg
-def report(config, staging, uuid):
+@opts.debug_opt
+def report(config, staging, uuid, debug):
     """Retrieve the issue report and resolve the source maps to their file locations.
 
     :param config: The configuration file's path
     :param staging: Boolean whether to use the MythX staging deployment
     :param uuid: The analysis job's UUID
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
     utils.echo_report_as_table(resp)
     utils.update_config(config_path=config, client=c)
 
-
 @cli.command(help="Submit a Truffle project to MythX")
 @opts.config_opt
 @opts.staging_opt
 @opts.no_cache_opt
-def truffle(config, staging, no_cache):
+@opts.debug_opt
+def truffle(config, staging, no_cache, debug):
     """Send a compiled truffle project to the API and display the reports.
 
     This assembles multiple analysis requests based on the built truffle compile artifacts,
     sends them to the API, polls until they are done, and displays the report results.
+
+    :param config: The configuration file's path
+    :param staging: Boolean whether to use the MythX staging deployment
+    :param no_cache: Disable the API's result cache
+    :param debug: Boolean whether to set logging to debug or error
     """
+    if debug: utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging, no_cache=no_cache)
 
     jobs = []
