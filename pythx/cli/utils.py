@@ -2,6 +2,7 @@
 
 import json
 import sys
+import logging
 from collections import defaultdict
 from copy import copy
 from distutils import spawn
@@ -224,7 +225,6 @@ def echo_report_as_table(resp):
             )
         )
 
-
 def zero_srcmap_indices(src_map: str) -> str:
     """Zero the source map file index entries.
 
@@ -240,3 +240,7 @@ def zero_srcmap_indices(src_map: str) -> str:
             fields[2] = "0"
             new_entries[i] = ":".join(fields)
     return ";".join(new_entries)
+
+def debug_mode():
+    for name in logging.root.manager.loggerDict:
+        logging.getLogger(name).setLevel(logging.DEBUG)
