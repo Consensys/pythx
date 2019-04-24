@@ -7,6 +7,14 @@ import click
 
 DEFAULT_STORAGE_PATH = path.join(tempfile.gettempdir(), ".pythx.json")
 
+debug_opt= click.option(
+    "--debug",
+    "-d",
+    default=False,
+    is_flag=True,
+    envvar="PYTHX_DEBUG",
+    help="Provide additional debug output",
+)
 
 staging_opt = click.option(
     "--staging",
