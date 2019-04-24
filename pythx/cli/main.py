@@ -112,7 +112,7 @@ def openapi(staging, mode, debug):
 
 @cli.command(help="Print version information of PythX and the API")
 @opts.staging_opt
-@opt.debug_opt
+@opts.debug_opt
 def version(staging, debug):
     """Return the API's version information as a pretty table.
 
