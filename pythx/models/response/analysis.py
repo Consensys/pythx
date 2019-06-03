@@ -38,6 +38,7 @@ class Analysis(BaseResponse):
         submitted_at: str,
         submitted_by: str,
         run_time: int = 0,
+        client_tool_name: str = None,
         error: str = None,
     ):
         self.uuid = uuid
@@ -51,6 +52,7 @@ class Analysis(BaseResponse):
         self.status = AnalysisStatus(status.title())
         self.submitted_at = deserialize_api_timestamp(submitted_at)
         self.submitted_by = submitted_by
+        self.client_tool_name = client_tool_name
         self.error = error
 
     @classmethod
@@ -80,6 +82,7 @@ class Analysis(BaseResponse):
             "status": self.status.title(),
             "submittedAt": serialize_api_timestamp(self.submitted_at),
             "submittedBy": self.submitted_by,
+            "clientToolName": self.client_tool_name,
         }
         if self.error is not None:
             d.update({"error": self.error})
@@ -100,6 +103,7 @@ class Analysis(BaseResponse):
                 self.status == candidate.status,
                 self.submitted_at == candidate.submitted_at,
                 self.submitted_by == candidate.submitted_by,
+                self.client_tool_name == candidate.client_tool_name,
                 self.error == candidate.error,
             )
         )

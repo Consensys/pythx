@@ -330,7 +330,7 @@ def truffle(config, staging, no_cache, debug):
             if deyployed_source_map
             else None,
             sources={
-                path.basename(artifact.get("sourcePath")): {
+                artifact.get("sourcePath"): {
                     "source": artifact.get("source"),
                     "ast": artifact.get("ast"),
                     "legacyAST": artifact.get("legacyAST"),

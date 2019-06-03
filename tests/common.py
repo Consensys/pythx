@@ -59,6 +59,9 @@ SUBMITTED_AT_2 = "2019-01-09T01:29:38.410Z"
 SUBMITTED_BY_1 = "000008544b0aa00010a91111"
 SUBMITTED_BY_2 = "000008544b0aa00010a91112"
 
+CLIENT_TOOL_NAME_1 = "pythx"
+CLIENT_TOOL_NAME_2 = "Edelweiss"  # <3
+
 ERROR = "my test error"
 
 UUID_1 = "0680a1e2-b908-4c9a-a15b-636ef9b61486"
@@ -149,6 +152,7 @@ ANALYSIS_DICT = {
     "submittedAt": SUBMITTED_AT_1,
     "submittedBy": SUBMITTED_BY_1,
     "uuid": UUID_1,
+    "clientToolName": CLIENT_TOOL_NAME_1,
     "runTime": 0,
 }
 ANALYSIS_OBJECT = Analysis(
@@ -160,6 +164,7 @@ ANALYSIS_OBJECT = Analysis(
     harvey_version=HARVEY_VERSION_1,
     queue_time=QUEUE_TIME_1,
     status=STATUS_1,
+    client_tool_name=CLIENT_TOOL_NAME_1,
     submitted_at=SUBMITTED_AT_1,
     submitted_by=SUBMITTED_BY_1,
 )
@@ -250,6 +255,7 @@ ANALYSIS_SUBMISSION_RESPONSE_DICT = {
     "status": STATUS_1,
     "submittedAt": SUBMITTED_AT_1,
     "submittedBy": SUBMITTED_BY_1,
+    "clientToolName": CLIENT_TOOL_NAME_1,
 }
 ANALYSIS_SUBMISSION_RESPONSE_OBJECT = AnalysisSubmissionResponse(
     analysis=Analysis(
@@ -264,6 +270,7 @@ ANALYSIS_SUBMISSION_RESPONSE_OBJECT = AnalysisSubmissionResponse(
         status=STATUS_1,
         submitted_at=SUBMITTED_AT_1,
         submitted_by=SUBMITTED_BY_1,
+        client_tool_name=CLIENT_TOOL_NAME_1,
     )
 )
 
@@ -284,6 +291,7 @@ ANALYSIS_STATUS_RESPONSE_OBJECT = AnalysisStatusResponse(
         status=STATUS_1,
         submitted_at=SUBMITTED_AT_1,
         submitted_by=SUBMITTED_BY_1,
+        client_tool_name=CLIENT_TOOL_NAME_1,
     )
 )
 
@@ -312,6 +320,7 @@ ANALYSIS_LIST_RESPONSE_DICT = {
             "status": STATUS_1,
             "submittedAt": SUBMITTED_AT_1,
             "submittedBy": SUBMITTED_BY_1,
+            "clientToolName": CLIENT_TOOL_NAME_1,
         },
         {
             "uuid": UUID_2,
@@ -325,6 +334,7 @@ ANALYSIS_LIST_RESPONSE_DICT = {
             "status": STATUS_2,
             "submittedAt": SUBMITTED_AT_2,
             "submittedBy": SUBMITTED_BY_2,
+            "clientToolName": CLIENT_TOOL_NAME_2,
         },
     ],
     "total": 2,
@@ -343,6 +353,7 @@ ANALYSIS_LIST_RESPONSE_OBJECT = AnalysisListResponse(
             status=STATUS_1,
             submitted_at=SUBMITTED_AT_1,
             submitted_by=SUBMITTED_BY_1,
+            client_tool_name=CLIENT_TOOL_NAME_1,
         ),
         Analysis(
             uuid=UUID_2,
@@ -356,6 +367,7 @@ ANALYSIS_LIST_RESPONSE_OBJECT = AnalysisListResponse(
             status=STATUS_2,
             submitted_at=SUBMITTED_AT_2,
             submitted_by=SUBMITTED_BY_2,
+            client_tool_name=CLIENT_TOOL_NAME_2,
         ),
     ],
     total=2,
