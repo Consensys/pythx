@@ -2,6 +2,14 @@
 History
 =======
 
+1.1.8 [2019-06-05]
+------------------
+
+- Add debug flag to CLI
+- Add support for the `clientToolName` response field
+- Add support for the new source list format validation
+- Update the bumpversion expression to support black formatting
+
 1.1.7 [2019-04-20]
 ------------------
 
