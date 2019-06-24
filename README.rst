@@ -5,19 +5,15 @@ PythX
 
 .. image:: https://img.shields.io/pypi/v/pythx.svg
         :target: https://pypi.org/project/pythx/
-        :alt: PythX on PyPI
 
 .. image:: https://travis-ci.org/dmuhs/pythx.svg?branch=master
         :target: https://travis-ci.org/dmuhs/pythx
-        :alt: TravisCI Status
 
 .. image:: https://readthedocs.org/projects/pythx/badge/?version=latest
         :target: https://pythx.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
 
 .. image:: https://pyup.io/repos/github/dmuhs/pythx/shield.svg
         :target: https://pyup.io/repos/github/dmuhs/pythx/
-        :alt: Updates
 
 .. image:: https://coveralls.io/repos/github/dmuhs/pythx/badge.svg?branch=master
         :target: https://coveralls.io/github/dmuhs/pythx?branch=master
