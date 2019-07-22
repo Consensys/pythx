@@ -8,6 +8,7 @@ from typing import Any, Dict, List
 class Severity(str, Enum):
     """An Enum holding the possible severities an issue can have."""
 
+    UNKNOWN = "Unknown"
     NONE = "None"
     LOW = "Low"
     MEDIUM = "Medium"
