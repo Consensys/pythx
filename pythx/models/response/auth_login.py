@@ -26,7 +26,10 @@ class AuthLoginResponse(BaseResponse):
         :return: The domain model with the data from :code:`d` filled in
         """
         cls.validate(d)
-        return cls(access_token=d["jwtTokens"]["access"], refresh_token=d["jwtTokens"]["refresh"])
+        return cls(
+            access_token=d["jwtTokens"]["access"],
+            refresh_token=d["jwtTokens"]["refresh"],
+        )
 
     def to_dict(self):
         """Serialize the reponse model to a Python dict.

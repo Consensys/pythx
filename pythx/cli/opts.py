@@ -7,7 +7,7 @@ import click
 
 DEFAULT_STORAGE_PATH = path.join(tempfile.gettempdir(), ".pythx.json")
 
-debug_opt= click.option(
+debug_opt = click.option(
     "--debug",
     "-d",
     default=False,
@@ -72,5 +72,5 @@ entrypoint_opt = click.option(
     "--entrypoint",
     "-e",
     type=click.Path(exists=True, readable=True),
-    help="The main Solidity file called by the user"
+    help="The main Solidity file called by the user",
 )

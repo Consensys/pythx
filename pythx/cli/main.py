@@ -36,7 +36,8 @@ def login(staging, config, debug):
     :param config: The configuration file's path
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging)
     login_resp = c.login()
     LOGGER.debug(
@@ -59,7 +60,8 @@ def logout(config, staging, debug):
     :param staging: Boolean whether to use the MythX staging deployment
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging, exit_on_missing=True)
     if c is None:
         click.echo("You are already logged out.")
@@ -81,7 +83,8 @@ def refresh(staging, config, debug):
     :param config: The configuration file's path
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging)
     login_resp = c.refresh()
     LOGGER.debug(
@@ -105,7 +108,8 @@ def openapi(staging, mode, debug):
     :param mode: The format to return the OpenAPI spec in (HTML or YAML)
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     c = Client(staging=staging)  # no auth required
     click.echo(c.openapi(mode).data)
 
@@ -119,7 +123,8 @@ def version(staging, debug):
     :param staging: Boolean whether to use the MythX staging deployment
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     c = Client(staging=staging)  # no auth required
     resp = c.version().to_dict()
     data = ((k.title(), v) for k, v in resp.items())
@@ -139,7 +144,8 @@ def status(config, staging, uuid, debug):
     :param uuid: The analysis job's UUID
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging)
     resp = c.status(uuid).analysis.to_dict()
     data = ((k, v) for k, v in resp.items())
@@ -160,7 +166,8 @@ def ps(config, staging, number, debug):
     :param number: The number of analyses to return
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     resp = utils.ps_core(config, staging, number)
     data = [(a.uuid, a.status, a.submitted_at) for a in resp.analyses]
     click.echo(tabulate(data, tablefmt="fancy_grid"))
@@ -179,7 +186,8 @@ def top(config, staging, interval, debug):
     :param interval: The refresh interval for table updates
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     while True:
         resp = utils.ps_core(config, staging, 20)
         click.clear()
@@ -197,7 +205,9 @@ def top(config, staging, interval, debug):
 @opts.no_cache_opt
 @opts.entrypoint_opt
 @opts.debug_opt
-def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entrypoint, debug):
+def check(
+    config, staging, bytecode_file, source_file, solc_path, no_cache, entrypoint, debug
+):
     """Submit a new analysis job based on source code, byte code, or both.
 
     :param no_cache: Disable the API's result cache
@@ -209,7 +219,8 @@ def check(config, staging, bytecode_file, source_file, solc_path, no_cache, entr
     :param entrypoint: The main Solidity file (e.g. passed to solc)
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging, no_cache=no_cache)
     if bytecode_file:
         with open(bytecode_file, "r") as bf:
@@ -280,11 +291,13 @@ def report(config, staging, uuid, debug):
     :param uuid: The analysis job's UUID
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging)
     resp = c.report(uuid)
     utils.echo_report_as_table(resp)
     utils.update_config(config_path=config, client=c)
+
 
 @cli.command(help="Submit a Truffle project to MythX")
 @opts.config_opt
@@ -302,7 +315,8 @@ def truffle(config, staging, no_cache, debug):
     :param no_cache: Disable the API's result cache
     :param debug: Boolean whether to set logging to debug or error
     """
-    if debug: utils.debug_mode()
+    if debug:
+        utils.debug_mode()
     c = utils.recover_client(config_path=config, staging=staging, no_cache=no_cache)
 
     jobs = []
