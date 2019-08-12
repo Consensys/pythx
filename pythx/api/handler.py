@@ -174,7 +174,7 @@ class APIHandler:
 
         Each of these data points is encoded in the domain model as a property. The endpoint
         URL is constructed from the domain model's path (e.g. :code:`/v1/auth/login`) and the
-        API base path (e.g. :code:`https://staging.api.mythx.io` for the staging deployment),
+        API base path (e.g. :code:`https://api.staging.mythx.io` for the staging deployment),
         which is contained in the library configuration module.
 
         Before the serialized request is returned, all registered middlewares are applied to it.

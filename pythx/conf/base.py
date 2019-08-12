@@ -17,5 +17,5 @@ class PythXConfig(dict):
         super().__init__(*args, **kwargs)
         self["endpoints"] = {
             "production": "https://api.mythx.io/",
-            "staging": "https://staging.api.mythx.io/",
+            "staging": "https://api.staging.mythx.io/",
         }
