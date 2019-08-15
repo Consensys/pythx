@@ -201,8 +201,6 @@ def echo_report_as_table(resp):
     """
 
     file_to_issue = defaultdict(list)
-
-    file_to_issue = defaultdict(list)
     for rep in resp.issue_reports:
         for issue in rep.issues:
             source_locs = [loc.source_map.split(":") for loc in issue.locations]
