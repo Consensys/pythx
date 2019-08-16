@@ -16,14 +16,12 @@ class VersionResponse(BaseResponse):
         api_version: str,
         maru_version: str,
         mythril_version: str,
-        maestro_version: str,
         harvey_version: str,
         hashed_version: str,
     ):
         self.api_version = api_version
         self.maru_version = maru_version
         self.mythril_version = mythril_version
-        self.maestro_version = maestro_version
         self.harvey_version = harvey_version
         self.hashed_version = hashed_version
 
@@ -42,7 +40,6 @@ class VersionResponse(BaseResponse):
             api_version=d["api"],
             maru_version=d["maru"],
             mythril_version=d["mythril"],
-            maestro_version=d["maestro"],
             harvey_version=d["harvey"],
             hashed_version=d["hash"],
         )
@@ -56,7 +53,6 @@ class VersionResponse(BaseResponse):
             "api": self.api_version,
             "maru": self.maru_version,
             "mythril": self.mythril_version,
-            "maestro": self.maestro_version,
             "harvey": self.harvey_version,
             "hash": self.hashed_version,
         }

@@ -13,7 +13,6 @@ def assert_analysis_data(expected, analysis: Analysis):
     assert expected["apiVersion"] == analysis.api_version
     assert expected["maruVersion"] == analysis.maru_version
     assert expected["mythrilVersion"] == analysis.mythril_version
-    assert expected["maestroVersion"] == analysis.maestro_version
     assert expected["harveyVersion"] == analysis.harvey_version
     assert expected["queueTime"] == analysis.queue_time
     assert expected["runTime"] == analysis.run_time

@@ -15,7 +15,6 @@
                 "required": [
                     "apiVersion",
                     "harveyVersion",
-                    "maestroVersion",
                     "maruVersion",
                     "mythrilVersion",
                     "queueTime",
@@ -30,9 +29,6 @@
                         "type": "string"
                     },
                     "harveyVersion": {
-                        "type": "string"
-                    },
-                    "maestroVersion": {
                         "type": "string"
                     },
                     "maruVersion": {

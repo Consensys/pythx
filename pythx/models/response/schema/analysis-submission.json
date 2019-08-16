@@ -15,9 +15,6 @@
         "harveyVersion": {
             "type": "string"
         },
-        "maestroVersion": {
-            "type": "string"
-        },
         "maruVersion": {
             "type": "string"
         },

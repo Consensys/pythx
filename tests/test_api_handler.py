@@ -129,10 +129,6 @@ def test_parse_analysis_submission_response():
         == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["mythrilVersion"]
     )
     assert (
-        model.analysis.maestro_version
-        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["maestroVersion"]
-    )
-    assert (
         model.analysis.harvey_version
         == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["harveyVersion"]
     )
