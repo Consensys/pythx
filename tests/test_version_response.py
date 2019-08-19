@@ -12,7 +12,6 @@ def assert_version_response(resp: VersionResponse):
     assert resp.api_version == testdata.API_VERSION_1
     assert resp.maru_version == testdata.MARU_VERSION_1
     assert resp.mythril_version == testdata.MYTHRIL_VERSION_1
-    assert resp.maestro_version == testdata.MAESTRO_VERSION_1
     assert resp.harvey_version == testdata.HARVEY_VERSION_1
     assert resp.hashed_version == testdata.HASHED_VERSION_1
 

@@ -39,8 +39,6 @@ MARU_VERSION_1 = "v0.2.0"
 MARU_VERSION_2 = "v0.3.0"
 MYTHRIL_VERSION_1 = "0.19.11"
 MYTHRIL_VERSION_2 = "0.20.1"
-MAESTRO_VERSION_1 = "v1.1.4"
-MAESTRO_VERSION_2 = "v1.1.5"
 HARVEY_VERSION_1 = "0.0.8"
 HARVEY_VERSION_2 = "0.0.9"
 HASHED_VERSION_1 = "31337deadbeef"
@@ -145,7 +143,6 @@ ANALYSIS_DICT = {
     "apiVersion": API_VERSION_1,
     "maruVersion": MARU_VERSION_1,
     "mythrilVersion": MYTHRIL_VERSION_1,
-    "maestroVersion": MAESTRO_VERSION_1,
     "harveyVersion": HARVEY_VERSION_1,
     "queueTime": QUEUE_TIME_1,
     "status": STATUS_1,
@@ -160,7 +157,6 @@ ANALYSIS_OBJECT = Analysis(
     api_version=API_VERSION_1,
     maru_version=MARU_VERSION_1,
     mythril_version=MYTHRIL_VERSION_1,
-    maestro_version=MAESTRO_VERSION_1,
     harvey_version=HARVEY_VERSION_1,
     queue_time=QUEUE_TIME_1,
     status=STATUS_1,
@@ -209,7 +205,6 @@ VERSION_RESPONSE_DICT = {
     "api": API_VERSION_1,
     "maru": MARU_VERSION_1,
     "mythril": MYTHRIL_VERSION_1,
-    "maestro": MAESTRO_VERSION_1,
     "harvey": HARVEY_VERSION_1,
     "hash": HASHED_VERSION_1,
 }
@@ -217,7 +212,6 @@ VERSION_RESPONSE_OBJECT = VersionResponse(
     api_version=API_VERSION_1,
     maru_version=MARU_VERSION_1,
     mythril_version=MYTHRIL_VERSION_1,
-    maestro_version=MAESTRO_VERSION_1,
     harvey_version=HARVEY_VERSION_1,
     hashed_version=HASHED_VERSION_1,
 )
@@ -252,7 +246,6 @@ ANALYSIS_SUBMISSION_RESPONSE_DICT = {
     "apiVersion": API_VERSION_1,
     "maruVersion": MARU_VERSION_1,
     "mythrilVersion": MYTHRIL_VERSION_1,
-    "maestroVersion": MAESTRO_VERSION_1,
     "harveyVersion": HARVEY_VERSION_1,
     "queueTime": QUEUE_TIME_1,
     "runTime": RUN_TIME_1,
@@ -267,7 +260,6 @@ ANALYSIS_SUBMISSION_RESPONSE_OBJECT = AnalysisSubmissionResponse(
         api_version=API_VERSION_1,
         maru_version=MARU_VERSION_1,
         mythril_version=MYTHRIL_VERSION_1,
-        maestro_version=MAESTRO_VERSION_1,
         harvey_version=HARVEY_VERSION_1,
         queue_time=QUEUE_TIME_1,
         run_time=RUN_TIME_1,
@@ -288,7 +280,6 @@ ANALYSIS_STATUS_RESPONSE_OBJECT = AnalysisStatusResponse(
         api_version=API_VERSION_1,
         maru_version=MARU_VERSION_1,
         mythril_version=MYTHRIL_VERSION_1,
-        maestro_version=MAESTRO_VERSION_1,
         harvey_version=HARVEY_VERSION_1,
         queue_time=QUEUE_TIME_1,
         run_time=RUN_TIME_1,
@@ -317,7 +308,6 @@ ANALYSIS_LIST_RESPONSE_DICT = {
             "apiVersion": API_VERSION_1,
             "maruVersion": MARU_VERSION_1,
             "mythrilVersion": MYTHRIL_VERSION_1,
-            "maestroVersion": MAESTRO_VERSION_1,
             "harveyVersion": HARVEY_VERSION_1,
             "queueTime": QUEUE_TIME_1,
             "runTime": RUN_TIME_1,
@@ -331,7 +321,6 @@ ANALYSIS_LIST_RESPONSE_DICT = {
             "apiVersion": API_VERSION_2,
             "maruVersion": MARU_VERSION_2,
             "mythrilVersion": MYTHRIL_VERSION_2,
-            "maestroVersion": MAESTRO_VERSION_2,
             "harveyVersion": HARVEY_VERSION_2,
             "queueTime": QUEUE_TIME_2,
             "runTime": RUN_TIME_2,
@@ -350,7 +339,6 @@ ANALYSIS_LIST_RESPONSE_OBJECT = AnalysisListResponse(
             api_version=API_VERSION_1,
             maru_version=MARU_VERSION_1,
             mythril_version=MYTHRIL_VERSION_1,
-            maestro_version=MAESTRO_VERSION_1,
             harvey_version=HARVEY_VERSION_1,
             queue_time=QUEUE_TIME_1,
             run_time=RUN_TIME_1,
@@ -364,7 +352,6 @@ ANALYSIS_LIST_RESPONSE_OBJECT = AnalysisListResponse(
             api_version=API_VERSION_2,
             maru_version=MARU_VERSION_2,
             mythril_version=MYTHRIL_VERSION_2,
-            maestro_version=MAESTRO_VERSION_2,
             harvey_version=HARVEY_VERSION_2,
             queue_time=QUEUE_TIME_2,
             run_time=RUN_TIME_2,
