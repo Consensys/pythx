@@ -43,6 +43,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/dmuhs/pythx",
-    version="1.1.10",
+    version="1.1.11",
     zip_safe=False,
 )
