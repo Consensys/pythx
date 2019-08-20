@@ -16,7 +16,6 @@ def assert_analysis(analysis):
     assert analysis.api_version == testdata.API_VERSION_1
     assert analysis.maru_version == testdata.MARU_VERSION_1
     assert analysis.mythril_version == testdata.MYTHRIL_VERSION_1
-    assert analysis.maestro_version == testdata.MAESTRO_VERSION_1
     assert analysis.harvey_version == testdata.HARVEY_VERSION_1
     assert analysis.queue_time == testdata.QUEUE_TIME_1
     assert analysis.run_time == 0  # default value

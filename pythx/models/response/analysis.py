@@ -36,7 +36,6 @@ class Analysis(BaseResponse):
         status: AnalysisStatus,
         submitted_at: str,
         submitted_by: str,
-        maestro_version: str = None,
         run_time: int = 0,
         client_tool_name: str = None,
         error: str = None,
@@ -44,7 +43,6 @@ class Analysis(BaseResponse):
         self.uuid = uuid
         self.api_version = api_version
         self.mythril_version = mythril_version
-        self.maestro_version = maestro_version
         self.harvey_version = harvey_version
         self.maru_version = maru_version
         self.queue_time = queue_time
@@ -74,7 +72,6 @@ class Analysis(BaseResponse):
             "uuid": self.uuid,
             "apiVersion": self.api_version,
             "mythrilVersion": self.mythril_version,
-            "maestroVersion": self.maestro_version,
             "harveyVersion": self.harvey_version,
             "maruVersion": self.maru_version,
             "queueTime": self.queue_time,
@@ -95,7 +92,6 @@ class Analysis(BaseResponse):
                 self.uuid == candidate.uuid,
                 self.api_version == candidate.api_version,
                 self.mythril_version == candidate.mythril_version,
-                self.maestro_version == candidate.maestro_version,
                 self.harvey_version == candidate.harvey_version,
                 self.maru_version == candidate.maru_version,
                 self.queue_time == candidate.queue_time,
