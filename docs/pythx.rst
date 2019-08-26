@@ -10,7 +10,6 @@ Subpackages
     pythx.cli
     pythx.conf
     pythx.middleware
-    pythx.models
 
 Module contents
 ---------------
