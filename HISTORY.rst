@@ -2,6 +2,11 @@
 History
 =======
 
+1.2.0 [2019-08-26]
+------------------
+
+- Add `mythx-models <https://github.com/dmuhs/mythx-models>`_ integration
+
 1.1.8 [2019-06-05]
 ------------------
 
