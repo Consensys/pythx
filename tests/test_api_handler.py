@@ -7,9 +7,9 @@ import pytest
 from pythx import config
 from pythx.api.handler import APIHandler
 from pythx.middleware.base import BaseMiddleware
-from pythx.models import request as reqmodels
-from pythx.models import response as respmodels
-from pythx.models.exceptions import PythXAPIError
+from mythx_models import request as reqmodels
+from mythx_models import response as respmodels
+from mythx_models.exceptions import MythXAPIError
 
 from . import common as testdata
 
@@ -227,7 +227,7 @@ def test_send_request_successful(requests_mock):
 
 def test_send_request_failure(requests_mock):
     requests_mock.get("mock://test.com/path", text="resp", status_code=400)
-    with pytest.raises(PythXAPIError):
+    with pytest.raises(MythXAPIError):
         APIHandler.send_request(
             {
                 "method": "GET",
@@ -248,7 +248,7 @@ def test_send_request_failure(requests_mock):
 
 def test_send_request_unauthenticated(requests_mock):
     requests_mock.get("mock://test.com/path", text="resp", status_code=400)
-    with pytest.raises(PythXAPIError):
+    with pytest.raises(MythXAPIError):
         APIHandler.send_request(
             {
                 "method": "GET",

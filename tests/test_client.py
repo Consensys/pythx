@@ -6,14 +6,14 @@ import jwt
 import pytest
 from dateutil.tz import tzutc
 
-import pythx.models.response as respmodels
+import mythx_models.response as respmodels
 from pythx import config
 from pythx.api import APIHandler, Client
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
 from pythx.middleware.toolname import ClientToolNameMiddleware
-from pythx.models.exceptions import PythXAPIError, RequestValidationError
-from pythx.models.response.analysis import AnalysisStatus
-from pythx.models.util import serialize_api_timestamp
+from mythx_models.exceptions import MythXAPIError, ValidationError
+from mythx_models.response.analysis import AnalysisStatus
+from mythx_models.util import serialize_api_timestamp
 
 from . import common as testdata
 
@@ -190,13 +190,13 @@ def test_analyze_source_and_bytecode():
 
 def test_analyze_missing_data():
     client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-    with pytest.raises(RequestValidationError):
+    with pytest.raises(ValidationError):
         client.analyze()
 
 
 def test_analyze_invalid_mode():
     client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-    with pytest.raises(RequestValidationError):
+    with pytest.raises(ValidationError):
         client.analyze(bytecode="0xf00", analysis_mode="invalid")
 
 

@@ -6,7 +6,7 @@ import requests
 
 from pythx import config
 from pythx.middleware.base import BaseMiddleware
-from pythx.models.exceptions import PythXAPIError
+from mythx_models.exceptions import MythXAPIError
 
 
 def print_request(req) -> str:
@@ -76,7 +76,7 @@ class APIHandler:
         If the action requires authentication, the auth headers are passed in a separate, optional
         parameter. It holds the user's JWT access token.
 
-        If the request fails (returns a non 200 status code), a PythXAPIError is raised.
+        If the request fails (returns a non 200 status code), a MythXAPIError is raised.
 
         :param request_data: The request data dictionary
         :param auth_header: The authorization header carrying the access token
@@ -96,7 +96,7 @@ class APIHandler:
         LOGGER.debug(print_request(response.request))
         LOGGER.debug(print_response(response))
         if response.status_code != 200:
-            raise PythXAPIError(
+            raise MythXAPIError(
                 "Got unexpected status code {}: {}".format(
                     response.status_code, response.content.decode()
                 )

@@ -2,7 +2,7 @@ from datetime import datetime
 
 import dateutil.parser
 
-from pythx.models.request import (
+from mythx_models.request import (
     AnalysisListRequest,
     AnalysisStatusRequest,
     AnalysisSubmissionRequest,
@@ -13,7 +13,7 @@ from pythx.models.request import (
     OASRequest,
     VersionRequest,
 )
-from pythx.models.response import (
+from mythx_models.response import (
     Analysis,
     AnalysisListResponse,
     AnalysisStatusResponse,
