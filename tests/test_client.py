@@ -256,7 +256,7 @@ def test_report():
     assert issue.extra_data == {}
     assert len(issue.locations) == 1
     location = issue.locations[0]
-    assert location.source_map == testdata.SOURCE_MAP
+    assert location.source_map.to_sourcemap() == testdata.SOURCE_MAP
     assert location.source_type == testdata.SOURCE_TYPE
     assert location.source_format == testdata.SOURCE_FORMAT
     assert location.source_list == testdata.SOURCE_LIST
