@@ -2,6 +2,11 @@
 History
 =======
 
+1.2.3 [2019-09-05]
+------------------
+
+- Add an auth check override to handle situations where only the access token is given
+
 1.2.2 [2019-08-30]
 ------------------
 
