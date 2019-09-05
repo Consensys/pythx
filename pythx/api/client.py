@@ -267,6 +267,10 @@ class Client:
         req = reqmodels.DetectedIssuesRequest(uuid)
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
+    def request_by_uuid(self, uuid: str) -> respmodels.AnalysisInputResponse:
+        req = reqmodels.AnalysisInputRequest(uuid)
+        return self._assemble_send_parse(req, respmodels.AnalysisInputResponse)
+
     def openapi(self, mode="yaml") -> respmodels.OASResponse:
         """Return the OpenAPI specification either in HTML or YAML.
 
