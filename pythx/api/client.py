@@ -101,7 +101,10 @@ class Client:
 
         :return: None
         """
-        if self.access_token is None or self.refresh_token is None:
+        if self.access_token is not None and self.refresh_token is None:
+            # Override with access token if it's the only thing we were given
+            return
+        elif self.access_token is None and self.refresh_token is None:
             # We haven't authenticated yet
             self.login()
             return
