@@ -10,4 +10,5 @@ Development Lead
 Contributors
 ------------
 
-* Remi Pan <wen.pan@consensys.net>
+* Remi Pan
+* Aleksandr Sobolev
