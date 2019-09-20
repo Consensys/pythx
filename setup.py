@@ -31,7 +31,6 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     description="A Python library for the MythX platform",
-    entry_points={"console_scripts": ["pythx=pythx.cli.main:cli"]},
     install_requires=requirements,
     license="MIT license",
     long_description=readme + "\n\n" + history,
