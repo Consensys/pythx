@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
 
     pythx.api
-    pythx.cli
     pythx.conf
     pythx.middleware
 

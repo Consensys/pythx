@@ -149,7 +149,7 @@ texinfo_documents = [
         u"pythx Documentation",
         author,
         "pythx",
-        "One line description of project.",
-        "Miscellaneous",
+        "A Python library for the MythX smart contract security analysis platform",
+        "MythX",
     )
 ]

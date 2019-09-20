@@ -84,104 +84,22 @@ even complex use cases.
     # Undefined - MythX API trial mode.
 
 
-The PythX CLI
--------------
-The PythX CLI aims to be a simple example implementation to show developers on
-a practical example how PythX can be used in action. It provides a simple (and
-pretty!) interface to list analyses, submit new ones, check the status of a
-job, and get report data on the found issues.
+The PythX CLI has now become the MythX CLI!
+-------------------------------------------
 
-.. code-block:: console
+Originally, the PythX CLI was a proof of concept to display to interested
+developers what can be done using the library. The interest in the CLI grew
+so large that a lot of developers contacted me and asked for support and
+new features.
 
-    $ pythx
-    Usage: pythx [OPTIONS] COMMAND [ARGS]...
+This is the PSA that **I will no longer maintain the PythX CLI**. But wait!
+There's more!
 
-      PythX is a CLI/library for the MythX smart contract security analysis API.
+Because a PoC is not exactly what you would call future-proof and maintainable
+software, I have decided to do a complete revamp. It is called `mythx-cli` and
+incorporates all feature requests I have gotten so far. Check it out
+`here <https://github.com/dmuhs/mythx-cli/>`_ and let me know what you think!
 
-    Options:
-      --help  Show this message and exit.
-
-    Commands:
-      check    Submit a new analysis job based on source code, byte code, or...
-      login    Login to your MythX account
-      logout   Log out of your MythX account
-      openapi  Get the OpenAPI spec in HTML or YAML format
-      ps       Get a greppable overview of submitted analyses
-      refresh  Refresh your MythX API token
-      report   Check the detected issues of a finished analysis job
-      status   Get the status of an analysis by its UUID
-      top      Display the most recent analysis jobs and their status
-      truffle  Submit a Truffle project to MythX
-      version  Print version information of PythX and the API
-
-
-
-
-By default, PythX comes with a pre-enabled trial user. To get started right
-away, simply login with the default values:
-
-.. code-block:: console
-
-    $ pythx login
-    Please enter your Ethereum address [0x0000000000000000000000000000000000000000]:
-    Please enter your MythX password [trial]:
-    Successfully logged in as 0x0000000000000000000000000000000000000000
-
-If you already have an account on MythX_, simply login with your Ethereum
-address and the API password you have set on the website.
-
-Submit an Solidity source file for analysis:
-
-.. code-block:: console
-
-    $ pythx check -sf test.sol
-    Analysis submitted as job df137587-7fc1-466a-a4b2-d63392099682
-
-
-Check the status of your analysis job:
-
-.. code-block:: console
-
-    $ pythx status df137587-7fc1-466a-a4b2-d63392099682
-    ╒════════════════╤══════════════════════════════════════╕
-    │ uuid           │ df137587-7fc1-466a-a4b2-d63392099682 │
-    ├────────────────┼──────────────────────────────────────┤
-    │ apiVersion     │ v1.4.3                               │
-    ├────────────────┼──────────────────────────────────────┤
-    │ mythrilVersion │ 0.20.0                               │
-    ├────────────────┼──────────────────────────────────────┤
-    │ harveyVersion  │ 0.0.13                               │
-    ├────────────────┼──────────────────────────────────────┤
-    │ maruVersion    │ 0.3.4                                │
-    ├────────────────┼──────────────────────────────────────┤
-    │ queueTime      │ 0                                    │
-    ├────────────────┼──────────────────────────────────────┤
-    │ runTime        │ 0                                    │
-    ├────────────────┼──────────────────────────────────────┤
-    │ status         │ Finished                             │
-    ├────────────────┼──────────────────────────────────────┤
-    │ submittedAt    │ 2019-03-05T10:24:05.071Z             │
-    ├────────────────┼──────────────────────────────────────┤
-    │ submittedBy    │ 123456789012345678901234             │
-    ╘════════════════╧══════════════════════════════════════╛
-
-
-Get the analysis report. Pinpointing the line and column locations is still
-a bit buggy, sorry. :)
-
-.. code-block:: console
-
-    $ pythx report df137587-7fc1-466a-a4b2-d63392099682
-    Report for Unknown
-    ╒════════╤══════════════════╤════════════╤═══════════════════════════════════╕
-    │   Line │ SWC Title        │ Severity   │ Short Description                 │
-    ╞════════╪══════════════════╪════════════╪═══════════════════════════════════╡
-    │      0 │ Reentrancy       │ High       │ persistent state read after call  │
-    ├────────┼──────────────────┼────────────┼───────────────────────────────────┤
-    │      0 │ Reentrancy       │ High       │ persistent state write after call │
-    ├────────┼──────────────────┼────────────┼───────────────────────────────────┤
-    │      0 │ Assert Violation │ Medium     │ assertion violation               │
-    ╘════════╧══════════════════╧════════════╧═══════════════════════════════════╛
-
+Enjoy! :)
 
 .. _MythX: https://mythx.io/
