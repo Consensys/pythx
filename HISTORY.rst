@@ -2,6 +2,37 @@
 History
 =======
 
+1.3.1 [2019-10-04]
+------------------
+
+- Update pytest from 5.1.2 to 5.2.0
+- Update `mythx-models` to 1.4.0
+
+1.3.0 [2019-09-20]
+------------------
+
+- Remove the PythX CLI PoC
+- Add PSA about deprecation and link to new `mythx-cli` repository
+
+1.2.6 [2019-09-19]
+------------------
+
+- Update twine from 1.14.0 to 1.15.0
+- Bump `mythx-models` to 1.3.5
+
+1.2.5 [2019-09-15]
+------------------
+
+- Update twine from 1.13.0 to 1.14.0
+- Clean up dependencies
+- Bump `mythx-models` to 1.3.3
+
+1.2.4 [2019-09-06]
+------------------
+
+- Bump `mythx-models` to 1.3.2
+- Add support to fetch analysis result input by UUID
+
 1.2.3 [2019-09-05]
 ------------------
 
