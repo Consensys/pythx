@@ -315,6 +315,7 @@ ANALYSIS_LIST_RESPONSE_DICT = {
             "submittedAt": SUBMITTED_AT_1,
             "submittedBy": SUBMITTED_BY_1,
             "clientToolName": CLIENT_TOOL_NAME_1,
+            "groupId": None
         },
         {
             "uuid": UUID_2,
@@ -328,6 +329,7 @@ ANALYSIS_LIST_RESPONSE_DICT = {
             "submittedAt": SUBMITTED_AT_2,
             "submittedBy": SUBMITTED_BY_2,
             "clientToolName": CLIENT_TOOL_NAME_2,
+            "groupId": None
         },
     ],
     "total": 2,
