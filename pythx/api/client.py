@@ -178,6 +178,31 @@ class Client:
         self.refresh_token = resp_model.refresh_token
         return resp_model
 
+    def group_list(
+        self,
+        offset: int = None,
+        created_by: str = "",
+        group_name: str = "",
+        date_from: datetime = None,
+        date_to: datetime = None,
+    ) -> respmodels.GroupListResponse:
+        """Get a list of the currently defined MythX analysis groups.
+
+        :param offset: The number of results to skip (used for pagination)
+        :param created_by: Filter the list results by the creator's user ID
+        :param group_name: Filter the list results by the group's name
+        :param date_from: Only display results after the given date
+        :param date_to: Only display results until the given date
+        """
+        req = reqmodels.GroupListRequest(
+            offset=offset,
+            created_by=created_by,
+            group_name=group_name,
+            date_from=date_from,
+            date_to=date_to,
+        )
+        return self._assemble_send_parse(req, respmodels.GroupListResponse)
+
     def analysis_list(
         self, date_from: datetime = None, date_to: datetime = None, offset: int = None
     ) -> respmodels.AnalysisListResponse:
