@@ -262,12 +262,18 @@ class Client:
         # req.validate()
         return self._assemble_send_parse(req, respmodels.AnalysisSubmissionResponse)
 
+    def group_status(self, group_id: str) -> respmodels.GroupStatusResponse:
+        """Get the status of an analysis group by its ID."""
+        req = reqmodels.GroupStatusRequest(group_id=group_id)
+        return self._assemble_send_parse(req, respmodels.GroupStatusResponse)
+
     def status(self, uuid: str) -> respmodels.AnalysisStatusResponse:
         """Get the status of an analysis job based on its UUID.
 
         :param uuid: The job's UUID
         :return: AnalysisStatusResponse
         """
+        # TODO: rename to analysis_status
         req = reqmodels.AnalysisStatusRequest(uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisStatusResponse)
 
