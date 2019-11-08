@@ -315,6 +315,17 @@ class Client:
         req = reqmodels.GroupCreationRequest(group_name=group_name)
         return self._assemble_send_parse(req, respmodels.GroupCreationResponse)
 
+    def seal_group(self, group_id: str) -> respmodels.GroupOperationResponse:
+        """Seal the group.
+
+        This closes an open group for the submission of any further analyses.
+
+        :param group_id: The target group ID
+        :return: :code:`respmodels.GroupOperationResponse`
+        """
+        req = reqmodels.GroupOperationRequest(group_id=group_id, type_="seal_group")
+        return self._assemble_send_parse(req, respmodels.GroupOperationResponse)
+
     def openapi(self, mode="yaml") -> respmodels.OASResponse:
         """Return the OpenAPI specification either in HTML or YAML.
 
