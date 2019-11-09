@@ -65,6 +65,9 @@ ERROR = "my test error"
 UUID_1 = "0680a1e2-b908-4c9a-a15b-636ef9b61486"
 UUID_2 = "0680a1e2-b908-4c9a-a15b-636ef9b61487"
 
+GROUP_ID = "test-id"
+GROUP_NAME = "test-name"
+
 ACCESS_TOKEN_1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNmQ0OGI2Yi03ZjFiLTQ0NjEtYjI1OS1hM2M5MmQzMGI4NWQiLCJpc3MiOiJNeXRocmlsIEFQSSIsImV4cCI6MTU1MTAyNTg3OS4wMjgsInVzZXJJZCI6IjEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIzNCIsImlhdCI6MTU1MTAyNTI3OX0.M9SGJayVcreihIFis406wmZLtq3kSsbiV5VAbIuCE0U"
 ACCESS_TOKEN_2 = "some other access token"
 REFRESH_TOKEN_1 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNDY3NzZkZC1iY2FjLTQ0NGItOGYwMy02ZDcyYWY3MjcwYWMiLCJpc3MiOiJNeXRocmlsIEFQSSIsImV4cCI6MTU1MzQ0NDQ3OS4wMjgsImlhdCI6MTU1MTAyNTI3OX0.iPRrfFZgnotvMuqu5shi4aQR9GCZR5kUjyzqTTQhZp8"
@@ -150,6 +153,9 @@ ANALYSIS_DICT = {
     "submittedBy": SUBMITTED_BY_1,
     "uuid": UUID_1,
     "clientToolName": CLIENT_TOOL_NAME_1,
+    "groupName": GROUP_NAME,
+    "groupId": GROUP_ID,
+    "analysisMode": ANALYSIS_MODE,
     "runTime": 0,
 }
 ANALYSIS_OBJECT = Analysis(
@@ -163,6 +169,9 @@ ANALYSIS_OBJECT = Analysis(
     client_tool_name=CLIENT_TOOL_NAME_1,
     submitted_at=SUBMITTED_AT_1,
     submitted_by=SUBMITTED_BY_1,
+    group_name=GROUP_NAME,
+    group_id=GROUP_ID,
+    analysis_mode=ANALYSIS_MODE,
 )
 
 # LOGIN
@@ -287,6 +296,9 @@ ANALYSIS_STATUS_RESPONSE_OBJECT = AnalysisStatusResponse(
         submitted_at=SUBMITTED_AT_1,
         submitted_by=SUBMITTED_BY_1,
         client_tool_name=CLIENT_TOOL_NAME_1,
+        group_id=GROUP_ID,
+        group_name=GROUP_NAME,
+        analysis_mode=ANALYSIS_MODE,
     )
 )
 
@@ -315,7 +327,9 @@ ANALYSIS_LIST_RESPONSE_DICT = {
             "submittedAt": SUBMITTED_AT_1,
             "submittedBy": SUBMITTED_BY_1,
             "clientToolName": CLIENT_TOOL_NAME_1,
-            "groupId": None,
+            "groupId": GROUP_ID,
+            "groupName": GROUP_NAME,
+            "analysisMode": ANALYSIS_MODE,
         },
         {
             "uuid": UUID_2,
@@ -329,7 +343,9 @@ ANALYSIS_LIST_RESPONSE_DICT = {
             "submittedAt": SUBMITTED_AT_2,
             "submittedBy": SUBMITTED_BY_2,
             "clientToolName": CLIENT_TOOL_NAME_2,
-            "groupId": None,
+            "groupId": GROUP_ID,
+            "groupName": GROUP_NAME,
+            "analysisMode": ANALYSIS_MODE,
         },
     ],
     "total": 2,
@@ -348,6 +364,9 @@ ANALYSIS_LIST_RESPONSE_OBJECT = AnalysisListResponse(
             submitted_at=SUBMITTED_AT_1,
             submitted_by=SUBMITTED_BY_1,
             client_tool_name=CLIENT_TOOL_NAME_1,
+            group_id=GROUP_ID,
+            group_name=GROUP_NAME,
+            analysis_mode=ANALYSIS_MODE,
         ),
         Analysis(
             uuid=UUID_2,
@@ -361,6 +380,9 @@ ANALYSIS_LIST_RESPONSE_OBJECT = AnalysisListResponse(
             submitted_at=SUBMITTED_AT_2,
             submitted_by=SUBMITTED_BY_2,
             client_tool_name=CLIENT_TOOL_NAME_2,
+            group_id=GROUP_ID,
+            group_name=GROUP_NAME,
+            analysis_mode=ANALYSIS_MODE,
         ),
     ],
     total=2,

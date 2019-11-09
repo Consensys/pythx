@@ -186,7 +186,9 @@ class APIHandler:
         base_request = {
             "method": req.method,
             "payload": req.payload,
-            "params": req.parameters,
+            "params": {
+                k: v for k, v in req.parameters.items() if v is not None and v is not ""
+            },
             "headers": req.headers,
             "url": url,
         }
