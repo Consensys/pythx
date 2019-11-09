@@ -2,4 +2,4 @@ python-dateutil==2.8.1
 inflection==0.3.1
 PyJWT==1.7.1
 requests==2.22.0
-mythx-models>=1.4.1,<1.6.0
+mythx-models>1.5.1,<1.7.0

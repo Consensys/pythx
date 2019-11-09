@@ -178,6 +178,31 @@ class Client:
         self.refresh_token = resp_model.refresh_token
         return resp_model
 
+    def group_list(
+        self,
+        offset: int = None,
+        created_by: str = "",
+        group_name: str = "",
+        date_from: datetime = None,
+        date_to: datetime = None,
+    ) -> respmodels.GroupListResponse:
+        """Get a list of the currently defined MythX analysis groups.
+
+        :param offset: The number of results to skip (used for pagination)
+        :param created_by: Filter the list results by the creator's user ID
+        :param group_name: Filter the list results by the group's name
+        :param date_from: Only display results after the given date
+        :param date_to: Only display results until the given date
+        """
+        req = reqmodels.GroupListRequest(
+            offset=offset,
+            created_by=created_by,
+            group_name=group_name,
+            date_from=date_from,
+            date_to=date_to,
+        )
+        return self._assemble_send_parse(req, respmodels.GroupListResponse)
+
     def analysis_list(
         self, date_from: datetime = None, date_to: datetime = None, offset: int = None
     ) -> respmodels.AnalysisListResponse:
@@ -237,12 +262,22 @@ class Client:
         # req.validate()
         return self._assemble_send_parse(req, respmodels.AnalysisSubmissionResponse)
 
+    def group_status(self, group_id: str) -> respmodels.GroupStatusResponse:
+        """Get the status of an analysis group by its ID.
+
+        :param group_id: The group ID to fetch the status for
+        :return: :code:`respmodels.GroupStatusResponse`
+        """
+        req = reqmodels.GroupStatusRequest(group_id=group_id)
+        return self._assemble_send_parse(req, respmodels.GroupStatusResponse)
+
     def status(self, uuid: str) -> respmodels.AnalysisStatusResponse:
         """Get the status of an analysis job based on its UUID.
 
         :param uuid: The job's UUID
         :return: AnalysisStatusResponse
         """
+        # TODO: rename to analysis_status
         req = reqmodels.AnalysisStatusRequest(uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisStatusResponse)
 
@@ -270,6 +305,26 @@ class Client:
     def request_by_uuid(self, uuid: str) -> respmodels.AnalysisInputResponse:
         req = reqmodels.AnalysisInputRequest(uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisInputResponse)
+
+    def create_group(self, group_name: str = "") -> respmodels.GroupCreationResponse:
+        """Create a new group.
+
+        :param group_name: The name of the group (max. 256 characters, optional)
+        :return: :code:`respmodels.GroupCreationResponse`
+        """
+        req = reqmodels.GroupCreationRequest(group_name=group_name)
+        return self._assemble_send_parse(req, respmodels.GroupCreationResponse)
+
+    def seal_group(self, group_id: str) -> respmodels.GroupOperationResponse:
+        """Seal the group.
+
+        This closes an open group for the submission of any further analyses.
+
+        :param group_id: The target group ID
+        :return: :code:`respmodels.GroupOperationResponse`
+        """
+        req = reqmodels.GroupOperationRequest(group_id=group_id, type_="seal_group")
+        return self._assemble_send_parse(req, respmodels.GroupOperationResponse)
 
     def openapi(self, mode="yaml") -> respmodels.OASResponse:
         """Return the OpenAPI specification either in HTML or YAML.
