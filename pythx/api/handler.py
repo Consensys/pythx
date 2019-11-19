@@ -95,7 +95,7 @@ class APIHandler:
         )
         LOGGER.debug(print_request(response.request))
         LOGGER.debug(print_response(response))
-        if response.status_code != 200:
+        if not 199 < response.status_code < 300:
             raise MythXAPIError(
                 "Got unexpected status code {}: {}".format(
                     response.status_code, response.content.decode()
