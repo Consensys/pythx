@@ -8,12 +8,12 @@ after_success:
 - coveralls
 matrix:
   include:
-  - name: '3.5'
-    python: 3.5
   - name: '3.6'
     python: 3.6
   - name: '3.7'
     python: 3.7
+  - name: '3.8'
+    python: 3.8
 script: pytest --cov=pythx tests/
 deploy:
   provider: pypi
