@@ -312,11 +312,15 @@ ANALYSIS_LIST_REQUEST_DICT = {
     "offset": OFFSET,
     "dateFrom": DATE_FROM,
     "dateTo": DATE_TO,
+    "createdBy": "test",
+    "groupName": "test",
 }
 ANALYSIS_LIST_REQUEST_OBJECT = AnalysisListRequest(
     offset=OFFSET,
     date_from=dateutil.parser.parse(DATE_FROM),
     date_to=dateutil.parser.parse(DATE_TO),
+    created_by="test",
+    group_name="test",
 )
 ANALYSIS_LIST_RESPONSE_DICT = {
     "analyses": [

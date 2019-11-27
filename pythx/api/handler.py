@@ -4,9 +4,9 @@ from typing import Dict, List
 
 import requests
 
+from mythx_models.exceptions import MythXAPIError
 from pythx import config
 from pythx.middleware.base import BaseMiddleware
-from mythx_models.exceptions import MythXAPIError
 
 
 def print_request(req) -> str:

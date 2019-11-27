@@ -7,13 +7,13 @@ import pytest
 from dateutil.tz import tzutc
 
 import mythx_models.response as respmodels
+from mythx_models.exceptions import MythXAPIError, ValidationError
+from mythx_models.response.analysis import AnalysisStatus
+from mythx_models.util import serialize_api_timestamp
 from pythx import config
 from pythx.api import APIHandler, Client
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
 from pythx.middleware.toolname import ClientToolNameMiddleware
-from mythx_models.exceptions import MythXAPIError, ValidationError
-from mythx_models.response.analysis import AnalysisStatus
-from mythx_models.util import serialize_api_timestamp
 
 from . import common as testdata
 
