@@ -3,13 +3,13 @@ from copy import copy
 from datetime import datetime, timedelta
 
 import jwt
+import mythx_models.response as respmodels
 import pytest
 from dateutil.tz import tzutc
-
-import mythx_models.response as respmodels
 from mythx_models.exceptions import MythXAPIError, ValidationError
 from mythx_models.response.analysis import AnalysisStatus
 from mythx_models.util import serialize_api_timestamp
+
 from pythx import config
 from pythx.api import APIHandler, Client
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware

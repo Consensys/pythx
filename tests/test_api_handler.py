@@ -3,10 +3,10 @@ from datetime import datetime
 
 import dateutil.parser
 import pytest
-
 from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
 from mythx_models.exceptions import MythXAPIError
+
 from pythx import config
 from pythx.api.handler import APIHandler
 from pythx.middleware.base import BaseMiddleware

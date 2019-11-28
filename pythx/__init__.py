@@ -4,6 +4,7 @@ __author__ = """Dominik Muhs"""
 __email__ = "dominik.muhs@consensys.net"
 __version__ = "1.4.1"
 
-from mythx_models.exceptions import MythXAPIError, MythXBaseException, ValidationError
-from pythx.api.client import Client
 from pythx.conf import config
+from mythx_models.exceptions import MythXAPIError, MythXBaseException, ValidationError
+
+from pythx.api.client import Client

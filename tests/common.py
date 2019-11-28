@@ -1,7 +1,8 @@
+import json
 from datetime import datetime
+from pathlib import Path
 
 import dateutil.parser
-
 from mythx_models.request import (
     AnalysisListRequest,
     AnalysisStatusRequest,
@@ -31,6 +32,16 @@ from mythx_models.response import (
     SourceType,
     VersionResponse,
 )
+
+
+def get_test_case(path: str, obj=None):
+    with open(str(Path(__file__).parent / path)) as f:
+        dict_data = json.load(f)
+
+    if obj is None:
+        return dict_data
+    return obj.from_dict(dict_data)
+
 
 # BASE DATA
 API_VERSION_1 = "v1.3.0"

@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import Dict, List
 
 import jwt
-
 from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
+
 from pythx.api.handler import APIHandler
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
 from pythx.middleware.base import BaseMiddleware
