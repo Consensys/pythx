@@ -13,15 +13,6 @@ from mythx_models.request import (
     AuthRefreshRequest,
     DetectedIssuesRequest,
 )
-from mythx_models.response import (
-    AnalysisListResponse,
-    AnalysisStatusResponse,
-    AnalysisSubmissionResponse,
-    AuthLoginResponse,
-    AuthLogoutResponse,
-    AuthRefreshResponse,
-    DetectedIssuesResponse,
-)
 
 from pythx import config
 from pythx.api.handler import APIHandler

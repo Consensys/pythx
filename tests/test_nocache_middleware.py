@@ -19,7 +19,6 @@ from mythx_models.response import (
 )
 
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
-from pythx.middleware.toolname import ClientToolNameMiddleware
 
 from .common import generate_request_dict, get_test_case
 
