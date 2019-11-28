@@ -1,7 +1,4 @@
 import pytest
-
-from pythx.middleware.toolname import ClientToolNameMiddleware
-
 from mythx_models.request import (
     AnalysisListRequest,
     AnalysisStatusRequest,
@@ -21,8 +18,9 @@ from mythx_models.response import (
     DetectedIssuesResponse,
 )
 
-from .common import generate_request_dict, get_test_case
+from pythx.middleware.toolname import ClientToolNameMiddleware
 
+from .common import generate_request_dict, get_test_case
 
 DEFAULT_CTN_MIDDLEWARE = ClientToolNameMiddleware()
 CUSTOM_CTN_MIDDLEWARE = ClientToolNameMiddleware(name="test")

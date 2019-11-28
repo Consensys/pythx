@@ -1,17 +1,33 @@
 import json
-from datetime import datetime
 
 import dateutil.parser
 import pytest
-from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
 from mythx_models.exceptions import MythXAPIError
+from mythx_models.request import (
+    AnalysisListRequest,
+    AnalysisStatusRequest,
+    AnalysisSubmissionRequest,
+    AuthLoginRequest,
+    AuthLogoutRequest,
+    AuthRefreshRequest,
+    DetectedIssuesRequest,
+)
+from mythx_models.response import (
+    AnalysisListResponse,
+    AnalysisStatusResponse,
+    AnalysisSubmissionResponse,
+    AuthLoginResponse,
+    AuthLogoutResponse,
+    AuthRefreshResponse,
+    DetectedIssuesResponse,
+)
 
 from pythx import config
 from pythx.api.handler import APIHandler
 from pythx.middleware.base import BaseMiddleware
 
-from . import common as testdata
+from .common import get_test_case
 
 
 class TestMiddleware(BaseMiddleware):
@@ -53,13 +69,15 @@ def assert_response_middleware_hook(model):
 @pytest.mark.parametrize(
     "request_obj",
     [
-        testdata.ANALYSIS_LIST_REQUEST_OBJECT,
-        testdata.DETECTED_ISSUES_REQUEST_OBJECT,
-        testdata.ANALYSIS_STATUS_REQUEST_OBJECT,
-        testdata.ANALYSIS_SUBMISSION_REQUEST_OBJECT,
-        testdata.LOGIN_REQUEST_OBJECT,
-        testdata.LOGOUT_REQUEST_OBJECT,
-        testdata.REFRESH_REQUEST_OBJECT,
+        get_test_case("testdata/analysis-list-request.json", AnalysisListRequest),
+        get_test_case("testdata/detected-issues-request.json", DetectedIssuesRequest),
+        get_test_case("testdata/analysis-status-request.json", AnalysisStatusRequest),
+        get_test_case(
+            "testdata/analysis-submission-request.json", AnalysisSubmissionRequest
+        ),
+        get_test_case("testdata/auth-login-request.json", AuthLoginRequest),
+        get_test_case("testdata/auth-logout-request.json", AuthLogoutRequest),
+        get_test_case("testdata/auth-refresh-request.json", AuthRefreshRequest),
     ],
 )
 def test_request_dicts(request_obj):
@@ -91,114 +109,82 @@ def assert_analysis(analysis, data):
 
 
 def test_parse_analysis_list_response():
+    test_dict = get_test_case("testdata/analysis-list-response.json")
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.ANALYSIS_LIST_RESPONSE_DICT),
-        respmodels.AnalysisListResponse,
+        json.dumps(test_dict), respmodels.AnalysisListResponse
     )
     assert_response_middleware_hook(model)
     for i, analysis in enumerate(model.analyses):
-        response_obj = testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"][i]
+        response_obj = test_dict["analyses"][i]
         assert_analysis(analysis, response_obj)
 
 
 def test_parse_analysis_status_response():
+    test_dict = get_test_case("testdata/analysis-status-response.json")
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.ANALYSIS_STATUS_RESPONSE_DICT),
-        respmodels.AnalysisStatusResponse,
+        json.dumps(test_dict), respmodels.AnalysisStatusResponse
     )
     assert_response_middleware_hook(model)
-    assert_analysis(model.analysis, testdata.ANALYSIS_STATUS_RESPONSE_DICT)
+    assert_analysis(model.analysis, test_dict)
 
 
 def test_parse_analysis_submission_response():
+    test_dict = get_test_case("testdata/analysis-status-response.json")
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT),
-        respmodels.AnalysisSubmissionResponse,
+        json.dumps(test_dict), respmodels.AnalysisSubmissionResponse
     )
     assert_response_middleware_hook(model)
-    assert (
-        model.analysis.api_version
-        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["apiVersion"]
-    )
-    assert (
-        model.analysis.maru_version
-        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["maruVersion"]
-    )
-    assert (
-        model.analysis.mythril_version
-        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["mythrilVersion"]
-    )
-    assert (
-        model.analysis.harvey_version
-        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["harveyVersion"]
-    )
-    assert (
-        model.analysis.queue_time
-        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["queueTime"]
-    )
-    assert (
-        model.analysis.status.title()
-        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["status"]
-    )
+    assert model.analysis.api_version == test_dict["apiVersion"]
+    assert model.analysis.maru_version == test_dict["maruVersion"]
+    assert model.analysis.mythril_version == test_dict["mythrilVersion"]
+    assert model.analysis.harvey_version == test_dict["harveyVersion"]
+    assert model.analysis.queue_time == test_dict["queueTime"]
+    assert model.analysis.status.title() == test_dict["status"]
     assert model.analysis.submitted_at == dateutil.parser.parse(
-        testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["submittedAt"]
+        test_dict["submittedAt"]
     )
-    assert (
-        model.analysis.submitted_by
-        == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["submittedBy"]
-    )
-    assert model.analysis.uuid == testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT["uuid"]
+    assert model.analysis.submitted_by == test_dict["submittedBy"]
+    assert model.analysis.uuid == test_dict["uuid"]
 
 
 def test_parse_detected_issues_response():
+    test_dict = get_test_case("testdata/detected-issues-response.json")
+    expected_report = test_dict[0]
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.DETECTED_ISSUES_RESPONSE_DICT),
-        respmodels.DetectedIssuesResponse,
+        json.dumps(test_dict), respmodels.DetectedIssuesResponse
     )
     assert_response_middleware_hook(model)
-    assert (
-        model.issue_reports[0].issues[0].to_dict()
-        == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["issues"][0]
-    )
-    assert (
-        model.issue_reports[0].source_type
-        == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["sourceType"]
-    )
-    assert (
-        model.issue_reports[0].source_format
-        == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["sourceFormat"]
-    )
-    assert (
-        model.issue_reports[0].source_list
-        == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["sourceList"]
-    )
-    assert (
-        model.issue_reports[0].meta_data
-        == testdata.DETECTED_ISSUES_RESPONSE_DICT["issueReports"][0]["meta"]
-    )
+    assert model.issue_reports[0].issues[0].to_dict() == expected_report["issues"][0]
+    assert model.issue_reports[0].source_type == expected_report["sourceType"]
+    assert model.issue_reports[0].source_format == expected_report["sourceFormat"]
+    assert model.issue_reports[0].source_list == expected_report["sourceList"]
+    assert model.issue_reports[0].meta_data == expected_report["meta"]
 
 
 def test_parse_login_response():
+    test_dict = get_test_case("testdata/auth-login-response.json")
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.LOGIN_RESPONSE_DICT), respmodels.AuthLoginResponse
+        json.dumps(test_dict), respmodels.AuthLoginResponse
     )
     assert_response_middleware_hook(model)
-    assert model.access_token == testdata.ACCESS_TOKEN_1
-    assert model.refresh_token == testdata.REFRESH_TOKEN_1
+    assert model.access_token == test_dict["jwtTokens"]["access"]
+    assert model.refresh_token == test_dict["jwtTokens"]["refresh"]
 
 
 def test_parse_refresh_response():
+    test_dict = get_test_case("testdata/auth-refresh-response.json")
     model = PROD_HANDLER.parse_response(
-        json.dumps(testdata.LOGIN_RESPONSE_DICT), respmodels.AuthRefreshResponse
+        json.dumps(test_dict), respmodels.AuthRefreshResponse
     )
     assert_response_middleware_hook(model)
-    assert model.access_token == testdata.ACCESS_TOKEN_1
-    assert model.refresh_token == testdata.REFRESH_TOKEN_1
+    assert model.access_token == test_dict["jwtTokens"]["access"]
+    assert model.refresh_token == test_dict["jwtTokens"]["refresh"]
 
 
 def test_parse_logout_response():
+    test_dict = get_test_case("testdata/auth-logout-response.json")
     model = PROD_HANDLER.parse_response(
-        (json.dumps(testdata.LOGOUT_RESPONSE_DICT)), respmodels.AuthLogoutResponse
+        json.dumps(test_dict), respmodels.AuthLogoutResponse
     )
     assert_response_middleware_hook(model)
     assert model.to_dict() == {}
@@ -206,33 +192,29 @@ def test_parse_logout_response():
 
 
 def test_send_request_successful(requests_mock):
-    requests_mock.get("mock://test.com/path", text="resp")
+    test_url = "mock://test.com/path"
+    requests_mock.get(test_url, text="resp")
     resp = APIHandler.send_request(
-        {
-            "method": "GET",
-            "headers": {},
-            "url": testdata.MOCK_API_URL,
-            "payload": {},
-            "params": {},
-        },
+        {"method": "GET", "headers": {}, "url": test_url, "payload": {}, "params": {}},
         auth_header={"Authorization": "Bearer foo"},
     )
     assert resp == "resp"
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]
     assert h.method == "GET"
-    assert h.url == testdata.MOCK_API_URL
+    assert h.url == test_url
     assert h.headers["Authorization"] == "Bearer foo"
 
 
 def test_send_request_failure(requests_mock):
-    requests_mock.get("mock://test.com/path", text="resp", status_code=400)
+    test_url = "mock://test.com/path"
+    requests_mock.get(test_url, text="resp", status_code=400)
     with pytest.raises(MythXAPIError):
         APIHandler.send_request(
             {
                 "method": "GET",
                 "headers": {},
-                "url": testdata.MOCK_API_URL,
+                "url": test_url,
                 "payload": {},
                 "params": {},
             },
@@ -242,18 +224,19 @@ def test_send_request_failure(requests_mock):
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]
     assert h.method == "GET"
-    assert h.url == testdata.MOCK_API_URL
+    assert h.url == test_url
     assert h.headers["Authorization"] == "Bearer foo"
 
 
 def test_send_request_unauthenticated(requests_mock):
+    test_url = "mock://test.com/path"
     requests_mock.get("mock://test.com/path", text="resp", status_code=400)
     with pytest.raises(MythXAPIError):
         APIHandler.send_request(
             {
                 "method": "GET",
                 "headers": {},
-                "url": testdata.MOCK_API_URL,
+                "url": test_url,
                 "payload": {},
                 "params": {},
             }
@@ -262,5 +245,5 @@ def test_send_request_unauthenticated(requests_mock):
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]
     assert h.method == "GET"
-    assert h.url == testdata.MOCK_API_URL
+    assert h.url == test_url
     assert h.headers.get("Authorization") is None
