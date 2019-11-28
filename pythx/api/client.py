@@ -3,13 +3,13 @@ from datetime import datetime
 from typing import Dict, List
 
 import jwt
+from mythx_models import request as reqmodels
+from mythx_models import response as respmodels
 
 from pythx.api.handler import APIHandler
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
 from pythx.middleware.base import BaseMiddleware
 from pythx.middleware.toolname import ClientToolNameMiddleware
-from mythx_models import request as reqmodels
-from mythx_models import response as respmodels
 
 LOGGER = logging.getLogger(__name__)
 
@@ -204,7 +204,12 @@ class Client:
         return self._assemble_send_parse(req, respmodels.GroupListResponse)
 
     def analysis_list(
-        self, date_from: datetime = None, date_to: datetime = None, offset: int = None
+        self,
+        date_from: datetime = None,
+        date_to: datetime = None,
+        offset: int = None,
+        created_by: str = None,
+        group_name: str = None,
     ) -> respmodels.AnalysisListResponse:
         """Get a list of the user's analyses jobs.
 
@@ -214,7 +219,11 @@ class Client:
         :return: AnalysisListResponse
         """
         req = reqmodels.AnalysisListRequest(
-            offset=offset, date_from=date_from, date_to=date_to
+            offset=offset,
+            date_from=date_from,
+            date_to=date_to,
+            created_by=created_by,
+            group_name=group_name,
         )
         return self._assemble_send_parse(req, respmodels.AnalysisListResponse)
 

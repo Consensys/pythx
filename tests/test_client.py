@@ -1,21 +1,20 @@
 import json
 from copy import copy
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import jwt
+import mythx_models.response as respmodels
 import pytest
 from dateutil.tz import tzutc
-
-import mythx_models.response as respmodels
-from pythx import config
-from pythx.api import APIHandler, Client
-from pythx.middleware.analysiscache import AnalysisCacheMiddleware
-from pythx.middleware.toolname import ClientToolNameMiddleware
-from mythx_models.exceptions import MythXAPIError, ValidationError
+from mythx_models.exceptions import ValidationError
 from mythx_models.response.analysis import AnalysisStatus
 from mythx_models.util import serialize_api_timestamp
 
-from . import common as testdata
+from pythx.api import APIHandler, Client
+from pythx.middleware.analysiscache import AnalysisCacheMiddleware
+from pythx.middleware.toolname import ClientToolNameMiddleware
+
+from .common import get_test_case
 
 
 class MockAPIHandler(APIHandler):
@@ -63,7 +62,8 @@ def assert_middlewares(client: Client):
 
 
 def test_login():
-    client = get_client([testdata.LOGIN_RESPONSE_DICT], logged_in=False)
+    test_dict = get_test_case("testdata/auth-login-response.json")
+    client = get_client([test_dict], logged_in=False)
 
     assert client.access_token is None
     assert client.refresh_token is None
@@ -71,15 +71,16 @@ def test_login():
     resp = client.login()
 
     assert type(resp) == respmodels.AuthLoginResponse
-    assert resp.access_token == testdata.ACCESS_TOKEN_1
-    assert resp.refresh_token == testdata.REFRESH_TOKEN_1
+    assert resp.access_token == test_dict["jwtTokens"]["access"]
+    assert resp.refresh_token == test_dict["jwtTokens"]["refresh"]
 
-    assert client.access_token == testdata.ACCESS_TOKEN_1
-    assert client.refresh_token == testdata.REFRESH_TOKEN_1
+    assert client.access_token == test_dict["jwtTokens"]["access"]
+    assert client.refresh_token == test_dict["jwtTokens"]["refresh"]
 
 
 def test_logout():
-    client = get_client([testdata.LOGOUT_RESPONSE_DICT])
+    test_dict = get_test_case("testdata/auth-logout-response.json")
+    client = get_client([test_dict])
     resp = client.logout()
 
     assert type(resp) == respmodels.AuthLogoutResponse
@@ -88,45 +89,48 @@ def test_logout():
 
 
 def test_refresh():
-    client = get_client([testdata.REFRESH_RESPONSE_DICT])
+    test_dict = get_test_case("testdata/auth-refresh-response.json")
+    client = get_client([test_dict])
     resp = client.refresh()
 
     assert type(resp) == respmodels.AuthRefreshResponse
-    assert resp.access_token == testdata.ACCESS_TOKEN_1
-    assert resp.refresh_token == testdata.REFRESH_TOKEN_1
-    assert resp.to_dict() == testdata.REFRESH_RESPONSE_DICT
+    assert resp.access_token == test_dict["jwtTokens"]["access"]
+    assert resp.refresh_token == test_dict["jwtTokens"]["refresh"]
+    assert resp.to_dict() == test_dict
 
-    assert client.access_token == testdata.ACCESS_TOKEN_1
-    assert client.refresh_token == testdata.REFRESH_TOKEN_1
+    assert client.access_token == test_dict["jwtTokens"]["access"]
+    assert client.refresh_token == test_dict["jwtTokens"]["refresh"]
 
 
 def test_analysis_list():
-    client = get_client([testdata.ANALYSIS_LIST_RESPONSE_DICT])
+    test_dict = get_test_case("testdata/analysis-list-response.json")
+    client = get_client([test_dict])
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
     )
 
     assert type(resp) == respmodels.AnalysisListResponse
-    assert resp.total == len(testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"])
-    assert resp.to_dict() == testdata.ANALYSIS_LIST_RESPONSE_DICT
+    assert resp.total == len(test_dict["analyses"])
+    assert resp.to_dict() == test_dict
 
 
 def test_auto_login():
-    client = get_client(
-        [testdata.LOGIN_RESPONSE_DICT, testdata.ANALYSIS_LIST_RESPONSE_DICT],
-        logged_in=False,
-    )
+    login_dict = get_test_case("testdata/auth-login-response.json")
+    list_dict = get_test_case("testdata/analysis-list-response.json")
+    client = get_client([login_dict, list_dict], logged_in=False)
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
     )
     assert type(resp) == respmodels.AnalysisListResponse
-    assert resp.total == len(testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"])
-    assert resp.to_dict() == testdata.ANALYSIS_LIST_RESPONSE_DICT
+    assert resp.total == len(list_dict["analyses"])
+    assert resp.to_dict() == list_dict
 
 
 def test_expired_auth_and_refresh_token():
+    login_dict = get_test_case("testdata/auth-login-response.json")
+    list_dict = get_test_case("testdata/analysis-list-response.json")
     client = get_client(
-        [testdata.LOGIN_RESPONSE_DICT, testdata.ANALYSIS_LIST_RESPONSE_DICT],
+        [login_dict, list_dict],
         logged_in=True,
         access_expired=True,
         refresh_expired=True,
@@ -135,164 +139,182 @@ def test_expired_auth_and_refresh_token():
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
     )
     assert type(resp) == respmodels.AnalysisListResponse
-    assert resp.total == len(testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"])
-    assert resp.to_dict() == testdata.ANALYSIS_LIST_RESPONSE_DICT
+    assert resp.total == len(list_dict["analyses"])
+    assert resp.to_dict() == list_dict
 
 
 def test_expired_access_token():
-    client = get_client(
-        [testdata.REFRESH_RESPONSE_DICT, testdata.ANALYSIS_LIST_RESPONSE_DICT],
-        logged_in=True,
-        access_expired=True,
-    )
+    refresh_dict = get_test_case("testdata/auth-refresh-response.json")
+    list_dict = get_test_case("testdata/analysis-list-response.json")
+    client = get_client([refresh_dict, list_dict], logged_in=True, access_expired=True)
     resp = client.analysis_list(
         date_from=datetime(2018, 1, 1), date_to=datetime(2019, 1, 1)
     )
     assert type(resp) == respmodels.AnalysisListResponse
-    assert resp.total == len(testdata.ANALYSIS_LIST_RESPONSE_DICT["analyses"])
-    assert resp.to_dict() == testdata.ANALYSIS_LIST_RESPONSE_DICT
+    assert resp.total == len(list_dict["analyses"])
+    assert resp.to_dict() == list_dict
 
 
-def assert_analysis(analysis):
-    assert analysis.uuid == testdata.UUID_1
-    assert analysis.api_version == testdata.API_VERSION_1
-    assert analysis.mythril_version == testdata.MYTHRIL_VERSION_1
-    assert analysis.maru_version == testdata.MARU_VERSION_1
-    assert analysis.run_time == testdata.RUN_TIME_1
-    assert analysis.queue_time == testdata.QUEUE_TIME_1
-    assert analysis.status == AnalysisStatus(testdata.STATUS_1)
-    assert serialize_api_timestamp(analysis.submitted_at) == testdata.SUBMITTED_AT_1
-    assert analysis.submitted_by == testdata.SUBMITTED_BY_1
+def assert_analysis(expected, analysis):
+    assert analysis.uuid == expected["uuid"]
+    assert analysis.api_version == expected["apiVersion"]
+    assert analysis.mythril_version == expected["mythrilVersion"]
+    assert analysis.maru_version == expected["maruVersion"]
+    assert analysis.run_time == expected["runTime"]
+    assert analysis.queue_time == expected["queueTime"]
+    assert analysis.status == AnalysisStatus(expected["status"])
+    assert serialize_api_timestamp(analysis.submitted_at) == expected["submittedAt"]
+    assert analysis.submitted_by == expected["submittedBy"]
 
 
 def test_analyze_bytecode():
-    client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    client = get_client([test_dict])
     resp = client.analyze(bytecode="0xf00")
 
     assert type(resp) == respmodels.AnalysisSubmissionResponse
-    assert_analysis(resp.analysis)
+    assert_analysis(test_dict, resp.analysis)
 
 
 def test_analyze_source_code():
-    client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    client = get_client([test_dict])
     resp = client.analyze(sources={"foo.sol": {"source": "bar"}})
 
     assert type(resp) == respmodels.AnalysisSubmissionResponse
-    assert_analysis(resp.analysis)
+    assert_analysis(test_dict, resp.analysis)
 
 
 def test_analyze_source_and_bytecode():
-    client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    client = get_client([test_dict])
     resp = client.analyze(sources={"foo.sol": {"source": "bar"}}, bytecode="0xf00")
     assert type(resp) == respmodels.AnalysisSubmissionResponse
-    assert_analysis(resp.analysis)
+    assert_analysis(test_dict, resp.analysis)
 
 
 def test_analyze_missing_data():
-    client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    client = get_client([test_dict])
     with pytest.raises(ValidationError):
         client.analyze()
 
 
 def test_analyze_invalid_mode():
-    client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    client = get_client([test_dict])
     with pytest.raises(ValidationError):
         client.analyze(bytecode="0xf00", analysis_mode="invalid")
 
 
 def test_status():
-    client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-    resp = client.status(uuid=testdata.UUID_1)
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    client = get_client([test_dict])
+    resp = client.status(uuid=test_dict["uuid"])
 
     assert type(resp) == respmodels.AnalysisStatusResponse
-    assert_analysis(resp.analysis)
+    assert_analysis(test_dict, resp.analysis)
 
 
 def test_running_analysis_not_ready():
-    client = get_client([testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT])
-    resp = client.analysis_ready(uuid=testdata.UUID_1)
-    assert resp == False
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    client = get_client([test_dict])
+    resp = client.analysis_ready(uuid=test_dict["uuid"])
+    assert resp is False
 
 
 def test_queued_analysis_not_ready():
-    data = copy(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT)
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    data = copy(test_dict)
     data["status"] = "Queued"
     client = get_client([data])
-    resp = client.analysis_ready(uuid=testdata.UUID_1)
-    assert resp == False
+    resp = client.analysis_ready(uuid=test_dict["uuid"])
+    assert resp is False
 
 
 def test_finished_analysis_ready():
-    data = copy(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT)
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    data = copy(test_dict)
     data["status"] = "Finished"
     client = get_client([data])
-    resp = client.analysis_ready(uuid=testdata.UUID_1)
-    assert resp == True
+    resp = client.analysis_ready(uuid=test_dict["uuid"])
+    assert resp is True
 
 
 def test_error_analysis_ready():
-    data = copy(testdata.ANALYSIS_SUBMISSION_RESPONSE_DICT)
+    test_dict = get_test_case("testdata/analysis-submission-response.json")
+    data = copy(test_dict)
     data["status"] = "Error"
     client = get_client([data])
-    resp = client.analysis_ready(uuid=testdata.UUID_1)
-    assert resp == True
+    resp = client.analysis_ready(uuid=test_dict["uuid"])
+    assert resp is True
 
 
 def test_report():
-    client = get_client([testdata.DETECTED_ISSUES_RESPONSE_DICT])
-    resp = client.report(uuid=testdata.UUID_1)
+    test_dict = get_test_case("testdata/detected-issues-response.json")
+    expected_report = test_dict[0]
+    expected_issue = expected_report["issues"][0]
+    expected_location = expected_issue["locations"][0]
+    client = get_client([test_dict])
+    resp = client.report(uuid="test")
+
     assert type(resp) == respmodels.DetectedIssuesResponse
-    assert resp.issue_reports[0].source_type == testdata.SOURCE_TYPE
-    assert resp.issue_reports[0].source_format == testdata.SOURCE_FORMAT
-    assert resp.issue_reports[0].source_list == testdata.SOURCE_LIST
+    assert resp.issue_reports[0].source_type == expected_report["sourceType"]
+    assert resp.issue_reports[0].source_format == expected_report["sourceFormat"]
+    assert resp.issue_reports[0].source_list == expected_report["sourceList"]
     assert resp.issue_reports[0].meta_data == {}
     assert len(resp) == 1
+
     issue = resp.issue_reports[0].issues[0]
-    assert issue.swc_id == testdata.SWC_ID
-    assert issue.swc_title == testdata.SWC_TITLE
-    assert issue.description_short == testdata.DESCRIPTION_HEAD
-    assert issue.description_long == testdata.DESCRIPTION_TAIL
-    assert issue.severity == testdata.SEVERITY
+    assert issue.swc_id == expected_issue["swcID"]
+    assert issue.swc_title == expected_issue["swcTitle"]
+    assert issue.description_short == expected_issue["description"]["head"]
+    assert issue.description_long == expected_issue["description"]["tail"]
+    assert issue.severity == expected_issue["severity"]
     assert issue.extra_data == {}
     assert len(issue.locations) == 1
+
     location = issue.locations[0]
-    assert location.source_map.to_sourcemap() == testdata.SOURCE_MAP
-    assert location.source_type == testdata.SOURCE_TYPE
-    assert location.source_format == testdata.SOURCE_FORMAT
-    assert location.source_list == testdata.SOURCE_LIST
+    assert location.source_map.to_sourcemap() == expected_location["sourceMap"]
+    assert location.source_type == expected_location["sourceType"]
+    assert location.source_format == expected_location["sourceFormat"]
+    assert location.source_list == expected_location["sourceList"]
 
 
 def test_openapi():
-    client = get_client([testdata.OPENAPI_RESPONSE])
+    client = get_client(["OpenAPI stuff"])
     resp = client.openapi()
     assert type(resp) == respmodels.OASResponse
     # we have to wrap this into quotes here because
     # of the test handler - content stays the same.
-    assert resp.data == '"{}"'.format(testdata.OPENAPI_RESPONSE)
+    assert resp.data == '"{}"'.format("OpenAPI stuff")
 
 
 def test_version():
-    client = get_client([testdata.VERSION_RESPONSE_DICT])
+    test_dict = get_test_case("testdata/version-response.json")
+    client = get_client([test_dict])
     resp = client.version()
     assert type(resp) == respmodels.VersionResponse
-    assert resp.api_version == testdata.API_VERSION_1
-    assert resp.maru_version == testdata.MARU_VERSION_1
-    assert resp.mythril_version == testdata.MYTHRIL_VERSION_1
-    assert resp.harvey_version == testdata.HARVEY_VERSION_1
-    assert resp.hashed_version == testdata.HASHED_VERSION_1
+    assert resp.api_version == test_dict["api"]
+    assert resp.maru_version == test_dict["maru"]
+    assert resp.mythril_version == test_dict["mythril"]
+    assert resp.harvey_version == test_dict["harvey"]
+    assert resp.hashed_version == test_dict["hash"]
 
 
 def test_jwt_expiration():
-    assert Client._get_jwt_expiration_ts(testdata.ACCESS_TOKEN_1) == datetime(
+    test_dict = get_test_case("testdata/auth-login-response.json")
+    assert Client._get_jwt_expiration_ts(test_dict["jwtTokens"]["access"]) == datetime(
         2019, 2, 24, 16, 31, 19, 28000
     )
-    assert Client._get_jwt_expiration_ts(testdata.REFRESH_TOKEN_1) == datetime(
+    assert Client._get_jwt_expiration_ts(test_dict["jwtTokens"]["refresh"]) == datetime(
         2019, 3, 24, 16, 21, 19, 28000
     )
 
 
 def test_context_handler():
-    with get_client([testdata.LOGOUT_RESPONSE_DICT]) as c:
+    test_dict = get_test_case("testdata/auth-logout-response.json")
+    with get_client([test_dict]) as c:
         assert c is not None
 
 
