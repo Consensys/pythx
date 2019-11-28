@@ -5,8 +5,8 @@ from mythx_models.request import (
     AnalysisSubmissionRequest,
     AuthLoginRequest,
     AuthLogoutRequest,
-    DetectedIssuesRequest,
     AuthRefreshRequest,
+    DetectedIssuesRequest,
 )
 from mythx_models.response import (
     AnalysisListResponse,
@@ -20,7 +20,6 @@ from mythx_models.response import (
 
 from pythx.middleware.group_data import GroupDataMiddleware
 
-from . import common as testdata
 from .common import generate_request_dict, get_test_case
 
 EMPTY_MIDDLEWARE = GroupDataMiddleware()
@@ -310,34 +309,142 @@ def test_request_dicts(middleware, request_dict, id_added, name_added):
 @pytest.mark.parametrize(
     "middleware,resp_obj",
     [
-        (EMPTY_MIDDLEWARE, get_test_case("testdata/analysis-list-response.json", AnalysisListResponse)),
-        (EMPTY_MIDDLEWARE, get_test_case("testdata/detected-issues-response.json", DetectedIssuesResponse)),
-        (EMPTY_MIDDLEWARE, get_test_case("testdata/analysis-status-response.json", AnalysisStatusResponse)),
-        (EMPTY_MIDDLEWARE, get_test_case("testdata/analysis-submission-response.json", AnalysisSubmissionResponse)),
-        (EMPTY_MIDDLEWARE, get_test_case("testdata/auth-login-response.json", AuthLoginResponse)),
-        (EMPTY_MIDDLEWARE, get_test_case("testdata/auth-logout-response.json", AuthLogoutResponse)),
-        (EMPTY_MIDDLEWARE, get_test_case("testdata/auth-refresh-response.json", AuthRefreshResponse)),
-        (ID_ONLY_MIDDLEWARE, get_test_case("testdata/analysis-list-response.json", AnalysisListResponse)),
-        (ID_ONLY_MIDDLEWARE, get_test_case("testdata/detected-issues-response.json", DetectedIssuesResponse)),
-        (ID_ONLY_MIDDLEWARE, get_test_case("testdata/analysis-status-response.json", AnalysisStatusResponse)),
-        (ID_ONLY_MIDDLEWARE, get_test_case("testdata/analysis-submission-response.json", AnalysisSubmissionResponse)),
-        (ID_ONLY_MIDDLEWARE, get_test_case("testdata/auth-login-response.json", AuthLoginResponse)),
-        (ID_ONLY_MIDDLEWARE, get_test_case("testdata/auth-logout-response.json", AuthLogoutResponse)),
-        (ID_ONLY_MIDDLEWARE, get_test_case("testdata/auth-refresh-response.json", AuthRefreshResponse)),
-        (NAME_ONLY_MIDDLEWARE, get_test_case("testdata/analysis-list-response.json", AnalysisListResponse)),
-        (NAME_ONLY_MIDDLEWARE, get_test_case("testdata/detected-issues-response.json", DetectedIssuesResponse)),
-        (NAME_ONLY_MIDDLEWARE, get_test_case("testdata/analysis-status-response.json", AnalysisStatusResponse)),
-        (NAME_ONLY_MIDDLEWARE, get_test_case("testdata/analysis-submission-response.json", AnalysisSubmissionResponse)),
-        (NAME_ONLY_MIDDLEWARE, get_test_case("testdata/auth-login-response.json", AuthLoginResponse)),
-        (NAME_ONLY_MIDDLEWARE, get_test_case("testdata/auth-logout-response.json", AuthLogoutResponse)),
-        (NAME_ONLY_MIDDLEWARE, get_test_case("testdata/auth-refresh-response.json", AuthRefreshResponse)),
-        (FULL_MIDDLEWARE, get_test_case("testdata/analysis-list-response.json", AnalysisListResponse)),
-        (FULL_MIDDLEWARE, get_test_case("testdata/detected-issues-response.json", DetectedIssuesResponse)),
-        (FULL_MIDDLEWARE, get_test_case("testdata/analysis-status-response.json", AnalysisStatusResponse)),
-        (FULL_MIDDLEWARE, get_test_case("testdata/analysis-submission-response.json", AnalysisSubmissionResponse)),
-        (FULL_MIDDLEWARE, get_test_case("testdata/auth-login-response.json", AuthLoginResponse)),
-        (FULL_MIDDLEWARE, get_test_case("testdata/auth-logout-response.json", AuthLogoutResponse)),
-        (FULL_MIDDLEWARE, get_test_case("testdata/auth-refresh-response.json", AuthRefreshResponse)),
+        (
+            EMPTY_MIDDLEWARE,
+            get_test_case("testdata/analysis-list-response.json", AnalysisListResponse),
+        ),
+        (
+            EMPTY_MIDDLEWARE,
+            get_test_case(
+                "testdata/detected-issues-response.json", DetectedIssuesResponse
+            ),
+        ),
+        (
+            EMPTY_MIDDLEWARE,
+            get_test_case(
+                "testdata/analysis-status-response.json", AnalysisStatusResponse
+            ),
+        ),
+        (
+            EMPTY_MIDDLEWARE,
+            get_test_case(
+                "testdata/analysis-submission-response.json", AnalysisSubmissionResponse
+            ),
+        ),
+        (
+            EMPTY_MIDDLEWARE,
+            get_test_case("testdata/auth-login-response.json", AuthLoginResponse),
+        ),
+        (
+            EMPTY_MIDDLEWARE,
+            get_test_case("testdata/auth-logout-response.json", AuthLogoutResponse),
+        ),
+        (
+            EMPTY_MIDDLEWARE,
+            get_test_case("testdata/auth-refresh-response.json", AuthRefreshResponse),
+        ),
+        (
+            ID_ONLY_MIDDLEWARE,
+            get_test_case("testdata/analysis-list-response.json", AnalysisListResponse),
+        ),
+        (
+            ID_ONLY_MIDDLEWARE,
+            get_test_case(
+                "testdata/detected-issues-response.json", DetectedIssuesResponse
+            ),
+        ),
+        (
+            ID_ONLY_MIDDLEWARE,
+            get_test_case(
+                "testdata/analysis-status-response.json", AnalysisStatusResponse
+            ),
+        ),
+        (
+            ID_ONLY_MIDDLEWARE,
+            get_test_case(
+                "testdata/analysis-submission-response.json", AnalysisSubmissionResponse
+            ),
+        ),
+        (
+            ID_ONLY_MIDDLEWARE,
+            get_test_case("testdata/auth-login-response.json", AuthLoginResponse),
+        ),
+        (
+            ID_ONLY_MIDDLEWARE,
+            get_test_case("testdata/auth-logout-response.json", AuthLogoutResponse),
+        ),
+        (
+            ID_ONLY_MIDDLEWARE,
+            get_test_case("testdata/auth-refresh-response.json", AuthRefreshResponse),
+        ),
+        (
+            NAME_ONLY_MIDDLEWARE,
+            get_test_case("testdata/analysis-list-response.json", AnalysisListResponse),
+        ),
+        (
+            NAME_ONLY_MIDDLEWARE,
+            get_test_case(
+                "testdata/detected-issues-response.json", DetectedIssuesResponse
+            ),
+        ),
+        (
+            NAME_ONLY_MIDDLEWARE,
+            get_test_case(
+                "testdata/analysis-status-response.json", AnalysisStatusResponse
+            ),
+        ),
+        (
+            NAME_ONLY_MIDDLEWARE,
+            get_test_case(
+                "testdata/analysis-submission-response.json", AnalysisSubmissionResponse
+            ),
+        ),
+        (
+            NAME_ONLY_MIDDLEWARE,
+            get_test_case("testdata/auth-login-response.json", AuthLoginResponse),
+        ),
+        (
+            NAME_ONLY_MIDDLEWARE,
+            get_test_case("testdata/auth-logout-response.json", AuthLogoutResponse),
+        ),
+        (
+            NAME_ONLY_MIDDLEWARE,
+            get_test_case("testdata/auth-refresh-response.json", AuthRefreshResponse),
+        ),
+        (
+            FULL_MIDDLEWARE,
+            get_test_case("testdata/analysis-list-response.json", AnalysisListResponse),
+        ),
+        (
+            FULL_MIDDLEWARE,
+            get_test_case(
+                "testdata/detected-issues-response.json", DetectedIssuesResponse
+            ),
+        ),
+        (
+            FULL_MIDDLEWARE,
+            get_test_case(
+                "testdata/analysis-status-response.json", AnalysisStatusResponse
+            ),
+        ),
+        (
+            FULL_MIDDLEWARE,
+            get_test_case(
+                "testdata/analysis-submission-response.json", AnalysisSubmissionResponse
+            ),
+        ),
+        (
+            FULL_MIDDLEWARE,
+            get_test_case("testdata/auth-login-response.json", AuthLoginResponse),
+        ),
+        (
+            FULL_MIDDLEWARE,
+            get_test_case("testdata/auth-logout-response.json", AuthLogoutResponse),
+        ),
+        (
+            FULL_MIDDLEWARE,
+            get_test_case("testdata/auth-refresh-response.json", AuthRefreshResponse),
+        ),
     ],
 )
 def test_response_models(middleware, resp_obj):
