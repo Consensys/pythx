@@ -215,6 +215,8 @@ class Client:
         :param date_from: Start of the date range (optional)
         :param date_to: End of the date range (optional)
         :param offset: The number of results to skip (used for pagination)
+        :param group_name: Filter analysis results based on the group name
+        :param created_by: Filter analysis results based on the creator
         :return: AnalysisListResponse
         """
         req = reqmodels.AnalysisListRequest(
@@ -249,6 +251,7 @@ class Client:
         :param source_map:
         :param deployed_bytecode:
         :param deployed_source_map:
+        :param main_source:
         :param sources:
         :param source_list:
         :param solc_version:
@@ -311,6 +314,11 @@ class Client:
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
     def request_by_uuid(self, uuid: str) -> respmodels.AnalysisInputResponse:
+        """ Get the input request based on the analysis job's UUID.
+
+        :param uuid:
+        :return:
+        """
         req = reqmodels.AnalysisInputRequest(uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisInputResponse)
 
