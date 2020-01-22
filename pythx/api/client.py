@@ -45,7 +45,6 @@ class Client:
         access_token: str = None,
         refresh_token: str = None,
         handler: APIHandler = None,
-        staging: bool = False,
         no_cache: bool = False,
         middlewares: List[BaseMiddleware] = None,
     ):
@@ -66,7 +65,7 @@ class Client:
             if AnalysisCacheMiddleware not in type_list:
                 middlewares.append(AnalysisCacheMiddleware(no_cache))
 
-        self.handler = handler or APIHandler(middlewares=middlewares, staging=staging)
+        self.handler = handler or APIHandler(middlewares=middlewares)
 
         self.access_token = access_token
         self.refresh_token = refresh_token

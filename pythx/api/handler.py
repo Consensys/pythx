@@ -1,13 +1,14 @@
 import logging
 import urllib.parse
 from typing import Dict, List
-
+import os
 import requests
 from mythx_models.exceptions import MythXAPIError
 
-from pythx import config
 from pythx.middleware.base import BaseMiddleware
 
+
+DEFAULT_API_URL = "https://api.mythx.io/"
 
 def print_request(req) -> str:
     """Generate a pretty-printed HTTP request string.
@@ -47,10 +48,9 @@ class APIHandler:
     and executing request/response middlewares.
     """
 
-    def __init__(self, middlewares: List[BaseMiddleware] = None, staging: bool = False):
+    def __init__(self, middlewares: List[BaseMiddleware] = None):
         middlewares = middlewares if middlewares is not None else []
         self.middlewares = middlewares
-        self.mode = "staging" if staging else "production"
 
     @staticmethod
     def send_request(request_data: Dict, auth_header: Dict[str, str] = None):
@@ -174,7 +174,7 @@ class APIHandler:
 
         Each of these data points is encoded in the domain model as a property. The endpoint
         URL is constructed from the domain model's path (e.g. :code:`/v1/auth/login`) and the
-        API base path (e.g. :code:`https://api.staging.mythx.io` for the staging deployment),
+        API base path: :code:`https://api.mythx.io`,
         which is contained in the library configuration module.
 
         Before the serialized request is returned, all registered middlewares are applied to it.
@@ -182,7 +182,7 @@ class APIHandler:
         :param req: The request domain model
         :return: The serialized request with all middlewares applied
         """
-        url = urllib.parse.urljoin(config["endpoints"][self.mode], req.endpoint)
+        url = urllib.parse.urljoin(os.environ.get("MYTHX_API_URL") or DEFAULT_API_URL, req.endpoint)
         base_request = {
             "method": req.method,
             "payload": req.payload,
