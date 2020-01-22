@@ -10,6 +10,7 @@ from pythx.middleware.base import BaseMiddleware
 
 DEFAULT_API_URL = "https://api.mythx.io/"
 
+
 def print_request(req) -> str:
     """Generate a pretty-printed HTTP request string.
 
@@ -48,9 +49,10 @@ class APIHandler:
     and executing request/response middlewares.
     """
 
-    def __init__(self, middlewares: List[BaseMiddleware] = None):
+    def __init__(self, middlewares: List[BaseMiddleware] = None, api_url: str = None):
         middlewares = middlewares if middlewares is not None else []
         self.middlewares = middlewares
+        self.api_url = api_url or DEFAULT_API_URL
 
     @staticmethod
     def send_request(request_data: Dict, auth_header: Dict[str, str] = None):
@@ -182,7 +184,8 @@ class APIHandler:
         :param req: The request domain model
         :return: The serialized request with all middlewares applied
         """
-        url = urllib.parse.urljoin(os.environ.get("MYTHX_API_URL") or DEFAULT_API_URL, req.endpoint)
+
+        url = urllib.parse.urljoin(os.environ.get("MYTHX_API_URL") or self.api_url, req.endpoint)
         base_request = {
             "method": req.method,
             "payload": req.payload,
