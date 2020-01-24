@@ -2,6 +2,7 @@ import json
 
 import dateutil.parser
 import pytest
+
 from mythx_models import response as respmodels
 from mythx_models.exceptions import MythXAPIError
 from mythx_models.request import (
@@ -13,9 +14,7 @@ from mythx_models.request import (
     AuthRefreshRequest,
     DetectedIssuesRequest,
 )
-
-from pythx import config
-from pythx.api.handler import APIHandler
+from pythx.api.handler import DEFAULT_API_URL, APIHandler
 from pythx.middleware.base import BaseMiddleware
 
 from .common import get_test_case
@@ -31,8 +30,7 @@ class TestMiddleware(BaseMiddleware):
         return resp
 
 
-STAGING_HANDLER = APIHandler(middlewares=[TestMiddleware()], staging=True)
-PROD_HANDLER = APIHandler(middlewares=[TestMiddleware()])
+API_HANDLER = APIHandler(middlewares=[TestMiddleware()])
 
 
 def assert_request_dict_keys(d):
@@ -72,15 +70,10 @@ def assert_response_middleware_hook(model):
     ],
 )
 def test_request_dicts(request_obj):
-    req_dict = PROD_HANDLER.assemble_request(request_obj)
+    req_dict = API_HANDLER.assemble_request(request_obj)
     assert_request_dict_keys(req_dict)
     assert_request_dict_content(req_dict, request_obj)
-    assert req_dict["url"].startswith(config["endpoints"]["production"])
-
-    req_dict = STAGING_HANDLER.assemble_request(request_obj)
-    assert_request_dict_keys(req_dict)
-    assert_request_dict_content(req_dict, request_obj)
-    assert req_dict["url"].startswith(config["endpoints"]["staging"])
+    assert req_dict["url"].startswith(DEFAULT_API_URL)
 
 
 def test_middleware_default_empty():
@@ -101,7 +94,7 @@ def assert_analysis(analysis, data):
 
 def test_parse_analysis_list_response():
     test_dict = get_test_case("testdata/analysis-list-response.json")
-    model = PROD_HANDLER.parse_response(
+    model = API_HANDLER.parse_response(
         json.dumps(test_dict), respmodels.AnalysisListResponse
     )
     assert_response_middleware_hook(model)
@@ -112,7 +105,7 @@ def test_parse_analysis_list_response():
 
 def test_parse_analysis_status_response():
     test_dict = get_test_case("testdata/analysis-status-response.json")
-    model = PROD_HANDLER.parse_response(
+    model = API_HANDLER.parse_response(
         json.dumps(test_dict), respmodels.AnalysisStatusResponse
     )
     assert_response_middleware_hook(model)
@@ -121,7 +114,7 @@ def test_parse_analysis_status_response():
 
 def test_parse_analysis_submission_response():
     test_dict = get_test_case("testdata/analysis-status-response.json")
-    model = PROD_HANDLER.parse_response(
+    model = API_HANDLER.parse_response(
         json.dumps(test_dict), respmodels.AnalysisSubmissionResponse
     )
     assert_response_middleware_hook(model)
@@ -141,7 +134,7 @@ def test_parse_analysis_submission_response():
 def test_parse_detected_issues_response():
     test_dict = get_test_case("testdata/detected-issues-response.json")
     expected_report = test_dict[0]
-    model = PROD_HANDLER.parse_response(
+    model = API_HANDLER.parse_response(
         json.dumps(test_dict), respmodels.DetectedIssuesResponse
     )
     assert_response_middleware_hook(model)
@@ -154,7 +147,7 @@ def test_parse_detected_issues_response():
 
 def test_parse_login_response():
     test_dict = get_test_case("testdata/auth-login-response.json")
-    model = PROD_HANDLER.parse_response(
+    model = API_HANDLER.parse_response(
         json.dumps(test_dict), respmodels.AuthLoginResponse
     )
     assert_response_middleware_hook(model)
@@ -164,7 +157,7 @@ def test_parse_login_response():
 
 def test_parse_refresh_response():
     test_dict = get_test_case("testdata/auth-refresh-response.json")
-    model = PROD_HANDLER.parse_response(
+    model = API_HANDLER.parse_response(
         json.dumps(test_dict), respmodels.AuthRefreshResponse
     )
     assert_response_middleware_hook(model)
@@ -174,7 +167,7 @@ def test_parse_refresh_response():
 
 def test_parse_logout_response():
     test_dict = get_test_case("testdata/auth-logout-response.json")
-    model = PROD_HANDLER.parse_response(
+    model = API_HANDLER.parse_response(
         json.dumps(test_dict), respmodels.AuthLogoutResponse
     )
     assert_response_middleware_hook(model)

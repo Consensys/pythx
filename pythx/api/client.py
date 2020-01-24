@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import Dict, List
 
 import jwt
+
 from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
-
 from pythx.api.handler import APIHandler
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
 from pythx.middleware.base import BaseMiddleware
@@ -45,9 +45,9 @@ class Client:
         access_token: str = None,
         refresh_token: str = None,
         handler: APIHandler = None,
-        staging: bool = False,
         no_cache: bool = False,
         middlewares: List[BaseMiddleware] = None,
+        api_url: str = None,
     ):
         self.eth_address = eth_address
         self.password = password
@@ -66,8 +66,7 @@ class Client:
             if AnalysisCacheMiddleware not in type_list:
                 middlewares.append(AnalysisCacheMiddleware(no_cache))
 
-        self.handler = handler or APIHandler(middlewares=middlewares, staging=staging)
-
+        self.handler = handler or APIHandler(middlewares=middlewares, api_url=api_url)
         self.access_token = access_token
         self.refresh_token = refresh_token
 
@@ -216,6 +215,8 @@ class Client:
         :param date_from: Start of the date range (optional)
         :param date_to: End of the date range (optional)
         :param offset: The number of results to skip (used for pagination)
+        :param group_name: Filter analysis results based on the group name
+        :param created_by: Filter analysis results based on the creator
         :return: AnalysisListResponse
         """
         req = reqmodels.AnalysisListRequest(
@@ -250,6 +251,7 @@ class Client:
         :param source_map:
         :param deployed_bytecode:
         :param deployed_source_map:
+        :param main_source:
         :param sources:
         :param source_list:
         :param solc_version:
@@ -312,6 +314,11 @@ class Client:
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
     def request_by_uuid(self, uuid: str) -> respmodels.AnalysisInputResponse:
+        """ Get the input request based on the analysis job's UUID.
+
+        :param uuid:
+        :return:
+        """
         req = reqmodels.AnalysisInputRequest(uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisInputResponse)
 
