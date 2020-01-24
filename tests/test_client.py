@@ -102,6 +102,52 @@ def test_refresh():
     assert client.refresh_token == test_dict["jwtTokens"]["refresh"]
 
 
+def test_group_list():
+    test_dict = get_test_case("testdata/group-list-response.json")
+    client = get_client([test_dict])
+    resp = client.group_list()
+
+    assert type(resp) == respmodels.GroupListResponse
+    assert resp.total == len(test_dict["groups"])
+    assert resp.to_dict() == test_dict
+
+
+def test_group_status():
+    test_dict = get_test_case("testdata/group-status-response.json")
+    client = get_client([test_dict])
+    resp = client.group_status(group_id="test")
+
+    assert type(resp) == respmodels.GroupStatusResponse
+    assert resp.to_dict() == test_dict
+
+
+def test_group_open():
+    test_dict = get_test_case("testdata/group-operation-response.json")
+    client = get_client([test_dict])
+    resp = client.create_group(group_name="test")
+
+    assert type(resp) == respmodels.GroupCreationResponse
+    assert resp.to_dict() == test_dict
+
+
+def test_group_seal():
+    test_dict = get_test_case("testdata/group-operation-response.json")
+    client = get_client([test_dict])
+    resp = client.seal_group(group_id="test")
+
+    assert type(resp) == respmodels.GroupOperationResponse
+    assert resp.to_dict() == test_dict
+
+
+def test_request_by_uuid():
+    test_dict = get_test_case("testdata/analysis-input-response.json")
+    client = get_client([test_dict])
+    resp = client.request_by_uuid(uuid="test")
+
+    assert type(resp) == respmodels.AnalysisInputResponse
+    assert resp.to_dict() == test_dict
+
+
 def test_analysis_list():
     test_dict = get_test_case("testdata/analysis-list-response.json")
     client = get_client([test_dict])
