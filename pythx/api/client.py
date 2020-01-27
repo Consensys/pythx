@@ -7,9 +7,11 @@ import jwt
 from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
 from pythx.api.handler import APIHandler
-from pythx.middleware.analysiscache import AnalysisCacheMiddleware
-from pythx.middleware.base import BaseMiddleware
-from pythx.middleware.toolname import ClientToolNameMiddleware
+from pythx.middleware import (
+    AnalysisCacheMiddleware,
+    BaseMiddleware,
+    ClientToolNameMiddleware,
+)
 
 LOGGER = logging.getLogger(__name__)
 
