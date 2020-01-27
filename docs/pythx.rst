@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
 
     pythx.api
-    pythx.conf
     pythx.middleware
 
 Module contents

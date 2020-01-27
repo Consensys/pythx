@@ -22,6 +22,24 @@ pythx.middleware.toolname module
     :show-inheritance:
 
 
+pythx.middleware.analysiscache module
+-------------------------------------
+
+.. automodule:: pythx.middleware.analysiscache
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+pythx.middleware.group_data module
+----------------------------------
+
+.. automodule:: pythx.middleware.group_data
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Module contents
 ---------------
 
