@@ -34,7 +34,7 @@ pipelines used throughout the Ethereum ecosystem.
 
 Installation
 ------------
-PythX runs on Python 3.5+.
+PythX runs on Python 3.6+ and PyPy.
 
 To get started, simply run
 
@@ -66,7 +66,7 @@ even complex use cases.
 
 
     # login as free trial user
-    c = Client(eth_address="0x0000000000000000000000000000000000000000", password="trial")
+    c = Client(username="test", password="super-secure")
 
     # submit bytecode, source files, their AST and more!
     resp = c.analyze(bytecode="0xfe")
