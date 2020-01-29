@@ -7,9 +7,11 @@ import jwt
 from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
 from pythx.api.handler import APIHandler
-from pythx.middleware.analysiscache import AnalysisCacheMiddleware
-from pythx.middleware.base import BaseMiddleware
-from pythx.middleware.toolname import ClientToolNameMiddleware
+from pythx.middleware import (
+    AnalysisCacheMiddleware,
+    BaseMiddleware,
+    ClientToolNameMiddleware,
+)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,16 +42,16 @@ class Client:
 
     def __init__(
         self,
-        eth_address: str = None,
+        username: str = None,
         password: str = None,
-        access_token: str = None,
+        api_key: str = None,
         refresh_token: str = None,
         handler: APIHandler = None,
         no_cache: bool = False,
         middlewares: List[BaseMiddleware] = None,
         api_url: str = None,
     ):
-        self.eth_address = eth_address
+        self.username = username
         self.password = password
 
         if not middlewares:
@@ -67,7 +69,7 @@ class Client:
                 middlewares.append(AnalysisCacheMiddleware(no_cache))
 
         self.handler = handler or APIHandler(middlewares=middlewares, api_url=api_url)
-        self.access_token = access_token
+        self.api_key = api_key
         self.refresh_token = refresh_token
 
     def _assemble_send_parse(
@@ -77,7 +79,7 @@ class Client:
         if assert_authentication:
             self.assert_authentication()
         auth_header = (
-            {"Authorization": "Bearer {}".format(self.access_token)}
+            {"Authorization": "Bearer {}".format(self.api_key)}
             if include_auth_header
             else None
         )
@@ -100,15 +102,15 @@ class Client:
 
         :return: None
         """
-        if self.access_token is not None and self.refresh_token is None:
+        if self.api_key is not None and self.refresh_token is None:
             # Override with access token if it's the only thing we were given
             return
-        elif self.access_token is None and self.refresh_token is None:
+        elif self.api_key is None and self.refresh_token is None:
             # We haven't authenticated yet
             self.login()
             return
         now = datetime.utcnow()
-        access_expiration = self._get_jwt_expiration_ts(self.access_token)
+        access_expiration = self._get_jwt_expiration_ts(self.api_key)
         refresh_expiration = self._get_jwt_expiration_ts(self.refresh_token)
         if now < access_expiration:
             # auth token still valid - continue
@@ -136,7 +138,7 @@ class Client:
         :return: AuthLoginResponse
         """
         req = reqmodels.AuthLoginRequest(
-            eth_address=self.eth_address, password=self.password
+            username=self.username, password=self.password
         )
         resp_model = self._assemble_send_parse(
             req,
@@ -144,7 +146,7 @@ class Client:
             assert_authentication=False,
             include_auth_header=False,
         )
-        self.access_token = resp_model.access_token
+        self.api_key = resp_model.api_key
         self.refresh_token = resp_model.refresh_token
         return resp_model
 
@@ -155,7 +157,7 @@ class Client:
         """
         req = reqmodels.AuthLogoutRequest()
         resp_model = self._assemble_send_parse(req, respmodels.AuthLogoutResponse)
-        self.access_token = None
+        self.api_key = None
         self.refresh_token = None
         return resp_model
 
@@ -165,7 +167,7 @@ class Client:
         :return: AuthRefreshResponse
         """
         req = reqmodels.AuthRefreshRequest(
-            access_token=self.access_token, refresh_token=self.refresh_token
+            access_token=self.api_key, refresh_token=self.refresh_token
         )
         resp_model = self._assemble_send_parse(
             req,
@@ -173,7 +175,7 @@ class Client:
             assert_authentication=False,
             include_auth_header=False,
         )
-        self.access_token = resp_model.access_token
+        self.api_key = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
         return resp_model
 

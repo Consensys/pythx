@@ -28,13 +28,11 @@ class MockAPIHandler(APIHandler):
 
 def get_client(resp_data, logged_in=True, access_expired=False, refresh_expired=False):
     client = Client(
-        eth_address="0xdeadbeef",
-        password="supersecure",
-        handler=MockAPIHandler(resp_data),
+        username="0xdeadbeef", password="supersecure", handler=MockAPIHandler(resp_data)
     )
     if logged_in:
         # simulate that we're already logged in with tokens
-        client.access_token = jwt.encode(
+        client.api_key = jwt.encode(
             {
                 "exp": datetime(1994, 7, 29, tzinfo=tzutc())
                 if access_expired
@@ -65,16 +63,16 @@ def test_login():
     test_dict = get_test_case("testdata/auth-login-response.json")
     client = get_client([test_dict], logged_in=False)
 
-    assert client.access_token is None
+    assert client.api_key is None
     assert client.refresh_token is None
 
     resp = client.login()
 
     assert type(resp) == respmodels.AuthLoginResponse
-    assert resp.access_token == test_dict["jwtTokens"]["access"]
+    assert resp.api_key == test_dict["jwtTokens"]["access"]
     assert resp.refresh_token == test_dict["jwtTokens"]["refresh"]
 
-    assert client.access_token == test_dict["jwtTokens"]["access"]
+    assert client.api_key == test_dict["jwtTokens"]["access"]
     assert client.refresh_token == test_dict["jwtTokens"]["refresh"]
 
 
@@ -84,7 +82,7 @@ def test_logout():
     resp = client.logout()
 
     assert type(resp) == respmodels.AuthLogoutResponse
-    assert client.access_token is None
+    assert client.api_key is None
     assert client.refresh_token is None
 
 
@@ -98,7 +96,7 @@ def test_refresh():
     assert resp.refresh_token == test_dict["jwtTokens"]["refresh"]
     assert resp.to_dict() == test_dict
 
-    assert client.access_token == test_dict["jwtTokens"]["access"]
+    assert client.api_key == test_dict["jwtTokens"]["access"]
     assert client.refresh_token == test_dict["jwtTokens"]["refresh"]
 
 
@@ -189,7 +187,7 @@ def test_expired_auth_and_refresh_token():
     assert resp.to_dict() == list_dict
 
 
-def test_expired_access_token():
+def test_expired_api_key():
     refresh_dict = get_test_case("testdata/auth-refresh-response.json")
     list_dict = get_test_case("testdata/analysis-list-response.json")
     client = get_client([refresh_dict, list_dict], logged_in=True, access_expired=True)
