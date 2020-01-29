@@ -138,7 +138,7 @@ class Client:
         :return: AuthLoginResponse
         """
         req = reqmodels.AuthLoginRequest(
-            eth_address=self.username, password=self.password
+            username=self.username, password=self.password
         )
         resp_model = self._assemble_send_parse(
             req,
@@ -146,7 +146,7 @@ class Client:
             assert_authentication=False,
             include_auth_header=False,
         )
-        self.api_key = resp_model.access_token
+        self.api_key = resp_model.api_key
         self.refresh_token = resp_model.refresh_token
         return resp_model
 

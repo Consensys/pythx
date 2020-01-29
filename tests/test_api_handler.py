@@ -151,7 +151,7 @@ def test_parse_login_response():
         json.dumps(test_dict), respmodels.AuthLoginResponse
     )
     assert_response_middleware_hook(model)
-    assert model.access_token == test_dict["jwtTokens"]["access"]
+    assert model.api_key == test_dict["jwtTokens"]["access"]
     assert model.refresh_token == test_dict["jwtTokens"]["refresh"]
 
 

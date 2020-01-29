@@ -69,7 +69,7 @@ def test_login():
     resp = client.login()
 
     assert type(resp) == respmodels.AuthLoginResponse
-    assert resp.access_token == test_dict["jwtTokens"]["access"]
+    assert resp.api_key == test_dict["jwtTokens"]["access"]
     assert resp.refresh_token == test_dict["jwtTokens"]["refresh"]
 
     assert client.api_key == test_dict["jwtTokens"]["access"]
@@ -187,7 +187,7 @@ def test_expired_auth_and_refresh_token():
     assert resp.to_dict() == list_dict
 
 
-def test_expired_access_token():
+def test_expired_api_key():
     refresh_dict = get_test_case("testdata/auth-refresh-response.json")
     list_dict = get_test_case("testdata/analysis-list-response.json")
     client = get_client([refresh_dict, list_dict], logged_in=True, access_expired=True)
