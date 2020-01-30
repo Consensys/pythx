@@ -211,6 +211,8 @@ class Client:
         offset: int = None,
         created_by: str = None,
         group_name: str = None,
+        group_id: str = None,
+        main_source: str = None,
     ) -> respmodels.AnalysisListResponse:
         """Get a list of the user's analyses jobs.
 
@@ -227,6 +229,8 @@ class Client:
             date_to=date_to,
             created_by=created_by,
             group_name=group_name,
+            group_id=group_id,
+            main_source=main_source,
         )
         return self._assemble_send_parse(req, respmodels.AnalysisListResponse)
 
