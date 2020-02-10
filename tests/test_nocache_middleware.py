@@ -1,5 +1,4 @@
 import pytest
-
 from mythx_models.request import (
     AnalysisListRequest,
     AnalysisStatusRequest,
@@ -18,6 +17,7 @@ from mythx_models.response import (
     AuthRefreshResponse,
     DetectedIssuesResponse,
 )
+
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
 
 from .common import generate_request_dict, get_test_case

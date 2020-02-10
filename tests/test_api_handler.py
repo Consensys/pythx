@@ -2,7 +2,6 @@ import json
 
 import dateutil.parser
 import pytest
-
 from mythx_models import response as respmodels
 from mythx_models.exceptions import MythXAPIError
 from mythx_models.request import (
@@ -14,6 +13,7 @@ from mythx_models.request import (
     AuthRefreshRequest,
     DetectedIssuesRequest,
 )
+
 from pythx.api.handler import DEFAULT_API_URL, APIHandler
 from pythx.middleware.base import BaseMiddleware
 

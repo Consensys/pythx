@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import Dict, List
 
 import jwt
-
 from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
+
 from pythx.api.handler import APIHandler
 from pythx.middleware import (
     AnalysisCacheMiddleware,
@@ -137,9 +137,7 @@ class Client:
 
         :return: AuthLoginResponse
         """
-        req = reqmodels.AuthLoginRequest(
-            username=self.username, password=self.password
-        )
+        req = reqmodels.AuthLoginRequest(username=self.username, password=self.password)
         resp_model = self._assemble_send_parse(
             req,
             respmodels.AuthLoginResponse,
