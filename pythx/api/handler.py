@@ -1,11 +1,12 @@
 import logging
 import os
+import re
 import urllib.parse
 from typing import Dict, List
 
 import requests
-
 from mythx_models.exceptions import MythXAPIError
+
 from pythx.middleware.base import BaseMiddleware
 
 DEFAULT_API_URL = "https://api.mythx.io/"
@@ -52,7 +53,14 @@ class APIHandler:
     def __init__(self, middlewares: List[BaseMiddleware] = None, api_url: str = None):
         middlewares = middlewares if middlewares is not None else []
         self.middlewares = middlewares
-        self.api_url = api_url or DEFAULT_API_URL
+        self.api_url = self._normalize_url(
+            api_url or os.environ.get("MYTHX_API_URL") or DEFAULT_API_URL
+        )
+
+    @staticmethod
+    def _normalize_url(url: str) -> str:
+        url = re.sub(r"v\d+/?", "", url)
+        return url + "/" if not url.endswith("/") else url
 
     @staticmethod
     def send_request(request_data: Dict, auth_header: Dict[str, str] = None):
@@ -185,9 +193,7 @@ class APIHandler:
         :return: The serialized request with all middlewares applied
         """
 
-        url = urllib.parse.urljoin(
-            os.environ.get("MYTHX_API_URL") or self.api_url, req.endpoint
-        )
+        url = urllib.parse.urljoin(self.api_url, req.endpoint)
         base_request = {
             "method": req.method,
             "payload": req.payload,
