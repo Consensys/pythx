@@ -1,7 +1,8 @@
 """This module contains a middleware to fill the :code:`clientToolName` field."""
 
 import logging
-
+from typing import Type, Dict
+from mythx_models.response.base import BaseResponse
 from pythx.middleware.base import BaseMiddleware
 
 LOGGER = logging.getLogger("AnalysisCacheMiddleware")
@@ -14,11 +15,11 @@ class AnalysisCacheMiddleware(BaseMiddleware):
     :code:`process_response` returns the input response object right away without touching it.
     """
 
-    def __init__(self, no_cache=False):
+    def __init__(self, no_cache: bool = False):
         LOGGER.debug("Initializing with no_cache=%s", no_cache)
         self.no_cache = no_cache
 
-    def process_request(self, req):
+    def process_request(self, req: Dict) -> Dict:
         """Add the :code:`noCacheLookup` field if the request we are making is the submission
         of a new analysis job.
 
@@ -35,7 +36,7 @@ class AnalysisCacheMiddleware(BaseMiddleware):
             req["payload"]["noCacheLookup"] = self.no_cache
         return req
 
-    def process_response(self, resp):
+    def process_response(self, resp: Type[BaseResponse]) -> Type[BaseResponse]:
         """This method is irrelevant for adding our tool name data, so we don't do anything here.
 
         We still have to define it, though. Otherwise when calling the abstract base class'

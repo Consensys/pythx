@@ -1,6 +1,8 @@
 """This module contains the abstract base middleware class."""
 
 import abc
+from typing import Type, Dict
+from mythx_models.response.base import BaseResponse
 
 
 class BaseMiddleware(abc.ABC):
@@ -18,7 +20,7 @@ class BaseMiddleware(abc.ABC):
     """
 
     @abc.abstractmethod
-    def process_request(self, req):
+    def process_request(self, req: Dict) -> Dict:
         """Abstract method for a request processor.
 
         The implementation is expected to return an updated version of the request data
@@ -29,7 +31,7 @@ class BaseMiddleware(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def process_response(self, resp):
+    def process_response(self, resp: Type[BaseResponse]) -> Type[BaseResponse]:
         """Abstract method for a response processor.
 
         The implementation is expected to return an updated version of the response
