@@ -8,8 +8,9 @@ from typing import Dict, List, Type
 
 import requests
 from mythx_models.exceptions import MythXAPIError
-from mythx_models.response.base import BaseResponse
 from mythx_models.request.base import BaseRequest
+from mythx_models.response.base import BaseResponse
+
 from pythx.middleware.base import BaseMiddleware
 
 DEFAULT_API_URL = "https://api.mythx.io/"
@@ -48,12 +49,15 @@ LOGGER = logging.getLogger(__name__)
 class APIHandler:
     """Handle the low-level API interaction.
 
-    The API handler takes care of serializing API requests, sending them to the configured
-    endpoint, parsing the response into its respective domain model, as well as registering
-    and executing request/response middlewares.
+    The API handler takes care of serializing API requests, sending them
+    to the configured endpoint, parsing the response into its respective
+    domain model, as well as registering and executing request/response
+    middlewares.
     """
 
-    def __init__(self, middlewares: List[Type[BaseMiddleware]] = None, api_url: str = None):
+    def __init__(
+        self, middlewares: List[Type[BaseMiddleware]] = None, api_url: str = None
+    ):
         """Instantiate a new API handler class.
 
         :param middlewares: A list of custom middlewares to include
@@ -175,7 +179,9 @@ class APIHandler:
             resp = mw.process_response(resp)
         return resp
 
-    def parse_response(self, resp: str, model: Type[BaseResponse]) -> Type[BaseResponse]:
+    def parse_response(
+        self, resp: str, model: Type[BaseResponse]
+    ) -> Type[BaseResponse]:
         """Parse the API response into its respective domain model variant.
 
         This method takes the raw HTTP response and a class it should deserialize the responsse

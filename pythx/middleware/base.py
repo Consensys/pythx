@@ -1,12 +1,14 @@
 """This module contains the abstract base middleware class."""
 
 import abc
-from typing import Type, Dict
+from typing import Dict, Type
+
 from mythx_models.response.base import BaseResponse
 
 
 class BaseMiddleware(abc.ABC):
-    """Abstract middleware class that can be used by developers to build their own.
+    """Abstract middleware class that can be used by developers to build their
+    own.
 
     A middleware is expected to expose two methods: :code:`process_request` and
     :code:`process_response`. Each is expected to return and updated version of their

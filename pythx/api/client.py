@@ -2,13 +2,14 @@
 
 import logging
 from datetime import datetime
-from typing import Dict, List, Type
+from typing import Dict, List, Type, TypeVar
 
 import jwt
 from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
 from mythx_models.request.base import BaseRequest
 from mythx_models.response.base import BaseResponse
+
 from pythx.api.handler import APIHandler
 from pythx.middleware import (
     AnalysisCacheMiddleware,
@@ -99,8 +100,12 @@ class Client:
         self.refresh_token = refresh_token
 
     def _assemble_send_parse(
-        self, req_obj: Type[BaseRequest], resp_model: Type[BaseResponse], assert_authentication: bool = True, include_auth_header: bool = True
-    ) -> BaseResponse:
+        self,
+        req_obj: Type[BaseRequest],
+        resp_model: Type[BaseResponse],
+        assert_authentication: bool = True,
+        include_auth_header: bool = True,
+    ) -> Type[BaseResponse]:
         """Assemble the request, send it, parse and return the response.
 
         This method takes a request model instance and:
@@ -346,7 +351,8 @@ class Client:
         return self._assemble_send_parse(req, respmodels.AnalysisStatusResponse)
 
     def analysis_ready(self, uuid: str) -> bool:
-        """Return a boolean whether the analysis job with the given UUID has finished processing.
+        """Return a boolean whether the analysis job with the given UUID has
+        finished processing.
 
         :param uuid: The analysis job UUID
         :return: bool indicating whether the analysis has finished
@@ -358,7 +364,8 @@ class Client:
         )
 
     def report(self, uuid: str) -> respmodels.DetectedIssuesResponse:
-        """Get the report holding found issues for an analysis job based on its UUID.
+        """Get the report holding found issues for an analysis job based on its
+        UUID.
 
         :param uuid: The analysis job UUID
         :return: :code:`DetectedIssuesResponse`
@@ -367,7 +374,7 @@ class Client:
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
     def request_by_uuid(self, uuid: str) -> respmodels.AnalysisInputResponse:
-        """ Get the input request based on the analysis job's UUID.
+        """Get the input request based on the analysis job's UUID.
 
         :param uuid: The analysis job UUID
         :return: :code:`AnalysisInputResponse`
