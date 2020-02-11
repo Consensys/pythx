@@ -1,10 +1,14 @@
+"""This module contains the main API Client implementation."""
+
 import logging
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Type, TypeVar
 
 import jwt
 from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
+from mythx_models.request.base import BaseRequest
+from mythx_models.response.base import BaseResponse
 
 from pythx.api.handler import APIHandler
 from pythx.middleware import (
@@ -35,7 +39,7 @@ class Client:
         2. :code:`AnalysisCacheMiddleware` Sets the :code:`noCacheLookup` field in new analysis submissions
 
     These middlewares can also be overwritten by the user (even though using the Client parameters is
-    recommended!). If any of these middleware instances are missing in the user-defined list, e.g.
+    recommended). If any of these middleware instances are missing in the user-defined list, e.g.
     because they simply add their own ones, the Client constructor will automatically add them with their
     default or parameter-defined values (if given).
     """
@@ -48,9 +52,32 @@ class Client:
         refresh_token: str = None,
         handler: APIHandler = None,
         no_cache: bool = False,
-        middlewares: List[BaseMiddleware] = None,
+        middlewares: List[Type[BaseMiddleware]] = None,
         api_url: str = None,
     ):
+        """Instantiate a new MythX API client.
+
+        Please note that it is not recommended to authenticate with the MythX API
+        using username and password. The preferred method should be by passing the API
+        key obtained from the dashboard at https://dashboard.mythx.io/ by either
+        providing it as a parameter, or setting the :code:`MYTHX_API_KEY` environment
+        variable.
+
+        If a login action using username and password is chosen, the API key and JWT
+        refresh token are set internally if the login attempt was successful.
+
+        The middleware list and the API URL are directly forwarded to the API handler
+        class unless a custom instance has already been provided.
+
+        :param username: The MythX account's username
+        :param password: The MythX account's password
+        :param api_key: The MythX API key from the dashboard
+        :param refresh_token: The JWT refresh token
+        :param handler: Use a custom API handler instance
+        :param no_cache: Disable the cache (special privileges required)
+        :param middlewares: A list of custom middlewares to include
+        :param api_url: A custom API endpoint for dedicated MythX deployments
+        """
         self.username = username
         self.password = password
 
@@ -73,9 +100,29 @@ class Client:
         self.refresh_token = refresh_token
 
     def _assemble_send_parse(
-        self, req_obj, resp_model, assert_authentication=True, include_auth_header=True
-    ):
-        """Assemble the request, send it, parse and return the response."""
+        self,
+        req_obj: Type[BaseRequest],
+        resp_model: Type[BaseResponse],
+        assert_authentication: bool = True,
+        include_auth_header: bool = True,
+    ) -> Type[BaseResponse]:
+        """Assemble the request, send it, parse and return the response.
+
+        This method takes a request model instance and:
+        1. assembles the request to conform with the API specification
+        2. sends it to the API (optionally asserting the user is authenticated)
+        3. parses the API response into the given response model class
+
+        If a username/password login is given and :code:`assert_authentication` is set to True,
+        this method will additionally make sure the user session is valid and if that is not
+        the case, try to renew the authentication on a best-effort basis.
+
+        :param req_obj: The request object to send to the API
+        :param resp_model: The response model class to parse the requested results into
+        :param assert_authentication: Auto-check authentication
+        :param include_auth_header: Include authentication header on request
+        :return: The parsed API response
+        """
         if assert_authentication:
             self.assert_authentication()
         auth_header = (
@@ -90,11 +137,15 @@ class Client:
         return self.handler.parse_response(resp, resp_model)
 
     @staticmethod
-    def _get_jwt_expiration_ts(token):
-        """Decode the APIs JWT to get their expiration time."""
+    def _get_jwt_expiration_ts(token: str) -> datetime:
+        """Decode the APIs JWT to get their expiration time in UTC.
+
+        :param token: The JWT to perform the check on
+        :return: The UTC expiration datetime object
+        """
         return datetime.utcfromtimestamp((jwt.decode(token, verify=False)["exp"]))
 
-    def assert_authentication(self):
+    def assert_authentication(self) -> None:
         """Make sure the user is authenticated.
 
         If necessary, this method will refresh the access token, or perform another
@@ -135,7 +186,7 @@ class Client:
     def login(self) -> respmodels.AuthLoginResponse:
         """Perform a login request on the API and return the response.
 
-        :return: AuthLoginResponse
+        :return: :code:`AuthLoginResponse`
         """
         req = reqmodels.AuthLoginRequest(username=self.username, password=self.password)
         resp_model = self._assemble_send_parse(
@@ -151,7 +202,7 @@ class Client:
     def logout(self) -> respmodels.AuthLogoutResponse:
         """Perform a logout request on the API and return the response.
 
-        :return: AuthLogoutResponse
+        :return: :code:`AuthLogoutResponse`
         """
         req = reqmodels.AuthLogoutRequest()
         resp_model = self._assemble_send_parse(req, respmodels.AuthLogoutResponse)
@@ -162,7 +213,7 @@ class Client:
     def refresh(self) -> respmodels.AuthRefreshResponse:
         """Perform a JWT refresh on the API and return the response.
 
-        :return: AuthRefreshResponse
+        :return: :code:`AuthRefreshResponse`
         """
         req = reqmodels.AuthRefreshRequest(
             access_token=self.api_key, refresh_token=self.refresh_token
@@ -192,6 +243,7 @@ class Client:
         :param group_name: Filter the list results by the group's name
         :param date_from: Only display results after the given date
         :param date_to: Only display results until the given date
+        :return: :code:`GroupListResponse`
         """
         req = reqmodels.GroupListRequest(
             offset=offset,
@@ -217,9 +269,11 @@ class Client:
         :param date_from: Start of the date range (optional)
         :param date_to: End of the date range (optional)
         :param offset: The number of results to skip (used for pagination)
-        :param group_name: Filter analysis results based on the group name
         :param created_by: Filter analysis results based on the creator
-        :return: AnalysisListResponse
+        :param group_name: Filter analysis results based on the group name
+        :param group_id: Filter analysis results based on their group ID
+        :param main_source: Filter analysis results based on their main source name
+        :return: :code:`AnalysisListResponse`
         """
         req = reqmodels.AnalysisListRequest(
             offset=offset,
@@ -250,17 +304,17 @@ class Client:
         At least the smart contracts bytecode, or it's source code must be given. The more
         information the MythX API gets, the more precise and verbose the results will be.
 
-        :param contract_name:
-        :param bytecode:
-        :param source_map:
-        :param deployed_bytecode:
-        :param deployed_source_map:
-        :param main_source:
-        :param sources:
-        :param source_list:
-        :param solc_version:
-        :param analysis_mode:
-        :return: AnalysisSubmissionResponse
+        :param contract_name: The main Solidity contract's name
+        :param bytecode: The EVM creation bytecode obtained
+        :param source_map: The source map for the EVM creation bytecode
+        :param deployed_bytecode: The deployed EVM bytecode
+        :param deployed_source_map: The deployed bytecode's source map
+        :param main_source: The main source file to start analysis from
+        :param sources: A dictionary holding the source file data
+        :param source_list: A list of source files (ordered by the source map locs)
+        :param solc_version: The solc version used for compilation
+        :param analysis_mode: The analysis mode
+        :return: :code:`AnalysisSubmissionResponse`
         """
         req = reqmodels.AnalysisSubmissionRequest(
             contract_name=contract_name,
@@ -281,7 +335,7 @@ class Client:
         """Get the status of an analysis group by its ID.
 
         :param group_id: The group ID to fetch the status for
-        :return: :code:`respmodels.GroupStatusResponse`
+        :return: :code:`GroupStatusResponse`
         """
         req = reqmodels.GroupStatusRequest(group_id=group_id)
         return self._assemble_send_parse(req, respmodels.GroupStatusResponse)
@@ -290,17 +344,18 @@ class Client:
         """Get the status of an analysis job based on its UUID.
 
         :param uuid: The job's UUID
-        :return: AnalysisStatusResponse
+        :return: :code:`AnalysisStatusResponse`
         """
         # TODO: rename to analysis_status
         req = reqmodels.AnalysisStatusRequest(uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisStatusResponse)
 
     def analysis_ready(self, uuid: str) -> bool:
-        """Return a boolean whether the analysis job with the given UUID has finished processing.
+        """Return a boolean whether the analysis job with the given UUID has
+        finished processing.
 
-        :param uuid:
-        :return: bool
+        :param uuid: The analysis job UUID
+        :return: bool indicating whether the analysis has finished
         """
         resp = self.status(uuid)
         return (
@@ -309,19 +364,20 @@ class Client:
         )
 
     def report(self, uuid: str) -> respmodels.DetectedIssuesResponse:
-        """Get the report holding found issues for an analysis job based on its UUID.
+        """Get the report holding found issues for an analysis job based on its
+        UUID.
 
-        :param uuid:
-        :return: DetectedIssuesResponse
+        :param uuid: The analysis job UUID
+        :return: :code:`DetectedIssuesResponse`
         """
         req = reqmodels.DetectedIssuesRequest(uuid)
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
     def request_by_uuid(self, uuid: str) -> respmodels.AnalysisInputResponse:
-        """ Get the input request based on the analysis job's UUID.
+        """Get the input request based on the analysis job's UUID.
 
-        :param uuid:
-        :return:
+        :param uuid: The analysis job UUID
+        :return: :code:`AnalysisInputResponse`
         """
         req = reqmodels.AnalysisInputRequest(uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisInputResponse)
@@ -330,7 +386,7 @@ class Client:
         """Create a new group.
 
         :param group_name: The name of the group (max. 256 characters, optional)
-        :return: :code:`respmodels.GroupCreationResponse`
+        :return: :code:`GroupCreationResponse`
         """
         req = reqmodels.GroupCreationRequest(group_name=group_name)
         return self._assemble_send_parse(req, respmodels.GroupCreationResponse)
@@ -341,16 +397,16 @@ class Client:
         This closes an open group for the submission of any further analyses.
 
         :param group_id: The target group ID
-        :return: :code:`respmodels.GroupOperationResponse`
+        :return: :code:`GroupOperationResponse`
         """
         req = reqmodels.GroupOperationRequest(group_id=group_id, type_="seal_group")
         return self._assemble_send_parse(req, respmodels.GroupOperationResponse)
 
-    def openapi(self, mode="yaml") -> respmodels.OASResponse:
+    def openapi(self, mode: str = "yaml") -> respmodels.OASResponse:
         """Return the OpenAPI specification either in HTML or YAML.
 
         :param mode: "yaml" or "html"
-        :return: OASResponse
+        :return: :code:`OASResponse`
         """
         req = reqmodels.OASRequest(mode=mode)
         return self._assemble_send_parse(
@@ -363,7 +419,7 @@ class Client:
     def version(self) -> respmodels.VersionResponse:
         """Call the APIs version endpoint to get its backend version numbers.
 
-        :return: VersionResponse
+        :return: :code:`VersionResponse`
         """
         req = reqmodels.VersionRequest()
         return self._assemble_send_parse(
@@ -374,8 +430,21 @@ class Client:
         )
 
     def __enter__(self):
+        """Entry point for the client context handler.
+
+        :return: A :code:`Client` instance
+        """
         self.assert_authentication()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        """Exit point for the client context handler.
+
+        This method takes in parameters from context execution to handle
+        exceptions that might have arisen.
+
+        :param exc_type: The exception type during context execution
+        :param exc_value: The exception value from context execution
+        :param traceback: The traceback from context execution
+        """
         self.logout()
