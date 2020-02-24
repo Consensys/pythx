@@ -298,6 +298,7 @@ class Client:
         source_list: List[str] = None,
         solc_version: str = None,
         analysis_mode: str = "quick",
+        payload: reqmodels.AnalysisSubmissionRequest = None,
     ) -> respmodels.AnalysisSubmissionResponse:
         """Submit a new analysis job.
 
@@ -316,7 +317,7 @@ class Client:
         :param analysis_mode: The analysis mode
         :return: :code:`AnalysisSubmissionResponse`
         """
-        req = reqmodels.AnalysisSubmissionRequest(
+        req = payload or reqmodels.AnalysisSubmissionRequest(
             contract_name=contract_name,
             bytecode=bytecode,
             source_map=source_map,
