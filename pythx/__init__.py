@@ -2,7 +2,7 @@
 
 __author__ = """Dominik Muhs"""
 __email__ = "dominik.muhs@consensys.net"
-__version__ = "1.5.4"
+__version__ = "1.5.5"
 
 from mythx_models.exceptions import MythXAPIError, MythXBaseException, ValidationError
 
