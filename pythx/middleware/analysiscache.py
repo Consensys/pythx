@@ -1,4 +1,4 @@
-"""This module contains a middleware to fill the :code:`clientToolName`
+"""This module contains a middleware to fill the :code:`noCacheLookup`
 field."""
 
 import logging

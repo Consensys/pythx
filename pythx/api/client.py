@@ -315,6 +315,7 @@ class Client:
         :param source_list: A list of source files (ordered by the source map locs)
         :param solc_version: The solc version used for compilation
         :param analysis_mode: The analysis mode
+        :param payload: Directly inject an :code:`AnalysisSubmissionRequest` model
         :return: :code:`AnalysisSubmissionResponse`
         """
         req = payload or reqmodels.AnalysisSubmissionRequest(
