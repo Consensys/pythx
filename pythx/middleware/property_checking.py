@@ -1,4 +1,4 @@
-"""This module contains a middleware to fill the :code:`groupId`/:code:`groupName`
+"""This module contains a middleware to fill the :code:`propertyChecking`
 field."""
 
 import logging
@@ -8,10 +8,10 @@ from mythx_models.response.base import BaseResponse
 
 from pythx.middleware.base import BaseMiddleware
 
-LOGGER = logging.getLogger("GroupDataMiddleware")
+LOGGER = logging.getLogger("PropertyCheckingMiddleware")
 
 
-class GroupDataMiddleware(BaseMiddleware):
+class PropertyCheckingMiddleware(BaseMiddleware):
     """This middleware fills the :code:`groupId` and :code:`groupName` fields
     when submitting a new analysis job.
 
@@ -19,13 +19,12 @@ class GroupDataMiddleware(BaseMiddleware):
     :code:`process_response` returns the input response object right away without touching it.
     """
 
-    def __init__(self, group_id: str = None, group_name: str = None):
+    def __init__(self, property_checking: bool = False,):
         LOGGER.debug("Initializing")
-        self.group_id = group_id
-        self.group_name = group_name
+        self.propert_checking = property_checking
 
     def process_request(self, req: Dict) -> Dict:
-        """Add the :code:`groupId` and/or :code:`groupName` field if the
+        """Add the :code:`propertyChecking` field if the
         request we are making is the submission of a new analysis job.
 
         Because we execute the middleware on the request data dictionary, we cannot simply
@@ -34,23 +33,16 @@ class GroupDataMiddleware(BaseMiddleware):
         return the request right away without touching it.
 
         :param req: The request's data dictionary
-        :return: The request's data dictionary, optionally with the group data field(s) filled in
+        :return: The request's data dictionary with the property checking data field filled in
         """
-        if not (req["method"] == "POST" and req["url"].endswith("/analyses")):
-            return req
-
-        if self.group_id:
-            LOGGER.debug("Adding group ID %s to request", self.group_id)
-            req["payload"]["groupId"] = self.group_id
-        if self.group_name:
-            LOGGER.debug("Adding group name %s to request", self.group_name)
-            req["payload"]["groupName"] = self.group_name
+        if req["method"] == "POST" and req["url"].endswith("/analyses"):
+            req["payload"]["propertyChecking"] = self.propert_checking
 
         return req
 
     def process_response(self, resp: Type[BaseResponse]) -> Type[BaseResponse]:
-        """This method is irrelevant for adding our group data, so we don't do
-        anything here.
+        """This method is irrelevant for adding our property checking field,
+        so we don't do anything here.
 
         We still have to define it, though. Otherwise when calling the abstract base class'
         :code:`process_response` method, we will encounter an exception.
