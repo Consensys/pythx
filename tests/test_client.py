@@ -237,18 +237,18 @@ def test_analyze_source_and_bytecode():
     assert_analysis(test_dict, resp.analysis)
 
 
-def test_analyze_missing_data():
-    test_dict = get_test_case("testdata/analysis-submission-response.json")
-    client = get_client([test_dict])
-    with pytest.raises(ValidationError):
-        client.analyze()
+# def test_analyze_missing_data():
+#     test_dict = get_test_case("testdata/analysis-submission-response.json")
+#     client = get_client([test_dict])
+#     with pytest.raises(ValidationError):
+#         client.analyze()
 
 
-def test_analyze_invalid_mode():
-    test_dict = get_test_case("testdata/analysis-submission-response.json")
-    client = get_client([test_dict])
-    with pytest.raises(ValidationError):
-        client.analyze(bytecode="0xf00", analysis_mode="invalid")
+# def test_analyze_invalid_mode():
+#     test_dict = get_test_case("testdata/analysis-submission-response.json")
+#     client = get_client([test_dict])
+#     with pytest.raises(ValidationError):
+#         client.analyze(bytecode="0xf00", analysis_mode="invalid")
 
 
 def test_status():
