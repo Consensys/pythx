@@ -80,7 +80,6 @@ even complex use cases.
 
     # Output:
     # Assert Violation - A reachable exception has been detected.
-    # Undefined - MythX API trial mode.
 
 
 The PythX CLI has now become the MythX CLI!
