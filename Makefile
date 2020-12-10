@@ -53,7 +53,7 @@ lint: ## check style with flake8
 	flake8 pythx tests
 
 test: ## run tests quickly with the default Python
-	py.test
+	pytest --cov-report html --cov-report term --cov pythx tests/
 
 coverage: ## check code coverage quickly with the default Python
 	coverage run --source pythx -m pytest
