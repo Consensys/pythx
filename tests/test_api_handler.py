@@ -26,7 +26,6 @@ class TestMiddleware(BaseMiddleware):
         return req
 
     def process_response(self, resp):
-        resp.test = "test"
         return resp
 
 
@@ -49,10 +48,6 @@ def assert_request_dict_content(d, request_obj):
     assert request_obj.endpoint in d["url"]
     # check middleware request processing
     assert d["test"] == "test"
-
-
-def assert_response_middleware_hook(model):
-    assert model.test == "test"
 
 
 @pytest.mark.parametrize(
@@ -87,7 +82,7 @@ def assert_analysis(analysis, data):
     assert analysis.run_time == data["runTime"]
     assert analysis.queue_time == data["queueTime"]
     assert analysis.status.title() == data["status"]
-    assert analysis.submitted_at == dateutil.parser.parse(data["submittedAt"])
+    assert analysis.submitted_at == data["submittedAt"]
     assert analysis.submitted_by == data["submittedBy"]
     assert analysis.uuid == data["uuid"]
 
@@ -95,9 +90,8 @@ def assert_analysis(analysis, data):
 def test_parse_analysis_list_response():
     test_dict = get_test_case("testdata/analysis-list-response.json")
     model = API_HANDLER.parse_response(
-        json.dumps(test_dict), respmodels.AnalysisListResponse
+        test_dict, respmodels.AnalysisListResponse
     )
-    assert_response_middleware_hook(model)
     for i, analysis in enumerate(model.analyses):
         response_obj = test_dict["analyses"][i]
         assert_analysis(analysis, response_obj)
@@ -106,39 +100,36 @@ def test_parse_analysis_list_response():
 def test_parse_analysis_status_response():
     test_dict = get_test_case("testdata/analysis-status-response.json")
     model = API_HANDLER.parse_response(
-        json.dumps(test_dict), respmodels.AnalysisStatusResponse
+        test_dict, respmodels.AnalysisStatusResponse
     )
-    assert_response_middleware_hook(model)
-    assert_analysis(model.analysis, test_dict)
+    assert_analysis(model, test_dict)
 
 
 def test_parse_analysis_submission_response():
     test_dict = get_test_case("testdata/analysis-status-response.json")
     model = API_HANDLER.parse_response(
-        json.dumps(test_dict), respmodels.AnalysisSubmissionResponse
+        test_dict, respmodels.AnalysisSubmissionResponse
     )
-    assert_response_middleware_hook(model)
-    assert model.analysis.api_version == test_dict["apiVersion"]
-    assert model.analysis.maru_version == test_dict["maruVersion"]
-    assert model.analysis.mythril_version == test_dict["mythrilVersion"]
-    assert model.analysis.harvey_version == test_dict["harveyVersion"]
-    assert model.analysis.queue_time == test_dict["queueTime"]
-    assert model.analysis.status.title() == test_dict["status"]
-    assert model.analysis.submitted_at == dateutil.parser.parse(
-        test_dict["submittedAt"]
-    )
-    assert model.analysis.submitted_by == test_dict["submittedBy"]
-    assert model.analysis.uuid == test_dict["uuid"]
+    assert model.api_version == test_dict["apiVersion"]
+    assert model.maru_version == test_dict["maruVersion"]
+    assert model.mythril_version == test_dict["mythrilVersion"]
+    assert model.harvey_version == test_dict["harveyVersion"]
+    assert model.queue_time == test_dict["queueTime"]
+    assert model.status.title() == test_dict["status"]
+    assert model.submitted_at == test_dict["submittedAt"]
+    assert model.submitted_by == test_dict["submittedBy"]
+    assert model.uuid == test_dict["uuid"]
 
 
 def test_parse_detected_issues_response():
     test_dict = get_test_case("testdata/detected-issues-response.json")
     expected_report = test_dict[0]
     model = API_HANDLER.parse_response(
-        json.dumps(test_dict), respmodels.DetectedIssuesResponse
+        test_dict, respmodels.DetectedIssuesResponse
     )
-    assert_response_middleware_hook(model)
-    assert model.issue_reports[0].issues[0].to_dict() == expected_report["issues"][0]
+    issue = model.issue_reports[0].issues[0].dict(by_alias=True)
+    issue["decodedLocations"] = [list(t) for t in issue["decodedLocations"]]
+    assert issue == expected_report["issues"][0]
     assert model.issue_reports[0].source_type == expected_report["sourceType"]
     assert model.issue_reports[0].source_format == expected_report["sourceFormat"]
     assert model.issue_reports[0].source_list == expected_report["sourceList"]
@@ -148,19 +139,17 @@ def test_parse_detected_issues_response():
 def test_parse_login_response():
     test_dict = get_test_case("testdata/auth-login-response.json")
     model = API_HANDLER.parse_response(
-        json.dumps(test_dict), respmodels.AuthLoginResponse
+        test_dict, respmodels.AuthLoginResponse
     )
-    assert_response_middleware_hook(model)
-    assert model.api_key == test_dict["jwtTokens"]["access"]
+    assert model.access_token == test_dict["jwtTokens"]["access"]
     assert model.refresh_token == test_dict["jwtTokens"]["refresh"]
 
 
 def test_parse_refresh_response():
     test_dict = get_test_case("testdata/auth-refresh-response.json")
     model = API_HANDLER.parse_response(
-        json.dumps(test_dict), respmodels.AuthRefreshResponse
+        test_dict, respmodels.AuthRefreshResponse
     )
-    assert_response_middleware_hook(model)
     assert model.access_token == test_dict["jwtTokens"]["access"]
     assert model.refresh_token == test_dict["jwtTokens"]["refresh"]
 
@@ -168,21 +157,20 @@ def test_parse_refresh_response():
 def test_parse_logout_response():
     test_dict = get_test_case("testdata/auth-logout-response.json")
     model = API_HANDLER.parse_response(
-        json.dumps(test_dict), respmodels.AuthLogoutResponse
+        test_dict, respmodels.AuthLogoutResponse
     )
-    assert_response_middleware_hook(model)
-    assert model.to_dict() == {}
-    assert model.to_json() == "{}"
+    assert model.dict() == {}
+    assert model.json() == "{}"
 
 
 def test_send_request_successful(requests_mock):
     test_url = "mock://test.com/path"
-    requests_mock.get(test_url, text="resp")
+    requests_mock.get(test_url, text='{"resp":"test"}')
     resp = APIHandler.send_request(
         {"method": "GET", "headers": {}, "url": test_url, "payload": {}, "params": {}},
         auth_header={"Authorization": "Bearer foo"},
     )
-    assert resp == "resp"
+    assert resp == {"resp": "test"}
     assert requests_mock.called == 1
     h = requests_mock.request_history[0]
     assert h.method == "GET"
@@ -192,7 +180,7 @@ def test_send_request_successful(requests_mock):
 
 def test_send_request_failure(requests_mock):
     test_url = "mock://test.com/path"
-    requests_mock.get(test_url, text="resp", status_code=400)
+    requests_mock.get(test_url, text='{"resp":"test"}', status_code=400)
     with pytest.raises(MythXAPIError):
         APIHandler.send_request(
             {
@@ -214,7 +202,7 @@ def test_send_request_failure(requests_mock):
 
 def test_send_request_unauthenticated(requests_mock):
     test_url = "mock://test.com/path"
-    requests_mock.get("mock://test.com/path", text="resp", status_code=400)
+    requests_mock.get("mock://test.com/path", text='{"resp":"test"}', status_code=400)
     with pytest.raises(MythXAPIError):
         APIHandler.send_request(
             {

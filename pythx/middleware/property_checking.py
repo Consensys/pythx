@@ -2,9 +2,8 @@
 field."""
 
 import logging
-from typing import Dict, Type
 
-from mythx_models.response.base import BaseResponse
+from pythx.types import RESPONSE_MODELS, REQUEST_MODELS
 
 from pythx.middleware.base import BaseMiddleware
 
@@ -19,11 +18,14 @@ class PropertyCheckingMiddleware(BaseMiddleware):
     :code:`process_response` returns the input response object right away without touching it.
     """
 
-    def __init__(self, property_checking: bool = False,):
+    def __init__(
+        self,
+        property_checking: bool = False,
+    ):
         LOGGER.debug("Initializing")
         self.propert_checking = property_checking
 
-    def process_request(self, req: Dict) -> Dict:
+    def process_request(self, req: REQUEST_MODELS) -> REQUEST_MODELS:
         """Add the :code:`propertyChecking` field if the
         request we are making is the submission of a new analysis job.
 
@@ -40,7 +42,7 @@ class PropertyCheckingMiddleware(BaseMiddleware):
 
         return req
 
-    def process_response(self, resp: Type[BaseResponse]) -> Type[BaseResponse]:
+    def process_response(self, resp: RESPONSE_MODELS) -> RESPONSE_MODELS:
         """This method is irrelevant for adding our property checking field,
         so we don't do anything here.
 

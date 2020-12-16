@@ -2,8 +2,7 @@
 
 import abc
 from typing import Dict, Type
-
-from mythx_models.response.base import BaseResponse
+from pythx.types import RESPONSE_MODELS, REQUEST_MODELS
 
 
 class BaseMiddleware(abc.ABC):
@@ -22,7 +21,7 @@ class BaseMiddleware(abc.ABC):
     """
 
     @abc.abstractmethod
-    def process_request(self, req: Dict) -> Dict:
+    def process_request(self, req: REQUEST_MODELS) -> Dict:
         """Abstract method for a request processor.
 
         The implementation is expected to return an updated version of the request data
@@ -33,7 +32,7 @@ class BaseMiddleware(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def process_response(self, resp: Type[BaseResponse]) -> Type[BaseResponse]:
+    def process_response(self, resp: RESPONSE_MODELS) -> Type[RESPONSE_MODELS]:
         """Abstract method for a response processor.
 
         The implementation is expected to return an updated version of the response

@@ -1,18 +1,16 @@
 """This module contains the API request handler implementation."""
-
+from json import JSONDecodeError
 import logging
 import os
 import re
 import urllib.parse
 from typing import Dict, List, Type
-
 import requests
 from mythx_models.exceptions import MythXAPIError
-from mythx_models.request.base import BaseRequest
-from mythx_models.response.base import BaseResponse
-
+from mythx_models.response import DetectedIssuesResponse, IssueReport
+from pythx.types import RESPONSE_MODELS, REQUEST_MODELS
 from pythx.middleware.base import BaseMiddleware
-
+from pydantic import parse_obj_as
 DEFAULT_API_URL = "https://api.mythx.io/"
 
 
@@ -56,7 +54,7 @@ class APIHandler:
     """
 
     def __init__(
-        self, middlewares: List[Type[BaseMiddleware]] = None, api_url: str = None
+        self, middlewares: List[BaseMiddleware] = None, api_url: str = None
     ):
         """Instantiate a new API handler class.
 
@@ -85,7 +83,7 @@ class APIHandler:
         return url + "/" if not url.endswith("/") else url
 
     @staticmethod
-    def send_request(request_data: Dict, auth_header: Dict[str, str] = None) -> str:
+    def send_request(request_data: Dict, auth_header: Dict[str, str] = None) -> Dict:
         """Send a request to the API.
 
         This method takes a data dictionary holding the request's method (HTTP verb),
@@ -100,7 +98,7 @@ class APIHandler:
             {
                 "method": "GET",
                 "headers": {},
-                "url": "https://api.mythx.io/v1/analyses/6b9e4a52-f061-4960-8246-e1560627336a/issues",
+                "url": "https://api.mythx.io/v1/analyses/<uuid>/issues",
                 "payload": "",
                 "params": {}
             }
@@ -133,7 +131,15 @@ class APIHandler:
                     response.status_code, response.content.decode()
                 )
             )
-        return response.text
+        try:
+            content = response.json()
+        except JSONDecodeError:
+            raise MythXAPIError(
+                "Got unexpected response data: Expected JSON but got {}".format(
+                    response.text
+                )
+            )
+        return content
 
     def execute_request_middlewares(self, req: Dict) -> Dict:
         """Sequentially execute the registered request middlewares.
@@ -157,7 +163,7 @@ class APIHandler:
             req = mw.process_request(req)
         return req
 
-    def execute_response_middlewares(self, resp: Type[BaseResponse]) -> Dict:
+    def execute_response_middlewares(self, resp: RESPONSE_MODELS) -> RESPONSE_MODELS:
         """Sequentially execute the registered response middlewares.
 
         Each middleware gets the serialized response domain model. On top of the request any
@@ -176,12 +182,12 @@ class APIHandler:
         """
         for mw in self.middlewares:
             LOGGER.debug("Executing response middleware: %s", mw)
-            resp = mw.process_response(resp)
+            resp = mw.process_response(resp=resp)
         return resp
 
     def parse_response(
-        self, resp: str, model: Type[BaseResponse]
-    ) -> Type[BaseResponse]:
+        self, resp: dict, model_cls: Type[RESPONSE_MODELS]
+    ) -> RESPONSE_MODELS:
         """Parse the API response into its respective domain model variant.
 
         This method takes the raw HTTP response and a class it should deserialize the responsse
@@ -192,13 +198,16 @@ class APIHandler:
         on to the user.
 
         :param resp: The raw HTTP response JSON payload
-        :param model: The domain model class the data should be deserialized into
+        :param model_cls: The domain model class the data should be deserialized into
         :return: The domain model holding the response data
         """
-        m = model.from_json(resp)
+        if type(resp) is list and model_cls is DetectedIssuesResponse:
+            m = DetectedIssuesResponse(issue_reports=parse_obj_as(List[IssueReport], resp))
+        else:
+            m = model_cls(**resp)
         return self.execute_response_middlewares(m)
 
-    def assemble_request(self, req: Type[BaseRequest]) -> Dict:
+    def assemble_request(self, req: REQUEST_MODELS) -> Dict:
         """Assemble a request that is later sent to the API.
 
         This method generates an intermediate data dictionary format holding all the relevant

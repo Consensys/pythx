@@ -150,7 +150,10 @@ CUSTOM_PC_MIDDLEWARE = PropertyCheckingMiddleware(property_checking=True)
 def test_request_dicts(middleware, request_dict, field_added):
     new_request = middleware.process_request(request_dict)
     if field_added:
-        assert new_request["payload"].get("propertyChecking") == middleware.propert_checking
+        assert (
+            new_request["payload"].get("propertyChecking")
+            == middleware.propert_checking
+        )
         del new_request["payload"]["propertyChecking"]
 
     # rest of the result should stay the same

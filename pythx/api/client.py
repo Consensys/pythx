@@ -7,9 +7,7 @@ from typing import Dict, List, Type, TypeVar
 import jwt
 from mythx_models import request as reqmodels
 from mythx_models import response as respmodels
-from mythx_models.request.base import BaseRequest
-from mythx_models.response.base import BaseResponse
-
+from pythx.types import RESPONSE_MODELS, REQUEST_MODELS
 from pythx.api.handler import APIHandler
 from pythx.middleware import (
     AnalysisCacheMiddleware,
@@ -52,7 +50,7 @@ class Client:
         refresh_token: str = None,
         handler: APIHandler = None,
         no_cache: bool = False,
-        middlewares: List[Type[BaseMiddleware]] = None,
+        middlewares: List[BaseMiddleware] = None,
         api_url: str = None,
     ):
         """Instantiate a new MythX API client.
@@ -101,11 +99,11 @@ class Client:
 
     def _assemble_send_parse(
         self,
-        req_obj: Type[BaseRequest],
-        resp_model: Type[BaseResponse],
+        req_obj: REQUEST_MODELS,
+        resp_model: Type[RESPONSE_MODELS],
         assert_authentication: bool = True,
         include_auth_header: bool = True,
-    ) -> Type[BaseResponse]:
+    ) -> RESPONSE_MODELS:
         """Assemble the request, send it, parse and return the response.
 
         This method takes a request model instance and:
@@ -189,13 +187,13 @@ class Client:
         :return: :code:`AuthLoginResponse`
         """
         req = reqmodels.AuthLoginRequest(username=self.username, password=self.password)
-        resp_model = self._assemble_send_parse(
+        resp_model: respmodels.AuthLoginResponse = self._assemble_send_parse(
             req,
             respmodels.AuthLoginResponse,
             assert_authentication=False,
             include_auth_header=False,
         )
-        self.api_key = resp_model.api_key
+        self.api_key = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
         return resp_model
 
@@ -204,7 +202,7 @@ class Client:
 
         :return: :code:`AuthLogoutResponse`
         """
-        req = reqmodels.AuthLogoutRequest()
+        req = reqmodels.AuthLogoutRequest(**{"global": True})
         resp_model = self._assemble_send_parse(req, respmodels.AuthLogoutResponse)
         self.api_key = None
         self.refresh_token = None
@@ -218,7 +216,7 @@ class Client:
         req = reqmodels.AuthRefreshRequest(
             access_token=self.api_key, refresh_token=self.refresh_token
         )
-        resp_model = self._assemble_send_parse(
+        resp_model: respmodels.AuthRefreshResponse = self._assemble_send_parse(
             req,
             respmodels.AuthRefreshResponse,
             assert_authentication=False,
@@ -227,6 +225,76 @@ class Client:
         self.api_key = resp_model.access_token
         self.refresh_token = resp_model.refresh_token
         return resp_model
+
+    def project_list(
+        self, offset: int = None, limit: int = None, name: str = ""
+    ) -> respmodels.ProjectListResponse:
+        """List the existing projects on the platform
+
+        :param offset: The number of projects to skip (optional)
+        :param limit: The number of projects to return (optional)
+        :param name: The name to filter projects by (optional)
+        :return:
+        """
+        req = reqmodels.ProjectListRequest(
+            offset=offset,
+            limit=limit,
+            name=name,
+        )
+        return self._assemble_send_parse(req, respmodels.ProjectListResponse)
+
+    def project_status(self, project_id: str = "") -> respmodels.ProjectStatusResponse:
+        """Get detailed information for a project.
+
+        :param project_id: The project's ID
+        :return: :code:`ProjectStatusResponse`
+        """
+        req = reqmodels.ProjectStatusRequest(project_id=project_id)
+        return self._assemble_send_parse(req, respmodels.ProjectStatusResponse)
+
+    def delete_project(
+        self, project_id: str = ""
+    ) -> respmodels.ProjectDeletionResponse:
+        """Delete an existing project.
+
+        :param project_id: The project's ID
+        :return: :code:`ProjectDeletionResponse`
+        """
+        req = reqmodels.ProjectDeleteRequest(project_id=project_id)
+        return self._assemble_send_parse(req, respmodels.ProjectDeletionResponse)
+
+    def create_project(
+        self, name: str = "", description: str = "", groups: List[str] = None
+    ) -> respmodels.ProjectCreationResponse:
+        """Create a new project.
+
+        :param name: The project name
+        :param description: The project description
+        :param groups: List of group IDs belonging to the project (optional)
+        :return: :code:`ProjectCreationResponse`
+        """
+        req = reqmodels.ProjectCreationRequest(
+            name=name, description=description, groups=groups or []
+        )
+        return self._assemble_send_parse(req, respmodels.ProjectCreationResponse)
+
+    def update_project(
+        self, project_id: str = "", name: str = "", description: str = ""
+    ) -> respmodels.ProjectUpdateResponse:
+        """Update an existing project.
+
+        A new name, a new description, or both should be given.
+
+        :param project_id: The ID of the project to update
+        :param name: The new project name (optional)
+        :param description: The new project description (optional)
+        :return: :code:`ProjectUpdateResponse`
+        """
+
+        req = reqmodels.ProjectUpdateRequest(
+            project_id=project_id, name=name, description=description
+        )
+        return self._assemble_send_parse(req, respmodels.ProjectUpdateResponse)
 
     def group_list(
         self,
@@ -288,13 +356,13 @@ class Client:
 
     def analyze(
         self,
-        contract_name: str = None,
         bytecode: str = None,
+        main_source: str = None,
+        sources: Dict[str, Dict[str, str]] = None,
+        contract_name: str = None,
         source_map: str = None,
         deployed_bytecode: str = None,
         deployed_source_map: str = None,
-        main_source: str = None,
-        sources: Dict[str, Dict[str, str]] = None,
         source_list: List[str] = None,
         solc_version: str = None,
         analysis_mode: str = "quick",
@@ -330,7 +398,6 @@ class Client:
             solc_version=solc_version,
             analysis_mode=analysis_mode,
         )
-        # req.validate()
         return self._assemble_send_parse(req, respmodels.AnalysisSubmissionResponse)
 
     def group_status(self, group_id: str) -> respmodels.GroupStatusResponse:
@@ -342,14 +409,13 @@ class Client:
         req = reqmodels.GroupStatusRequest(group_id=group_id)
         return self._assemble_send_parse(req, respmodels.GroupStatusResponse)
 
-    def status(self, uuid: str) -> respmodels.AnalysisStatusResponse:
+    def analysis_status(self, uuid: str) -> respmodels.AnalysisStatusResponse:
         """Get the status of an analysis job based on its UUID.
 
         :param uuid: The job's UUID
         :return: :code:`AnalysisStatusResponse`
         """
-        # TODO: rename to analysis_status
-        req = reqmodels.AnalysisStatusRequest(uuid)
+        req = reqmodels.AnalysisStatusRequest(uuid=uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisStatusResponse)
 
     def analysis_ready(self, uuid: str) -> bool:
@@ -359,10 +425,10 @@ class Client:
         :param uuid: The analysis job UUID
         :return: bool indicating whether the analysis has finished
         """
-        resp = self.status(uuid)
+        resp = self.analysis_status(uuid)
         return (
-            resp.analysis.status == respmodels.AnalysisStatus.FINISHED
-            or resp.analysis.status == respmodels.AnalysisStatus.ERROR
+            resp.status == respmodels.AnalysisStatus.FINISHED
+            or resp.status == respmodels.AnalysisStatus.ERROR
         )
 
     def report(self, uuid: str) -> respmodels.DetectedIssuesResponse:
@@ -372,7 +438,7 @@ class Client:
         :param uuid: The analysis job UUID
         :return: :code:`DetectedIssuesResponse`
         """
-        req = reqmodels.DetectedIssuesRequest(uuid)
+        req = reqmodels.DetectedIssuesRequest(uuid=uuid)
         return self._assemble_send_parse(req, respmodels.DetectedIssuesResponse)
 
     def request_by_uuid(self, uuid: str) -> respmodels.AnalysisInputResponse:
@@ -381,7 +447,7 @@ class Client:
         :param uuid: The analysis job UUID
         :return: :code:`AnalysisInputResponse`
         """
-        req = reqmodels.AnalysisInputRequest(uuid)
+        req = reqmodels.AnalysisInputRequest(uuid=uuid)
         return self._assemble_send_parse(req, respmodels.AnalysisInputResponse)
 
     def create_group(self, group_name: str = "") -> respmodels.GroupCreationResponse:
@@ -403,20 +469,6 @@ class Client:
         """
         req = reqmodels.GroupOperationRequest(group_id=group_id, type_="seal_group")
         return self._assemble_send_parse(req, respmodels.GroupOperationResponse)
-
-    def openapi(self, mode: str = "yaml") -> respmodels.OASResponse:
-        """Return the OpenAPI specification either in HTML or YAML.
-
-        :param mode: "yaml" or "html"
-        :return: :code:`OASResponse`
-        """
-        req = reqmodels.OASRequest(mode=mode)
-        return self._assemble_send_parse(
-            req,
-            respmodels.OASResponse,
-            assert_authentication=False,
-            include_auth_header=False,
-        )
 
     def version(self) -> respmodels.VersionResponse:
         """Call the APIs version endpoint to get its backend version numbers.

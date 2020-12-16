@@ -8,6 +8,7 @@
             "completedAt": "2019-11-04T13:38:23.000Z",
             "progress": 0,
             "status": "opened",
+            "projectId": "test",
             "mainSourceFiles": [
                 "test"
             ],
@@ -33,6 +34,7 @@
             "completedAt": "2019-11-04T13:38:23.000Z",
             "progress": 0,
             "status": "opened",
+            "projectId": "test",
             "mainSourceFiles": [
                 "test"
             ],

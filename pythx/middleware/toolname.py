@@ -2,10 +2,7 @@
 field."""
 
 import logging
-from typing import Dict, Type
-
-from mythx_models.response.base import BaseResponse
-
+from pythx.types import RESPONSE_MODELS, REQUEST_MODELS
 from pythx.middleware.base import BaseMiddleware
 
 LOGGER = logging.getLogger("ClientToolNameMiddleware")
@@ -23,7 +20,7 @@ class ClientToolNameMiddleware(BaseMiddleware):
         LOGGER.debug("Initializing")
         self.name = name
 
-    def process_request(self, req: Dict) -> Dict:
+    def process_request(self, req: REQUEST_MODELS) -> REQUEST_MODELS:
         """Add the :code:`clientToolName` field if the request we are making is
         the submission of a new analysis job.
 
@@ -40,7 +37,7 @@ class ClientToolNameMiddleware(BaseMiddleware):
             req["payload"]["clientToolName"] = self.name
         return req
 
-    def process_response(self, resp: Type[BaseResponse]) -> Type[BaseResponse]:
+    def process_response(self, resp: RESPONSE_MODELS) -> RESPONSE_MODELS:
         """This method is irrelevant for adding our tool name data, so we don't
         do anything here.
 

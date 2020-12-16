@@ -20,5 +20,6 @@
         "low": 0,
         "none": 0
     },
-    "mainSource": "test.sol"
+    "mainSource": "test.sol",
+    "projectId": "test"
 }

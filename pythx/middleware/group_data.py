@@ -2,9 +2,9 @@
 field."""
 
 import logging
-from typing import Dict, Type
+from typing import Dict
 
-from mythx_models.response.base import BaseResponse
+from pythx.types import RESPONSE_MODELS, REQUEST_MODELS
 
 from pythx.middleware.base import BaseMiddleware
 
@@ -24,7 +24,7 @@ class GroupDataMiddleware(BaseMiddleware):
         self.group_id = group_id
         self.group_name = group_name
 
-    def process_request(self, req: Dict) -> Dict:
+    def process_request(self, req: REQUEST_MODELS) -> Dict:
         """Add the :code:`groupId` and/or :code:`groupName` field if the
         request we are making is the submission of a new analysis job.
 
@@ -48,7 +48,7 @@ class GroupDataMiddleware(BaseMiddleware):
 
         return req
 
-    def process_response(self, resp: Type[BaseResponse]) -> Type[BaseResponse]:
+    def process_response(self, resp: RESPONSE_MODELS) -> RESPONSE_MODELS:
         """This method is irrelevant for adding our group data, so we don't do
         anything here.
 

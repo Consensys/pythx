@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from mythx_models.response import DetectedIssuesResponse
 
 
 def get_test_case(path: str, obj=None):
@@ -8,7 +9,11 @@ def get_test_case(path: str, obj=None):
 
     if obj is None:
         return dict_data
-    return obj.from_dict(dict_data)
+
+    if obj is DetectedIssuesResponse and type(dict_data) is list:
+        return obj(issue_reports=dict_data)
+    else:
+        return obj(**dict_data)
 
 
 def generate_request_dict(req):

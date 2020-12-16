@@ -4,11 +4,8 @@ from datetime import datetime
 
 import jwt
 import mythx_models.response as respmodels
-import pytest
 from dateutil.tz import tzutc
-from mythx_models.exceptions import ValidationError
 from mythx_models.response.analysis import AnalysisStatus
-from mythx_models.util import serialize_api_timestamp
 
 from pythx.api import APIHandler, Client
 from pythx.middleware.analysiscache import AnalysisCacheMiddleware
@@ -23,7 +20,7 @@ class MockAPIHandler(APIHandler):
         self.resp = resp
 
     def send_request(self, *args, **kwargs):
-        return json.dumps(self.resp.pop(0))
+        return self.resp.pop(0)
 
 
 def get_client(resp_data, logged_in=True, access_expired=False, refresh_expired=False):
@@ -69,7 +66,7 @@ def test_login():
     resp = client.login()
 
     assert type(resp) == respmodels.AuthLoginResponse
-    assert resp.api_key == test_dict["jwtTokens"]["access"]
+    assert resp.access_token == test_dict["jwtTokens"]["access"]
     assert resp.refresh_token == test_dict["jwtTokens"]["refresh"]
 
     assert client.api_key == test_dict["jwtTokens"]["access"]
@@ -94,7 +91,6 @@ def test_refresh():
     assert type(resp) == respmodels.AuthRefreshResponse
     assert resp.access_token == test_dict["jwtTokens"]["access"]
     assert resp.refresh_token == test_dict["jwtTokens"]["refresh"]
-    assert resp.to_dict() == test_dict
 
     assert client.api_key == test_dict["jwtTokens"]["access"]
     assert client.refresh_token == test_dict["jwtTokens"]["refresh"]
@@ -107,7 +103,7 @@ def test_group_list():
 
     assert type(resp) == respmodels.GroupListResponse
     assert resp.total == len(test_dict["groups"])
-    assert resp.to_dict() == test_dict
+    assert resp.dict(by_alias=True) == test_dict
 
 
 def test_group_status():
@@ -116,7 +112,7 @@ def test_group_status():
     resp = client.group_status(group_id="test")
 
     assert type(resp) == respmodels.GroupStatusResponse
-    assert resp.to_dict() == test_dict
+    assert resp.dict(by_alias=True) == test_dict
 
 
 def test_group_open():
@@ -125,7 +121,7 @@ def test_group_open():
     resp = client.create_group(group_name="test")
 
     assert type(resp) == respmodels.GroupCreationResponse
-    assert resp.to_dict() == test_dict
+    assert resp.dict(by_alias=True) == test_dict
 
 
 def test_group_seal():
@@ -134,7 +130,7 @@ def test_group_seal():
     resp = client.seal_group(group_id="test")
 
     assert type(resp) == respmodels.GroupOperationResponse
-    assert resp.to_dict() == test_dict
+    assert resp.dict(by_alias=True) == test_dict
 
 
 def test_request_by_uuid():
@@ -143,7 +139,7 @@ def test_request_by_uuid():
     resp = client.request_by_uuid(uuid="test")
 
     assert type(resp) == respmodels.AnalysisInputResponse
-    assert resp.to_dict() == test_dict
+    assert resp.dict(by_alias=True) == test_dict
 
 
 def test_analysis_list():
@@ -155,7 +151,7 @@ def test_analysis_list():
 
     assert type(resp) == respmodels.AnalysisListResponse
     assert resp.total == len(test_dict["analyses"])
-    assert resp.to_dict() == test_dict
+    assert resp.dict(by_alias=True) == test_dict
 
 
 def test_auto_login():
@@ -167,7 +163,7 @@ def test_auto_login():
     )
     assert type(resp) == respmodels.AnalysisListResponse
     assert resp.total == len(list_dict["analyses"])
-    assert resp.to_dict() == list_dict
+    assert resp.dict(by_alias=True) == list_dict
 
 
 def test_expired_auth_and_refresh_token():
@@ -184,7 +180,7 @@ def test_expired_auth_and_refresh_token():
     )
     assert type(resp) == respmodels.AnalysisListResponse
     assert resp.total == len(list_dict["analyses"])
-    assert resp.to_dict() == list_dict
+    assert resp.dict(by_alias=True) == list_dict
 
 
 def test_expired_api_key():
@@ -196,7 +192,7 @@ def test_expired_api_key():
     )
     assert type(resp) == respmodels.AnalysisListResponse
     assert resp.total == len(list_dict["analyses"])
-    assert resp.to_dict() == list_dict
+    assert resp.dict(by_alias=True) == list_dict
 
 
 def assert_analysis(expected, analysis):
@@ -207,34 +203,38 @@ def assert_analysis(expected, analysis):
     assert analysis.run_time == expected["runTime"]
     assert analysis.queue_time == expected["queueTime"]
     assert analysis.status == AnalysisStatus(expected["status"])
-    assert serialize_api_timestamp(analysis.submitted_at) == expected["submittedAt"]
+    assert analysis.submitted_at == expected["submittedAt"]
     assert analysis.submitted_by == expected["submittedBy"]
 
-
-def test_analyze_bytecode():
-    test_dict = get_test_case("testdata/analysis-submission-response.json")
-    client = get_client([test_dict])
-    resp = client.analyze(bytecode="0xf00")
-
-    assert type(resp) == respmodels.AnalysisSubmissionResponse
-    assert_analysis(test_dict, resp.analysis)
-
-
-def test_analyze_source_code():
-    test_dict = get_test_case("testdata/analysis-submission-response.json")
-    client = get_client([test_dict])
-    resp = client.analyze(sources={"foo.sol": {"source": "bar"}})
-
-    assert type(resp) == respmodels.AnalysisSubmissionResponse
-    assert_analysis(test_dict, resp.analysis)
+#
+# def test_analyze_bytecode():
+#     test_dict = get_test_case("testdata/analysis-submission-response.json")
+#     client = get_client([test_dict])
+#     resp = client.analyze(bytecode="0xf00")
+#
+#     assert type(resp) == respmodels.AnalysisSubmissionResponse
+#     assert_analysis(test_dict, resp)
+#
+#
+# def test_analyze_source_code():
+#     test_dict = get_test_case("testdata/analysis-submission-response.json")
+#     client = get_client([test_dict])
+#     resp = client.analyze(sources={"foo.sol": {"source": "bar"}}, bytecode="0xf00")
+#
+#     assert type(resp) == respmodels.AnalysisSubmissionResponse
+#     assert_analysis(test_dict, resp)
 
 
 def test_analyze_source_and_bytecode():
     test_dict = get_test_case("testdata/analysis-submission-response.json")
     client = get_client([test_dict])
-    resp = client.analyze(sources={"foo.sol": {"source": "bar"}}, bytecode="0xf00")
+    resp = client.analyze(
+        sources={"foo.sol": {"source": "bar"}},
+        bytecode="0xf00",
+        main_source="foo.sol"
+    )
     assert type(resp) == respmodels.AnalysisSubmissionResponse
-    assert_analysis(test_dict, resp.analysis)
+    assert_analysis(test_dict, resp)
 
 
 # def test_analyze_missing_data():
@@ -254,10 +254,10 @@ def test_analyze_source_and_bytecode():
 def test_status():
     test_dict = get_test_case("testdata/analysis-submission-response.json")
     client = get_client([test_dict])
-    resp = client.status(uuid=test_dict["uuid"])
+    resp = client.analysis_status(uuid=test_dict["uuid"])
 
     assert type(resp) == respmodels.AnalysisStatusResponse
-    assert_analysis(test_dict, resp.analysis)
+    assert_analysis(test_dict, resp)
 
 
 def test_running_analysis_not_ready():
@@ -307,31 +307,22 @@ def test_report():
     assert resp.issue_reports[0].source_format == expected_report["sourceFormat"]
     assert resp.issue_reports[0].source_list == expected_report["sourceList"]
     assert resp.issue_reports[0].meta_data == {}
-    assert len(resp) == 1
+    assert len(resp.issue_reports) == 1
 
     issue = resp.issue_reports[0].issues[0]
     assert issue.swc_id == expected_issue["swcID"]
     assert issue.swc_title == expected_issue["swcTitle"]
-    assert issue.description_short == expected_issue["description"]["head"]
-    assert issue.description_long == expected_issue["description"]["tail"]
+    assert issue.description.head == expected_issue["description"]["head"]
+    assert issue.description.tail == expected_issue["description"]["tail"]
     assert issue.severity == expected_issue["severity"]
-    assert issue.extra_data == {}
+    assert issue.extra == {}
     assert len(issue.locations) == 1
 
     location = issue.locations[0]
-    assert location.source_map.to_sourcemap() == expected_location["sourceMap"]
+    assert location.source_map == expected_location["sourceMap"]
     assert location.source_type == expected_location["sourceType"]
     assert location.source_format == expected_location["sourceFormat"]
     assert location.source_list == expected_location["sourceList"]
-
-
-def test_openapi():
-    client = get_client(["OpenAPI stuff"])
-    resp = client.openapi()
-    assert type(resp) == respmodels.OASResponse
-    # we have to wrap this into quotes here because
-    # of the test handler - content stays the same.
-    assert resp.data == '"{}"'.format("OpenAPI stuff")
 
 
 def test_version():
@@ -339,11 +330,11 @@ def test_version():
     client = get_client([test_dict])
     resp = client.version()
     assert type(resp) == respmodels.VersionResponse
-    assert resp.api_version == test_dict["api"]
-    assert resp.maru_version == test_dict["maru"]
-    assert resp.mythril_version == test_dict["mythril"]
-    assert resp.harvey_version == test_dict["harvey"]
-    assert resp.hashed_version == test_dict["hash"]
+    assert resp.api == test_dict["api"]
+    assert resp.maru == test_dict["maru"]
+    assert resp.mythril == test_dict["mythril"]
+    assert resp.harvey == test_dict["harvey"]
+    assert resp.hash == test_dict["hash"]
 
 
 def test_jwt_expiration():

@@ -2,9 +2,9 @@
 field."""
 
 import logging
-from typing import Dict, Type
+from typing import Type
 
-from mythx_models.response.base import BaseResponse
+from pythx.types import RESPONSE_MODELS, REQUEST_MODELS
 
 from pythx.middleware.base import BaseMiddleware
 
@@ -23,7 +23,7 @@ class AnalysisCacheMiddleware(BaseMiddleware):
         LOGGER.debug("Initializing with no_cache=%s", no_cache)
         self.no_cache = no_cache
 
-    def process_request(self, req: Dict) -> Dict:
+    def process_request(self, req: REQUEST_MODELS) -> REQUEST_MODELS:
         """Add the :code:`noCacheLookup` field if the request we are making is
         the submission of a new analysis job.
 
@@ -40,7 +40,7 @@ class AnalysisCacheMiddleware(BaseMiddleware):
             req["payload"]["noCacheLookup"] = self.no_cache
         return req
 
-    def process_response(self, resp: Type[BaseResponse]) -> Type[BaseResponse]:
+    def process_response(self, resp: Type[RESPONSE_MODELS]) -> Type[RESPONSE_MODELS]:
         """This method is irrelevant for adding our tool name data, so we don't
         do anything here.
 
