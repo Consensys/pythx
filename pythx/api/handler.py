@@ -231,7 +231,7 @@ class APIHandler:
             "method": req.method,
             "payload": req.payload,
             "params": {
-                k: v for k, v in req.parameters.items() if v is not None and v is not ""
+                k: v for k, v in req.parameters.items() if v is not None and v != ""
             },
             "headers": req.headers,
             "url": url,
