@@ -470,6 +470,18 @@ class Client:
         req = reqmodels.GroupOperationRequest(group_id=group_id, type_="seal_group")
         return self._assemble_send_parse(req, respmodels.GroupOperationResponse)
 
+    def add_group_to_project(self, group_id: str, project_id: str) -> respmodels.GroupOperationResponse:
+        """Adds group to the project.
+
+        This will add the group to the project in the MythX platform.
+
+        :param group_id: The target group ID
+        :param project_id: The target project ID
+        :return: :code:`GroupOperationResponse`
+        """
+        req = reqmodels.GroupOperationRequest(group_id=group_id, type_="add_to_project", project_id=project_id)
+        return self._assemble_send_parse(req, respmodels.GroupOperationResponse)
+
     def version(self) -> respmodels.VersionResponse:
         """Call the APIs version endpoint to get its backend version numbers.
 
