@@ -10,7 +10,7 @@ PythX
         :target: https://travis-ci.org/dmuhs/pythx
 
 .. image:: https://readthedocs.org/projects/pythx/badge/?version=latest
-        :target: https://pythx.readthedocs.io/en/latest/?badge=latest
+        :target: https://pythx.readthedocs.io/
 
 .. image:: https://coveralls.io/repos/github/dmuhs/pythx/badge.svg?branch=master
         :target: https://coveralls.io/github/dmuhs/pythx?branch=master
