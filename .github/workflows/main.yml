@@ -25,6 +25,7 @@ jobs:
               run: coveralls
               env:
                 COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     deploy:
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
