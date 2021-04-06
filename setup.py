@@ -43,6 +43,7 @@ setup(
     ],
     description="A Python library for the MythX platform",
     install_requires=requirements,
+    python_requires=">=3.6,<4",
     license="MIT license",
     long_description=readme + "\n\n" + history,
     include_package_data=True,
