@@ -141,7 +141,7 @@ class Client:
         :param token: The JWT to perform the check on
         :return: The UTC expiration datetime object
         """
-        return datetime.utcfromtimestamp((jwt.decode(token, verify=False)["exp"]))
+        return datetime.utcfromtimestamp((jwt.decode(token, algorithms=["HS256"], options={"verify_signature": False})["exp"]))
 
     def assert_authentication(self) -> None:
         """Make sure the user is authenticated.
