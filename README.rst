@@ -1,3 +1,7 @@
+-----
+
+This fork has an upgraded PyJWT version: 1.7.1 -> 2.4.0
+
 =====
 PythX
 =====
