@@ -1,5 +1,5 @@
 python-dateutil==2.8.1
 inflection==0.5.1
 PyJWT==1.7.1
-requests==2.25.1
+requests==2.31.0
 mythx-models==2.2.0
